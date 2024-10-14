@@ -559,14 +559,14 @@ cp -f ./diydata/data/sqm/001-help-translation.patch  feeds/packages/net/sqm-scri
 #wget -qO- "https://cdn.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/google-cn.txt"   >> package/base-files/files/etc/smartdns/cn.conf
 #去除full regexp并指定china组解析
 #sed "s/^full://g;s/^regexp:.*$//g;s/^/nameserver \//g;s/$/\/cn/g" -i package/base-files/files/etc/smartdns/cn.conf
-#chomd 0755 package/base-files/files/etc/smartdns/cn.conf
+#chmod +x package/base-files/files/etc/smartdns/cn.conf
 
 #广告域名列表
 #wget -qO- "https://cdn.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/reject-list.txt"  >> package/base-files/files/etc/smartdns/block.conf
 #wget -qO- "https://cdn.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/win-spy.txt"  >> package/base-files/files/etc/smartdns/block.conf
 #wget -qO- "https://cdn.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/win-extra.txt"  >> package/base-files/files/etc/smartdns/block.conf
 #sed "s/^full://g;s/^regexp:.*$//g;s/^/address \//g;s/$/\/#/g" -i package/base-files/files/etc/smartdns/block.conf
-#chomd 0755 package/base-files/files/etc/smartdns/block.conf
+#chmod +x package/base-files/files/etc/smartdns/block.conf
 
 #2）mosdns
 rm -rf feeds/packages/net/mosdns
