@@ -19,7 +19,7 @@ devices_setup()
     x86_64)
         [ $(uname -r | awk -F. '{print $1}') = 6 ] && {
          #[ -f /sys/kernel/btf/vmlinux ] && sed -i "/openwrt_core/c\src/gz openwrt_core https://raw.cooluc.com/ilxp/openwrt-kmod-x86_64/main/$(grep Version /usr/lib/opkg/info/kernel.control | awk '{print $2}')" /etc/opkg/distfeeds.conf
-          [ -f /sys/kernel/btf/vmlinux ] && sed -i "/openwrt_core/c\src/gz openwrt_core https://ghp.ci/raw.githubusercontent.com/ilxp/openwrt-kmod-x86_64/main/$(grep Version /usr/lib/opkg/info/kernel.control | awk '{print $2}')" /etc/opkg/distfeeds.conf
+          [ -f /sys/kernel/btf/vmlinux ] && sed -i "/openwrt_core/c\src/gz openwrt_core https://ghp.ci/raw.githubusercontent.com/ilxp/oP-kmod-x86_64/main/$(grep Version /usr/lib/opkg/info/kernel.control | awk '{print $2}')" /etc/opkg/distfeeds.conf
         }
         uci set ota.config.api_url="$OTA_URL"
         uci commit ota

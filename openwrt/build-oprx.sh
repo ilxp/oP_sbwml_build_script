@@ -1,3 +1,4 @@
+#注意md5的标签
 #!/bin/bash -e
 export RED_COLOR='\e[1;31m'
 export GREEN_COLOR='\e[1;32m'
@@ -32,10 +33,10 @@ ip_info=`curl -sk https://ip.cooluc.com`;
 # script url
 if [ "$isCN" = "CN" ]; then
     #export mirror=init.cooluc.com
-	export mirror=raw.githubusercontent.com/ilxp/openwrt_build_script/23.05
+	export mirror=raw.githubusercontent.com/ilxp/oP_sbwml_build_script/main
 else
     #export mirror=init2.cooluc.com
-    export mirror=raw.githubusercontent.com/ilxp/openwrt_build_script/23.05
+    export mirror=raw.githubusercontent.com/ilxp/oP_sbwml_build_script/main
 fi
 
 # github actions - automatically retrieve `github raw` links
@@ -259,7 +260,7 @@ echo -e "\n${GREEN_COLOR}Patching ...${RES}\n"
 curl -sO https://$mirror/openwrt/scripts/00-prepare_base.sh
 curl -sO https://$mirror/openwrt/scripts/01-prepare_base-mainline-oprx.sh
 curl -sO https://$mirror/openwrt/scripts/02-prepare_package.sh
-curl -sO https://$mirror/openwrt/scripts/00-oprx_diy-2305.sh
+curl -sO https://$mirror/openwrt/scripts/00-oprx_diy-oP.sh
 curl -sO https://$mirror/openwrt/scripts/03-convert_translation.sh
 curl -sO https://$mirror/openwrt/scripts/04-fix_kmod.sh
 curl -sO https://$mirror/openwrt/scripts/05-fix-source.sh
@@ -269,7 +270,7 @@ chmod 0755 *sh
 bash 00-prepare_base.sh
 bash 01-prepare_base-mainline-oprx.sh
 bash 02-prepare_package.sh
-bash 00-oprx_diy-2305.sh
+bash 00-oprx_diy-oP.sh
 bash 03-convert_translation.sh
 bash 04-fix_kmod.sh
 bash 05-fix-source.sh
@@ -490,7 +491,7 @@ if [ "$platform" = "x86_64" ]; then
 #}
 #EOF
 	    md5=$(md5sum bin/targets/x86/64*/*-generic-squashfs-combined-efi.img.gz | awk '{print $1}')
-            cat > ota/vermd5.txt <<EOF
+            cat > ota/vermd5-oP.txt <<EOF
 $CURRENT_DATE2
 $md5
 EOF

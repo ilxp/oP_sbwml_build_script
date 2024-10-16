@@ -44,7 +44,7 @@ function merge_package() {
 }
 
 #二、导入自己data目录数据配置 （注意结果是./diydata/openwrt/data）
-#git clone -b 23.05 --single-branch https://github.com/ilxp/openwrt_build_script.git ./diydata
+#git clone -b main --single-branch https://github.com/ilxp/oP_sbwml_build_script.git ./diydata
 #cd  ./diydata
 #git sparse-checkout init --cone 
 #git sparse-checkout set openwrt/data
@@ -62,7 +62,7 @@ function merge_package() {
 #cp -rf ./diydata/openwrt/data/app/*  ./
 #初始化文件
 
-merge_package 23.05 https://github.com/ilxp/openwrt_build_script ./diydata openwrt/data   #注意结果是./diydata/data）
+merge_package main https://github.com/ilxp/oP_sbwml_build_script ./diydata openwrt/data   #注意结果是./diydata/data）
 
 #相关配置文件	
 cp -rf ./diydata/data/files ./package/base-files/
@@ -91,7 +91,7 @@ cp -rf ./diydata/data/app/*  ./
 #cp -f ./diydata/data/default-settings-oR package/new/addition-trans-zh/files/zzz-default-settings
 
 #采用默认的default-settings
-cp -f ./diydata/data/default-settings-2305 package/new/default-settings/default/zzz-default-settings
+cp -f ./diydata/data/default-settings-oP package/new/default-settings/default/zzz-default-settings
 
 
 #三、编译出错的########
@@ -124,7 +124,7 @@ sed -i 's/hwmon, +PACKAGE_kmod-thermal:kmod-thermal/hwmon/g' package/kernel/linu
 #R$(TZ=UTC-8 date +'%y.%-m.%-d')
 ReV_Date=`TZ=UTC-8 date +%y.%-m.%-d`
 sed -i -e "/\(# \)\?REVISION:=/c\REVISION:=$ReV_Date" -e '/VERSION_CODE:=/c\VERSION_CODE:=$(REVISION)' include/version.mk
-sed -i "s/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION='OprX oR%C Built By ilxp'/g" package/base-files/files/etc/openwrt_release
+sed -i "s/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION='OprX oP%C Built By ilxp'/g" package/base-files/files/etc/openwrt_release
 
 # 7、img编译时间前缀。
 #sed -i 's/IMG_PREFIX:=/IMG_PREFIX:=$(shell date +%Y%m%d)-OPOK-2203-/g' include/image.mk
@@ -872,8 +872,9 @@ patch -p1 <./diydata/data/patches/def_set_interfaces_lan_wan.patch
 #15、在线升级
 #1）gpsysupgrade
 git clone https://github.com/ilxp/openwrt-gpsysupgrade-kiddin9  package/diy/openwrt-gpsysupgrade
-sed -i "s/builder/openwrt-builder/g" package/diy/openwrt-gpsysupgrade/luci-app-gpsysupgrade/luasrc/model/cbi/gpsysupgrade/sysupgrade.lua
-sed -i "s/OprX/OprX-oR/g" package/diy/openwrt-gpsysupgrade/luci-app-gpsysupgrade/luasrc/model/cbi/gpsysupgrade/sysupgrade.lua
+sed -i "s/builder/oprx-builder/g" package/diy/openwrt-gpsysupgrade/luci-app-gpsysupgrade/luasrc/model/cbi/gpsysupgrade/sysupgrade.lua
+sed -i "s/vermd5/vermd5-oP/g" package/diy/openwrt-gpsysupgrade/luci-app-gpsysupgrade/luasrc/model/cbi/gpsysupgrade/sysupgrade.lua
+sed -i "s/OprX/OprX-oP/g" package/diy/openwrt-gpsysupgrade/luci-app-gpsysupgrade/luasrc/model/cbi/gpsysupgrade/sysupgrade.lua
 
 #2）autoupdate
 #git clone -b main --single-branch https://github.com/ilxp/openwrt-autoupdate.git  package/diy/openwrt-autoupdate
