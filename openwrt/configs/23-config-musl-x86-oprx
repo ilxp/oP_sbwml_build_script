@@ -86,7 +86,7 @@ CONFIG_PACKAGE_luci-app-oaf=y
 CONFIG_PACKAGE_kmod-oaf=y
 CONFIG_PACKAGE_luci-app-qbittorrent=n  #会导致文件超过100M
 CONFIG_PACKAGE_acl=y
-CONFIG_PACKAGE_zsh=n  #编译不成功
+CONFIG_PACKAGE_zsh=y
 
 #四、VPN翻墙系列
 CONFIG_PACKAGE_luci-app-openvpn=n

@@ -123,7 +123,7 @@ sed -i 's/Os/O2 -march=x86-64-v2/g' include/target.mk
 #R$(TZ=UTC-8 date +'%y.%-m.%-d')
 ReV_Date=`TZ=UTC-8 date +%y.%-m.%-d`
 sed -i -e "/\(# \)\?REVISION:=/c\REVISION:=$ReV_Date" -e '/VERSION_CODE:=/c\VERSION_CODE:=$(REVISION)' include/version.mk
-sed -i "s/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION='OprX oP%C Built By ilxp'/g" package/base-files/files/etc/openwrt_release
+sed -i "s/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION='OprX oD%C Built By ilxp'/g" package/base-files/files/etc/openwrt_release
 
 # 5、img编译时间前缀。
 #sed -i 's/IMG_PREFIX:=/IMG_PREFIX:=$(shell date +%Y%m%d)-OPOK-2203-/g' include/image.mk
@@ -751,7 +751,7 @@ git clone https://github.com/zsh-users/zsh-autosuggestions ./.oh-my-zsh/custom/p
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ./.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 git clone https://github.com/zsh-users/zsh-completions ./.oh-my-zsh/custom/plugins/zsh-completions
 # Get .zshrc dotfile
-#cp -f ./diydata/data/zsh/.zshrc .
+#cp ./diydata/data/zsh/.zshrc .
 popd
 cp -f ./diydata/data/zsh/.zshrc ./package/base-files/files/root/
 
