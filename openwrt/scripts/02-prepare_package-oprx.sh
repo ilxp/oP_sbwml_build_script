@@ -1,4 +1,5 @@
 #!/bin/bash -e
+#!/bin/bash -e
 #复制过来，注释掉98-99行# SSRP & Passwall
 
 # golang 1.24
@@ -58,6 +59,7 @@ curl -s $mirror/openwrt/patch/luci/applications/luci-app-frpc/001-luci-app-frpc-
 curl -s $mirror/openwrt/patch/luci/applications/luci-app-frpc/002-luci-app-frpc-add-enable-flag.patch | patch -p1
 
 # natmap
+sed -i 's/log_stdout:bool:1/log_stdout:bool:0/g;s/log_stderr:bool:1/log_stderr:bool:0/g' feeds/packages/net/natmap/files/natmap.init
 pushd feeds/luci
     curl -s $mirror/openwrt/patch/luci/applications/luci-app-natmap/0001-luci-app-natmap-add-default-STUN-server-lists.patch | patch -p1
 popd
@@ -84,6 +86,10 @@ sed -i 's/0666/0644/g;s/0777/0755/g' feeds/packages/net/samba4/files/smb.conf.te
 # rk3568 bind cpus
 [ "$platform" = "rk3568" ] && sed -i 's#/usr/sbin/smbd -F#/usr/bin/taskset -c 1,0 /usr/sbin/smbd -F#' feeds/packages/net/samba4/files/samba.init
 
+# zerotier
+rm -rf feeds/packages/net/zerotier
+git clone https://$github/sbwml/feeds_packages_net_zerotier feeds/packages/net/zerotier
+
 # aria2 & ariaNG
 rm -rf feeds/packages/net/ariang
 rm -rf feeds/luci/applications/luci-app-aria2
@@ -96,6 +102,9 @@ git clone https://$github/sbwml/luci-app-airconnect package/new/airconnect
 
 # netkit-ftp
 git clone https://$github/sbwml/package_new_ftp package/new/ftp
+
+# nethogs
+git clone https://github.com/sbwml/package_new_nethogs package/new/nethogs
 
 # SSRP & Passwall
 #rm -rf feeds/packages/net/{xray-core,v2ray-core,v2ray-geodata,sing-box}
@@ -112,8 +121,8 @@ sed -i 's/syslog/none/g' feeds/packages/admin/netdata/files/netdata.conf
 git clone https://$github/sbwml/luci-app-qbittorrent package/new/qbittorrent
 
 # unblockneteasemusic
-#git clone https://$github/UnblockNeteaseMusic/luci-app-unblockneteasemusic package/new/luci-app-unblockneteasemusic
-#sed -i 's/解除网易云音乐播放限制/网易云音乐解锁/g' package/new/luci-app-unblockneteasemusic/root/usr/share/luci/menu.d/luci-app-unblockneteasemusic.json
+git clone https://$github/UnblockNeteaseMusic/luci-app-unblockneteasemusic package/new/luci-app-unblockneteasemusic
+sed -i 's/解除网易云音乐播放限制/网易云音乐解锁/g' package/new/luci-app-unblockneteasemusic/root/usr/share/luci/menu.d/luci-app-unblockneteasemusic.json
 
 # Theme
 git clone --depth 1 https://$github/sbwml/luci-theme-argon package/new/luci-theme-argon
@@ -122,7 +131,7 @@ git clone --depth 1 https://$github/sbwml/luci-theme-argon package/new/luci-them
 git clone https://$github/sbwml/luci-app-mosdns -b v5 package/new/mosdns
 
 # OpenAppFilter
-#git clone https://$github/sbwml/OpenAppFilter --depth=1 package/new/OpenAppFilter
+git clone https://$github/sbwml/OpenAppFilter --depth=1 package/new/OpenAppFilter
 
 # iperf3
 sed -i "s/D_GNU_SOURCE/D_GNU_SOURCE -funroll-loops/g" feeds/packages/net/iperf3/Makefile
@@ -168,3 +177,7 @@ git clone https://$github/sbwml/package_kernel_tcp-brutal package/kernel/tcp-bru
 
 # watchcat - clean config
 true > feeds/packages/utils/watchcat/files/watchcat.config
+
+# libpcap
+rm -rf package/libs/libpcap
+git clone https://$github/sbwml/package_libs_libpcap package/libs/libpcap

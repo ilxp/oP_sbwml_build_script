@@ -57,6 +57,7 @@ curl -s $mirror/openwrt/patch/luci/applications/luci-app-frpc/001-luci-app-frpc-
 curl -s $mirror/openwrt/patch/luci/applications/luci-app-frpc/002-luci-app-frpc-add-enable-flag.patch | patch -p1
 
 # natmap
+sed -i 's/log_stdout:bool:1/log_stdout:bool:0/g;s/log_stderr:bool:1/log_stderr:bool:0/g' feeds/packages/net/natmap/files/natmap.init
 pushd feeds/luci
     curl -s $mirror/openwrt/patch/luci/applications/luci-app-natmap/0001-luci-app-natmap-add-default-STUN-server-lists.patch | patch -p1
 popd
@@ -99,6 +100,9 @@ git clone https://$github/sbwml/luci-app-airconnect package/new/airconnect
 
 # netkit-ftp
 git clone https://$github/sbwml/package_new_ftp package/new/ftp
+
+# nethogs
+git clone https://github.com/sbwml/package_new_nethogs package/new/nethogs
 
 # SSRP & Passwall
 rm -rf feeds/packages/net/{xray-core,v2ray-core,v2ray-geodata,sing-box}
