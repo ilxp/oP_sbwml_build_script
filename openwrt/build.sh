@@ -48,20 +48,21 @@ if [ "$(whoami)" = "runner" ] && [ "$git_name" != "private" ]; then
 fi
 
 # private gitea
-export gitea=git.cooluc.com
+export gitea="git.cooluc.com"
 
 # github mirror
 if [ "$isCN" = "CN" ]; then
     # There is currently no stable gh proxy
     export github="github.com"
+    code_mirror="git.cooluc.com"
 else
     export github="github.com"
+    code_mirror="github.com"
 fi
 
 # Check root
 if [ "$(id -u)" = "0" ]; then
-    echo -e "${RED_COLOR}Building with root user is not supported.${RES}"
-    exit 1
+    export FORCE_UNSAFE_CONFIGURE=1 FORCE=1
 fi
 
 # Start time
@@ -76,19 +77,16 @@ if curl --help | grep progress-bar >/dev/null 2>&1; then
     CURL_BAR="--progress-bar";
 fi
 
-if [ -z "$1" ] || [ "$2" != "nanopi-r4s" -a "$2" != "nanopi-r5s" -a "$2" != "x86_64" -a "$2" != "netgear_r8500" -a "$2" != "armv8" ]; then
-    echo -e "\n${RED_COLOR}Building type not specified.${RES}\n"
+SUPPORTED_BOARDS="nanopi-r4s nanopi-r5s nanopi-r76s x86_64 armv8"
+if [ -z "$1" ] || ! echo "$SUPPORTED_BOARDS" | grep -qw "$2"; then
+    echo -e "\n${RED_COLOR}Building type not specified or unsupported board: '$2'.${RES}\n"
     echo -e "Usage:\n"
-    echo -e "nanopi-r4s releases: ${GREEN_COLOR}bash build.sh rc2 nanopi-r4s${RES}"
-    echo -e "nanopi-r4s snapshots: ${GREEN_COLOR}bash build.sh dev nanopi-r4s${RES}"
-    echo -e "nanopi-r5s releases: ${GREEN_COLOR}bash build.sh rc2 nanopi-r5s${RES}"
-    echo -e "nanopi-r5s snapshots: ${GREEN_COLOR}bash build.sh dev nanopi-r5s${RES}"
-    echo -e "x86_64 releases: ${GREEN_COLOR}bash build.sh rc2 x86_64${RES}"
-    echo -e "x86_64 snapshots: ${GREEN_COLOR}bash build.sh dev x86_64${RES}"
-    echo -e "netgear-r8500 releases: ${GREEN_COLOR}bash build.sh rc2 netgear_r8500${RES}"
-    echo -e "netgear-r8500 snapshots: ${GREEN_COLOR}bash build.sh dev netgear_r8500${RES}"
-    echo -e "armsr-armv8 releases: ${GREEN_COLOR}bash build.sh rc2 armv8${RES}"
-    echo -e "armsr-armv8 snapshots: ${GREEN_COLOR}bash build.sh dev armv8${RES}\n"
+
+    for board in $SUPPORTED_BOARDS; do
+        echo -e "$board releases: ${GREEN_COLOR}bash build.sh rc2 $board${RES}"
+        echo -e "$board snapshots: ${GREEN_COLOR}bash build.sh dev $board${RES}"
+    done
+    echo
     exit 1
 fi
 
@@ -106,11 +104,29 @@ fi
 [ -n "$LAN" ] && export LAN=$LAN || export LAN=10.0.0.1
 
 # platform
-[ "$2" = "armv8" ] && export platform="armv8" toolchain_arch="aarch64_generic"
-[ "$2" = "nanopi-r4s" ] && export platform="rk3399" toolchain_arch="aarch64_generic"
-[ "$2" = "nanopi-r5s" ] && export platform="rk3568" toolchain_arch="aarch64_generic"
-[ "$2" = "netgear_r8500" ] && export platform="bcm53xx" toolchain_arch="arm_cortex-a9"
-[ "$2" = "x86_64" ] && export platform="x86_64" toolchain_arch="x86_64"
+case "$2" in
+    armv8)
+        platform="armv8"
+        toolchain_arch="aarch64_generic"
+        ;;
+    nanopi-r4s)
+        platform="rk3399"
+        toolchain_arch="aarch64_generic"
+        ;;
+    nanopi-r5s)
+        platform="rk3568"
+        toolchain_arch="aarch64_generic"
+        ;;
+    nanopi-r76s)
+        platform="rk3576"
+        toolchain_arch="aarch64_generic"
+        ;;
+    x86_64)
+        platform="x86_64"
+        toolchain_arch="x86_64"
+        ;;
+esac
+export platform toolchain_arch
 
 # gcc14 & 15
 if [ "$USE_GCC13" = y ]; then
@@ -130,25 +146,34 @@ export \
     ENABLE_DPDK=$ENABLE_DPDK \
     ENABLE_GLIBC=$ENABLE_GLIBC \
     ENABLE_LRNG=$ENABLE_LRNG \
-    KERNEL_CLANG_LTO=$KERNEL_CLANG_LTO
+    KERNEL_CLANG_LTO=$KERNEL_CLANG_LTO \
+    ROOT_PASSWORD=$ROOT_PASSWORD
 
 # print version
 echo -e "\r\n${GREEN_COLOR}Building $branch${RES}\r\n"
-if [ "$platform" = "x86_64" ]; then
-    echo -e "${GREEN_COLOR}Model: x86_64${RES}"
-elif [ "$platform" = "armv8" ]; then
-    echo -e "${GREEN_COLOR}Model: armsr/armv8${RES}"
-    [ "$1" = "rc2" ] && model="armv8"
-elif [ "$platform" = "bcm53xx" ]; then
-    echo -e "${GREEN_COLOR}Model: netgear_r8500${RES}"
-    [ "$LAN" = "10.0.0.1" ] && export LAN="192.168.1.1"
-elif [ "$platform" = "rk3568" ]; then
-    echo -e "${GREEN_COLOR}Model: nanopi-r5s/r5c${RES}"
-    [ "$1" = "rc2" ] && model="nanopi-r5s"
-else
-    echo -e "${GREEN_COLOR}Model: nanopi-r4s${RES}"
-    [ "$1" = "rc2" ] && model="nanopi-r4s"
-fi
+case "$platform" in
+    x86_64)
+        echo -e "${GREEN_COLOR}Model: x86_64${RES}"
+        ;;
+    armv8)
+        echo -e "${GREEN_COLOR}Model: armsr/armv8${RES}"
+        [ "$1" = "rc2" ] && model="armv8"
+        ;;
+    rk3568)
+        echo -e "${GREEN_COLOR}Model: nanopi-r5s/r5c${RES}"
+        [ "$1" = "rc2" ] && model="nanopi-r5s"
+        ;;
+    rk3576)
+        echo -e "${GREEN_COLOR}Model: nanopi-r76s${RES}"
+        [ "$1" = "rc2" ] && model="nanopi-r76s"
+        ;;
+    rk3399|*)
+        echo -e "${GREEN_COLOR}Model: nanopi-r4s${RES}"
+        [ "$1" = "rc2" ] && model="nanopi-r4s"
+        ;;
+esac
+
+# print build opt
 get_kernel_version=$(curl -s $mirror/tags/kernel-6.12)
 kmod_hash=$(echo -e "$get_kernel_version" | awk -F'HASH-' '{print $2}' | awk '{print $1}' | tail -1 | md5sum | awk '{print $1}')
 kmodpkg_name=$(echo $(echo -e "$get_kernel_version" | awk -F'HASH-' '{print $2}' | awk '{print $1}')~$(echo $kmod_hash)-r1)
@@ -156,26 +181,42 @@ echo -e "${GREEN_COLOR}Kernel: $kmodpkg_name ${RES}"
 echo -e "${GREEN_COLOR}Date: $CURRENT_DATE${RES}\r\n"
 echo -e "${GREEN_COLOR}SCRIPT_URL:${RES} ${BLUE_COLOR}$mirror${RES}\r\n"
 echo -e "${GREEN_COLOR}GCC VERSION: $gcc_version${RES}"
-[ -n "$LAN" ] && echo -e "${GREEN_COLOR}LAN: $LAN${RES}" || echo -e "${GREEN_COLOR}LAN: 10.0.0.1${RES}"
+print_status() {
+    local name="$1"
+    local value="$2"
+    local true_color="${3:-$GREEN_COLOR}"
+    local false_color="${4:-$YELLOW_COLOR}"
+    local newline="${5:-}"
+    if [ "$value" = "y" ]; then
+        echo -e "${GREEN_COLOR}${name}:${RES} ${true_color}true${RES}${newline}"
+    else
+        echo -e "${GREEN_COLOR}${name}:${RES} ${false_color}false${RES}${newline}"
+    fi
+}
+[ -n "$LAN" ] && echo -e "${GREEN_COLOR}LAN:${RES} $LAN" || echo -e "${GREEN_COLOR}LAN:${RES} 10.0.0.1"
+[ -n "$ROOT_PASSWORD" ] \
+    && echo -e "${GREEN_COLOR}Default Password:${RES} ${BLUE_COLOR}$ROOT_PASSWORD${RES}" \
+    || echo -e "${GREEN_COLOR}Default Password:${RES} (${YELLOW_COLOR}No password${RES})"
 [ "$ENABLE_GLIBC" = "y" ] && echo -e "${GREEN_COLOR}Standard C Library:${RES} ${BLUE_COLOR}glibc${RES}" || echo -e "${GREEN_COLOR}Standard C Library:${RES} ${BLUE_COLOR}musl${RES}"
-[ "$ENABLE_OTA" = "y" ] && echo -e "${GREEN_COLOR}ENABLE_OTA: true${RES}" || echo -e "${GREEN_COLOR}ENABLE_OTA:${RES} ${YELLOW_COLOR}false${RES}"
-[ "$ENABLE_DPDK" = "y" ] && echo -e "${GREEN_COLOR}ENABLE_DPDK: true${RES}" || echo -e "${GREEN_COLOR}ENABLE_DPDK:${RES} ${YELLOW_COLOR}false${RES}"
-[ "$ENABLE_MOLD" = "y" ] && echo -e "${GREEN_COLOR}ENABLE_MOLD: true${RES}" || echo -e "${GREEN_COLOR}ENABLE_MOLD:${RES} ${YELLOW_COLOR}false${RES}"
-[ "$ENABLE_BPF" = "y" ] && echo -e "${GREEN_COLOR}ENABLE_BPF: true${RES}" || echo -e "${GREEN_COLOR}ENABLE_BPF:${RES} ${RED_COLOR}false${RES}"
-[ "$ENABLE_LTO" = "y" ] && echo -e "${GREEN_COLOR}ENABLE_LTO: true${RES}" || echo -e "${GREEN_COLOR}ENABLE_LTO:${RES} ${RED_COLOR}false${RES}"
-[ "$ENABLE_LRNG" = "y" ] && echo -e "${GREEN_COLOR}ENABLE_LRNG: true${RES}" || echo -e "${GREEN_COLOR}ENABLE_LRNG:${RES} ${RED_COLOR}false${RES}"
-[ "$ENABLE_LOCAL_KMOD" = "y" ] && echo -e "${GREEN_COLOR}ENABLE_LOCAL_KMOD: true${RES}" || echo -e "${GREEN_COLOR}ENABLE_LOCAL_KMOD: false${RES}"
-[ "$BUILD_FAST" = "y" ] && echo -e "${GREEN_COLOR}BUILD_FAST: true${RES}" || echo -e "${GREEN_COLOR}BUILD_FAST:${RES} ${YELLOW_COLOR}false${RES}"
-[ "$ENABLE_CCACHE" = "y" ] && echo -e "${GREEN_COLOR}ENABLE_CCACHE: true${RES}" || echo -e "${GREEN_COLOR}ENABLE_CCACHE:${RES} ${YELLOW_COLOR}false${RES}"
-[ "$MINIMAL_BUILD" = "y" ] && echo -e "${GREEN_COLOR}MINIMAL_BUILD: true${RES}" || echo -e "${GREEN_COLOR}MINIMAL_BUILD: false${RES}"
-[ "$KERNEL_CLANG_LTO" = "y" ] && echo -e "${GREEN_COLOR}KERNEL_CLANG_LTO: true${RES}\r\n" || echo -e "${GREEN_COLOR}KERNEL_CLANG_LTO:${RES} ${YELLOW_COLOR}false${RES}\r\n"
+print_status "ENABLE_OTA"        "$ENABLE_OTA"
+print_status "ENABLE_DPDK"       "$ENABLE_DPDK"
+print_status "ENABLE_MOLD"       "$ENABLE_MOLD"
+print_status "ENABLE_BPF"        "$ENABLE_BPF" "$GREEN_COLOR" "$RED_COLOR"
+print_status "ENABLE_LTO"        "$ENABLE_LTO" "$GREEN_COLOR" "$RED_COLOR"
+print_status "ENABLE_LRNG"       "$ENABLE_LRNG" "$GREEN_COLOR" "$RED_COLOR"
+print_status "ENABLE_LOCAL_KMOD" "$ENABLE_LOCAL_KMOD"
+print_status "BUILD_FAST"        "$BUILD_FAST"
+print_status "ENABLE_CCACHE"     "$ENABLE_CCACHE"
+print_status "MINIMAL_BUILD"     "$MINIMAL_BUILD"
+print_status "STD_BUILD"         "$STD_BUILD"
+print_status "KERNEL_CLANG_LTO"  "$KERNEL_CLANG_LTO" "$GREEN_COLOR" "$YELLOW_COLOR" "\n"
 
 # clean old files
 rm -rf openwrt master
 
 # openwrt - releases
 [ "$(whoami)" = "runner" ] && group "source code"
-git clone --depth=1 https://$github/openwrt/openwrt -b $branch
+git clone --depth=1 https://$code_mirror/openwrt/openwrt -b $branch
 
 # immortalwrt master
 git clone https://$github/immortalwrt/packages master/immortalwrt_packages --depth=1
@@ -209,10 +250,10 @@ else
     telephony=";$branch"
 fi
 cat > feeds.conf <<EOF
-src-git packages https://$github/openwrt/packages.git$packages
-src-git luci https://$github/openwrt/luci.git$luci
-src-git routing https://$github/openwrt/routing.git$routing
-src-git telephony https://$github/openwrt/telephony.git$telephony
+src-git packages https://$code_mirror/openwrt/packages.git$packages
+src-git luci https://$code_mirror/openwrt/luci.git$luci
+src-git routing https://$code_mirror/openwrt/routing.git$routing
+src-git telephony https://$code_mirror/openwrt/telephony.git$telephony
 EOF
 
 # Init feeds
@@ -233,13 +274,18 @@ fi
 echo -e "\n${GREEN_COLOR}Patching ...${RES}\n"
 
 # scripts
-curl -sO $mirror/openwrt/scripts/00-prepare_base.sh
-curl -sO $mirror/openwrt/scripts/01-prepare_base-mainline.sh
-curl -sO $mirror/openwrt/scripts/02-prepare_package.sh
-curl -sO $mirror/openwrt/scripts/03-convert_translation.sh
-curl -sO $mirror/openwrt/scripts/04-fix_kmod.sh
-curl -sO $mirror/openwrt/scripts/05-fix-source.sh
-curl -sO $mirror/openwrt/scripts/99_clean_build_cache.sh
+scripts=(
+  00-prepare_base.sh
+  01-prepare_base-mainline.sh
+  02-prepare_package.sh
+  03-convert_translation.sh
+  04-fix_kmod.sh
+  05-fix-source.sh
+  99_clean_build_cache.sh
+)
+for script in "${scripts[@]}"; do
+  curl -sO "$mirror/openwrt/scripts/$script"
+done
 if [ -n "$git_password" ] && [ -n "$private_url" ]; then
     curl -u openwrt:$git_password -sO "$private_url"
 else
@@ -250,7 +296,6 @@ chmod 0755 *sh
 bash 00-prepare_base.sh
 bash 01-prepare_base-mainline.sh
 bash 02-prepare_package.sh
-bash 03-convert_translation.sh
 bash 04-fix_kmod.sh
 bash 05-fix-source.sh
 [ -f "10-custom.sh" ] && bash 10-custom.sh
@@ -263,15 +308,10 @@ rm -rf ../master
 # Load devices Config
 if [ "$platform" = "x86_64" ]; then
     curl -s $mirror/openwrt/24-config-musl-x86 > .config
-elif [ "$platform" = "bcm53xx" ]; then
-    if [ "$MINIMAL_BUILD" = "y" ]; then
-        curl -s $mirror/openwrt/24-config-musl-r8500-minimal > .config
-    else
-        curl -s $mirror/openwrt/24-config-musl-r8500 > .config
-    fi
-    sed -i '1i\# CONFIG_PACKAGE_kselftests-bpf is not set\n# CONFIG_PACKAGE_perf is not set\n' .config
 elif [ "$platform" = "rk3568" ]; then
     curl -s $mirror/openwrt/24-config-musl-r5s > .config
+elif [ "$platform" = "rk3576" ]; then
+    curl -s $mirror/openwrt/24-config-musl-r76s > .config
 elif [ "$platform" = "armv8" ]; then
     curl -s $mirror/openwrt/24-config-musl-armsr-armv8 > .config
 else
@@ -280,10 +320,12 @@ fi
 
 # config-common
 if [ "$MINIMAL_BUILD" = "y" ]; then
-    [ "$platform" != "bcm53xx" ] && curl -s $mirror/openwrt/24-config-minimal-common >> .config
+    curl -s $mirror/openwrt/24-config-minimal-common >> .config
     echo 'VERSION_TYPE="minimal"' >> package/base-files/files/usr/lib/os-release
+elif [ "$STD_BUILD" = "y" ]; then
+    curl -s $mirror/openwrt/24-config-std-common >> .config
 else
-    [ "$platform" != "bcm53xx" ] && curl -s $mirror/openwrt/24-config-common >> .config
+    curl -s $mirror/openwrt/24-config-common >> .config
     [ "$platform" = "armv8" ] && sed -i '/DOCKER/Id' .config
 fi
 
@@ -365,6 +407,12 @@ if [ "$USE_GCC15" = "y" ] && [ "$ENABLE_CCACHE" = "y" ]; then
     [ "$(whoami)" = "sbwml" ] && echo "CONFIG_CCACHE_DIR=\"/home/sbwml/.ccache\"" >> .config
     tools_suffix="_ccache"
 fi
+
+# nanopi-r76s
+[ "$platform" = "rk3576" ] && {
+    sed -i '/samba4/d' .config
+    sed -i '/qbittorrent/d' .config
+}
 
 # Toolchain Cache
 if [ "$BUILD_FAST" = "y" ]; then
@@ -513,50 +561,11 @@ elif [ "$platform" = "armv8" ]; then
 EOF
     fi
     exit 0
-elif [ "$platform" = "bcm53xx" ]; then
-    if [ "$NO_KMOD" != "y" ]; then
-        cp -a bin/targets/bcm53xx/generic/packages $kmodpkg_name
-        rm -f $kmodpkg_name/Packages*
-        cp -a bin/packages/arm_cortex-a9/base/rtl88*a-firmware*.ipk $kmodpkg_name/
-        cp -a bin/packages/arm_cortex-a9/base/natflow*.ipk $kmodpkg_name/
-        [ "$OPENWRT_CORE" = "y" ] && {
-            cp -a bin/packages/arm_cortex-a9/base/*3ginfo*.ipk $kmodpkg_name/
-            cp -a bin/packages/arm_cortex-a9/base/*modemband*.ipk $kmodpkg_name/
-            cp -a bin/packages/arm_cortex-a9/base/*sms-tool*.ipk $kmodpkg_name/
-            cp -a bin/packages/arm_cortex-a9/base/*quectel*.ipk $kmodpkg_name/
-        }
-        bash kmod-sign $kmodpkg_name
-        tar zcf bcm53xx-$kmodpkg_name.tar.gz $kmodpkg_name
-        rm -rf $kmodpkg_name
-    fi
-    # OTA json
-    if [ "$1" = "rc2" ]; then
-        mkdir -p ota
-        if [ "$MINIMAL_BUILD" = "y" ]; then
-            OTA_URL="https://r8500.cooluc.com/d/minimal/openwrt-24.10"
-        else
-            OTA_URL="https://github.com/sbwml/builder/releases/download"
-        fi
-        VERSION=$(sed 's/v//g' version.txt)
-        SHA256=$(sha256sum bin/targets/bcm53xx/generic/*-bcm53xx-generic-netgear_r8500-squashfs.chk | awk '{print $1}')
-        cat > ota/fw.json <<EOF
-{
-  "netgear,r8500": [
-    {
-      "build_date": "$CURRENT_DATE",
-      "sha256sum": "$SHA256",
-      "url": "$OTA_URL/v$VERSION/openwrt-$VERSION-bcm53xx-generic-netgear_r8500-squashfs.chk"
-    }
-  ]
-}
-EOF
-    fi
-    exit 0
 else
     if [ "$NO_KMOD" != "y" ] && [ "$platform" != "rk3399" ]; then
         cp -a bin/targets/rockchip/armv8*/packages $kmodpkg_name
         rm -f $kmodpkg_name/Packages*
-        cp -a bin/packages/aarch64_generic/base/rtl88*a-firmware*.ipk $kmodpkg_name/
+        cp -a bin/packages/aarch64_generic/base/rtl88*-firmware*.ipk $kmodpkg_name/
         cp -a bin/packages/aarch64_generic/base/natflow*.ipk $kmodpkg_name/
         [ "$OPENWRT_CORE" = "y" ] && {
             cp -a bin/packages/aarch64_generic/base/*3ginfo*.ipk $kmodpkg_name/
@@ -609,6 +618,20 @@ EOF
       "build_date": "$CURRENT_DATE",
       "sha256sum": "$SHA256_R5S",
       "url": "$OTA_URL/v$VERSION/openwrt-$VERSION-rockchip-armv8-friendlyarm_nanopi-r5s-squashfs-sysupgrade.img.gz"
+    }
+  ]
+}
+EOF
+        elif [ "$model" = "nanopi-r76s" ]; then
+            [ "$MINIMAL_BUILD" = "y" ] && OTA_URL="https://r76s.cooluc.com/d/minimal/openwrt-24.10"
+            SHA256_R76S=$(sha256sum bin/targets/rockchip/armv8*/*-r76s-squashfs-sysupgrade.img.gz | awk '{print $1}')
+            cat > ota/fw.json <<EOF
+{
+  "friendlyarm,nanopi-r76s": [
+    {
+      "build_date": "$CURRENT_DATE",
+      "sha256sum": "$SHA256_R76S",
+      "url": "$OTA_URL/v$VERSION/openwrt-$VERSION-rockchip-armv8-friendlyarm_nanopi-r76s-squashfs-sysupgrade.img.gz"
     }
   ]
 }

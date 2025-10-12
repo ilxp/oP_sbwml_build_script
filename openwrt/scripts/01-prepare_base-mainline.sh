@@ -28,18 +28,6 @@ sed -i '/KERNEL_PATCHVER/a\KERNEL_TESTING_PATCHVER:=6.6' target/linux/x86/Makefi
 curl -s $mirror/openwrt/patch/openwrt-6.x/x86/base-files/etc/board.d/01_leds > target/linux/x86/base-files/etc/board.d/01_leds
 curl -s $mirror/openwrt/patch/openwrt-6.x/x86/base-files/etc/board.d/02_network > target/linux/x86/base-files/etc/board.d/02_network
 
-# bcm53xx - target
-rm -rf target/linux/bcm53xx
-if [ "$(whoami)" = "sbwml" ]; then
-    git clone https://$gitea/sbwml/target_linux_bcm53xx target/linux/bcm53xx
-    git clone https://$gitea/sbwml/brcmfmac-firmware-4366c-pcie package/firmware/brcmfmac-firmware-4366c-pcie
-    git clone https://$gitea/sbwml/brcmfmac-firmware-4366b-pcie package/firmware/brcmfmac-firmware-4366b-pcie
-else
-    git clone https://"$git_name":"$git_password"@$gitea/sbwml/target_linux_bcm53xx target/linux/bcm53xx
-    git clone https://"$git_name":"$git_password"@$gitea/sbwml/brcmfmac-firmware-4366c-pcie package/firmware/brcmfmac-firmware-4366c-pcie
-    git clone https://"$git_name":"$git_password"@$gitea/sbwml/brcmfmac-firmware-4366b-pcie package/firmware/brcmfmac-firmware-4366b-pcie
-fi
-
 # armsr/armv8
 rm -rf target/linux/armsr
 git clone https://nanopi:nanopi@$gitea/sbwml/target_linux_armsr target/linux/armsr -b main
@@ -124,6 +112,7 @@ pushd target/linux/generic/backport-6.12
     curl -Os $mirror/openwrt/patch/kernel-6.12/bbr3/010-bbr3-0017-net-tcp_bbr-v3-ensure-ECN-enabled-BBR-flows-set-ECT-.patch
     curl -Os $mirror/openwrt/patch/kernel-6.12/bbr3/010-bbr3-0018-tcp-export-TCPI_OPT_ECN_LOW-in-tcp_info-tcpi_options.patch
     curl -Os $mirror/openwrt/patch/kernel-6.12/bbr3/010-bbr3-0019-x86-cfi-bpf-Add-tso_segs-and-skb_marked_lost-to-bpf_.patch
+    curl -Os $mirror/openwrt/patch/kernel-6.12/bbr3/010-bbr3-0020-net-tcp_bbr-v3-silence-Wconstant-logical-operand.patch
 popd
 
 # LRNG - 6.12
@@ -177,22 +166,21 @@ rm -rf package/firmware/linux-firmware
 git clone https://$github/sbwml/package_firmware_linux-firmware package/firmware/linux-firmware
 
 # mt76
+rm -rf package/kernel/mt76
 mkdir -p package/kernel/mt76/patches
 curl -s $mirror/openwrt/patch/mt76/Makefile > package/kernel/mt76/Makefile
-curl -s $mirror/openwrt/patch/mt76/patches/100-fix-build-with-mac80211-6.11-backport.patch > package/kernel/mt76/patches/100-fix-build-with-mac80211-6.11-backport.patch
 curl -s $mirror/openwrt/patch/mt76/patches/101-fix-build-with-linux-6.12rc2.patch > package/kernel/mt76/patches/101-fix-build-with-linux-6.12rc2.patch
-curl -s $mirror/openwrt/patch/mt76/patches/102-fix-build-with-mac80211-6.14-backport.patch > package/kernel/mt76/patches/102-fix-build-with-mac80211-6.14-backport.patch
 
 # wireless-regdb
 curl -s $mirror/openwrt/patch/openwrt-6.x/500-world-regd-5GHz.patch > package/firmware/wireless-regdb/patches/500-world-regd-5GHz.patch
 
-# mac80211 - 6.14
+# mac80211 - 6.16.8
 rm -rf package/kernel/mac80211
 git clone https://$github/sbwml/package_kernel_mac80211 package/kernel/mac80211 -b openwrt-24.10
 
 # ath10k-ct
 rm -rf package/kernel/ath10k-ct
-git clone https://$github/sbwml/package_kernel_ath10k-ct package/kernel/ath10k-ct -b v6.14
+git clone https://$github/sbwml/package_kernel_ath10k-ct package/kernel/ath10k-ct -b v6.15
 
 # kernel patch
 # btf: silence btf module warning messages
@@ -208,6 +196,9 @@ curl -s $mirror/openwrt/patch/kernel-6.12/net/983-add-bcm-fullcone-nft_masq-supp
 curl -s $mirror/openwrt/patch/kernel-6.12/net/601-netfilter-export-udp_get_timeouts-function.patch > target/linux/generic/hack-6.12/601-netfilter-export-udp_get_timeouts-function.patch
 curl -s $mirror/openwrt/patch/kernel-6.12/net/953-net-patch-linux-kernel-to-support-shortcut-fe.patch > target/linux/generic/hack-6.12/953-net-patch-linux-kernel-to-support-shortcut-fe.patch
 
+# rtl8822cs
+git clone https://$github/sbwml/package_kernel_rtl8822cs package/kernel/rtl8822cs
+
 # RTC
 if [ "$platform" = "rk3399" ] || [ "$platform" = "rk3568" ]; then
     curl -s $mirror/openwrt/patch/rtc/sysfixtime > package/base-files/files/etc/init.d/sysfixtime
@@ -215,7 +206,7 @@ if [ "$platform" = "rk3399" ] || [ "$platform" = "rk3568" ]; then
 fi
 
 # emmc-install
-if [ "$platform" = "rk3568" ]; then
+if [ "$platform" = "rk3568" ] || [ "$platform" = "rk3576" ]; then
     mkdir -p files/sbin
     curl -so files/sbin/emmc-install $mirror/openwrt/files/sbin/emmc-install
     chmod 755 files/sbin/emmc-install

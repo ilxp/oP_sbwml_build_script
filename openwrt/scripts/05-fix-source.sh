@@ -61,9 +61,6 @@ if [ "$USE_GCC15" = y ]; then
     # gmp
     mkdir -p package/libs/gmp/patches
     curl -s $mirror/openwrt/patch/openwrt-6.x/gcc-15-c23/gmp/001-fix-build-with-gcc-15.patch > package/libs/gmp/patches/001-fix-build-with-gcc-15.patch
-    # htop
-    mkdir -p feeds/packages/admin/htop/patches
-    curl -s $mirror/openwrt/patch/openwrt-6.x/gcc-15-c23/htop/001-Avoid-compilation-issues-with-ncurses-on-GCC-15.patch > feeds/packages/admin/htop/patches/001-Avoid-compilation-issues-with-ncurses-on-GCC-15.patch
     # libtirpc
     sed -i '/TARGET_CFLAGS/i TARGET_CFLAGS += -std=gnu17\n' feeds/packages/libs/libtirpc/Makefile
     # libsepol
@@ -146,15 +143,3 @@ curl -s $mirror/openwrt/patch/packages-patches/kselftests-bpf/Makefile > package
 # sms-tools
 mkdir -p feeds/packages/utils/sms-tool/patches
 curl -s $mirror/openwrt/patch/packages-patches/sms-tools/900-fix-incompatible-pointer-type-error-for-signal-function.patch > feeds/packages/utils/sms-tool/patches/900-fix-incompatible-pointer-type-error-for-signal-function.patch
-
-# bcm53xx
-if [ "$platform" = "bcm53xx" ]; then
-    # mtd
-    sed -i 's/=1 -Wall/=1 -Wall -Wno-implicit-function-declaration/g' package/system/mtd/Makefile
-    # uwsgi
-    sed -i '/MAKE_VARS+=/iTARGET_CFLAGS += -Wno-incompatible-pointer-types\n' feeds/packages/net/uwsgi/Makefile
-    # libsoxr
-    sed -i '/CMAKE_INSTALL/iPKG_BUILD_FLAGS:=no-lto no-mold\n' feeds/packages/libs/libsoxr/Makefile
-    # wsdd2
-    sed -i '/Build\/Compile/iTARGET_CFLAGS += -Wno-error -Wno-int-conversion\n' feeds/packages/net/wsdd2/Makefile
-fi
