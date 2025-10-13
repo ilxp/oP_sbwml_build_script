@@ -1,3 +1,4 @@
+
 ### Curl
 CONFIG_PACKAGE_curl=y
 CONFIG_PACKAGE_libcurl=y
@@ -70,8 +71,6 @@ CONFIG_PACKAGE_luci-lib-nixio=y
 CONFIG_PACKAGE_luci-nginx=y
 CONFIG_PACKAGE_luci-proto-wireguard=y
 CONFIG_PACKAGE_luci-theme-argon=y
-CONFIG_PACKAGE_luci-theme-material=y
-CONFIG_PACKAGE_luci-theme-openwrt-2020=y
 CONFIG_LUCI_LANG_zh_Hans=y
 # CONFIG_LUCI_CSSTIDY is not set
 # CONFIG_LUCI_JSMIN is not set
@@ -95,7 +94,6 @@ CONFIG_NGINX_STREAM_REAL_IP=y
 ### APPS
 CONFIG_PACKAGE_luci-app-airconnect=y
 CONFIG_PACKAGE_luci-app-airplay2=y
-CONFIG_PACKAGE_luci-app-alist=y
 CONFIG_PACKAGE_luci-app-argon-config=y
 CONFIG_PACKAGE_luci-app-aria2=y
 CONFIG_PACKAGE_luci-app-autoreboot=y
@@ -104,7 +102,7 @@ CONFIG_PACKAGE_luci-app-cpufreq=y
 CONFIG_PACKAGE_luci-app-ddns=y
 CONFIG_PACKAGE_luci-app-diskman=y
 CONFIG_PACKAGE_luci-app-eqos=y
-CONFIG_PACKAGE_luci-app-filemanager=y
+CONFIG_PACKAGE_luci-app-quickfile=y
 CONFIG_PACKAGE_luci-app-frpc=y
 CONFIG_PACKAGE_luci-app-mentohust=y
 CONFIG_PACKAGE_luci-app-mosdns=y
@@ -112,6 +110,7 @@ CONFIG_PACKAGE_luci-app-natmap=y
 CONFIG_PACKAGE_luci-app-netspeedtest=y
 CONFIG_PACKAGE_luci-app-nlbwmon=y
 CONFIG_PACKAGE_luci-app-oaf=y
+CONFIG_PACKAGE_luci-app-openlist2=y
 CONFIG_PACKAGE_luci-app-qbittorrent=y
 CONFIG_PACKAGE_luci-app-ramfree=y
 CONFIG_PACKAGE_luci-app-samba4=y
@@ -141,7 +140,6 @@ CONFIG_PACKAGE_luci-app-passwall_INCLUDE_ShadowsocksR_Libev_Client=y
 CONFIG_PACKAGE_luci-app-passwall_INCLUDE_SingBox=y
 CONFIG_PACKAGE_luci-app-passwall_INCLUDE_V2ray_Geodata=y
 CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Xray_Plugin=y
-# CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Brook is not set
 # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Hysteria is not set
 # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Shadowsocks_Libev_Server is not set
 # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_tuic_client is not set
@@ -209,6 +207,7 @@ CONFIG_PACKAGE_kmod-nft-tproxy=y
 CONFIG_PACKAGE_kmod-nls-cp936=y
 CONFIG_PACKAGE_kmod-nls-cp950=y
 CONFIG_PACKAGE_kmod-sched-bpf=y
+CONFIG_PACKAGE_kmod-sched-cake=y
 CONFIG_PACKAGE_kmod-sched-core=y
 CONFIG_PACKAGE_kmod-sched=y
 CONFIG_PACKAGE_kmod-tcp-bbr3=y
@@ -229,10 +228,6 @@ CONFIG_PACKAGE_kmod-usb-net-rtl8152-vendor=y
 
 ### Kernel Modules - USB WiFi Adapter
 CONFIG_PACKAGE_kmod-mt7921u=y
-CONFIG_PACKAGE_kmod-rtw88-8812au=y
-CONFIG_PACKAGE_kmod-rtw88-8821au=y
-CONFIG_PACKAGE_kmod-rtw88-8822bu=y
-# CONFIG_PACKAGE_kmod-rtl8812au-ct is not set
 
 ### Utilities
 CONFIG_PACKAGE_bash=y
@@ -250,7 +245,6 @@ CONFIG_PACKAGE_gdisk=y
 CONFIG_PACKAGE_htop=y
 CONFIG_PACKAGE_iperf3=y
 CONFIG_PACKAGE_iputils-ping=y
-CONFIG_PACKAGE_less=y
 CONFIG_PACKAGE_lrzsz=y
 CONFIG_PACKAGE_lsblk=y
 CONFIG_PACKAGE_lscpu=y
@@ -262,7 +256,6 @@ CONFIG_PACKAGE_qrencode=y
 CONFIG_PACKAGE_rename=y
 CONFIG_PACKAGE_resize2fs=y
 CONFIG_PACKAGE_rsync=y
-CONFIG_PACKAGE_samba4-admin=y
 CONFIG_PACKAGE_screen=y
 CONFIG_PACKAGE_sed=y
 CONFIG_PACKAGE_sshpass=y
@@ -283,22 +276,6 @@ CONFIG_PACKAGE_xz-utils=y
 CONFIG_PACKAGE_xz=y
 CONFIG_PACKAGE_zip=y
 CONFIG_PACKAGE_zoneinfo-asia=y
-
-### Shadow Utilities
-CONFIG_PACKAGE_shadow-gpasswd=y
-CONFIG_PACKAGE_shadow-groupadd=y
-CONFIG_PACKAGE_shadow-groupdel=y
-CONFIG_PACKAGE_shadow-groupmod=y
-CONFIG_PACKAGE_shadow-groups=y
-CONFIG_PACKAGE_shadow-login=y
-CONFIG_PACKAGE_shadow-nologin=y
-CONFIG_PACKAGE_shadow-passwd=y
-CONFIG_PACKAGE_shadow-su=y
-CONFIG_PACKAGE_shadow-useradd=y
-CONFIG_PACKAGE_shadow-userdel=y
-CONFIG_PACKAGE_shadow-usermod=y
-CONFIG_PACKAGE_shadow-utils=y
-# CONFIG_shadow-all is not set
 
 ### GNU Core Utilities
 CONFIG_PACKAGE_coreutils=y
