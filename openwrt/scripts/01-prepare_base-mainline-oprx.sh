@@ -63,7 +63,7 @@ else
 fi
 
 # bpf-headers - 6.12
-#sed -ri "s/(PKG_PATCHVER:=)[^\"]*/\16.12/" package/kernel/bpf-headers/Makefile
+sed -ri "s/(PKG_PATCHVER:=)[^\"]*/\16.12/" package/kernel/bpf-headers/Makefile
 
 # x86_64 - target 6.12
 #curl -s $mirror/openwrt/patch/openwrt-6.x/x86/64/config-6.12 > target/linux/x86/64/config-6.12
@@ -82,7 +82,7 @@ rm -rf target/linux/armsr
 git clone https://nanopi:nanopi@$gitea/sbwml/target_linux_armsr target/linux/armsr -b main
 
 # kernel - 6.12
-#curl -s $mirror/tags/kernel-6.12 > include/kernel-6.12
+curl -s $mirror/tags/kernel-6.12 > include/kernel-6.12
 
 # kenrel Vermagic
 sed -ie 's/^\(.\).*vermagic$/\1cp $(TOPDIR)\/.vermagic $(LINUX_DIR)\/.vermagic/' include/kernel-defaults.mk
