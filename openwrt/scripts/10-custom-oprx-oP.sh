@@ -418,6 +418,7 @@ git clone -b master --single-branch https://github.com/vernesong/OpenClash.git  
 wget https://github.com/vernesong/OpenClash/raw/core/master/meta/clash-linux-amd64.tar.gz&&tar -zxvf *.tar.gz
 chmod 0755 clash
 rm -rf *.tar.gz&&mkdir -p package/base-files/files/etc/openclash/core&&mv clash package/base-files/files/etc/openclash/core/clash_meta
+chmod +x package/base-files/files/etc/openclash/core/clash*
 ##FQ全部调到VPN菜单
 sed -i 's/services/vpn/g' package/diy/openclash/luci-app-openclash/luasrc/controller/*.lua
 sed -i 's/services/vpn/g' package/diy/openclash/luci-app-openclash/luasrc/*.lua
@@ -434,9 +435,9 @@ GEOSITE_URL="https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/dow
 #wget -qO- $CLASH_DEV_URL | tar xOvz > package/base-files/files/etc/openclash/core/clash
 #wget -qO- $CLASH_TUN_URL | gunzip -c > package/base-files/files/etc/openclash/core/clash_tun
 #wget -qO- $CLASH_META_URL | tar xOvz > package/base-files/files/etc/openclash/core/clash_meta
-wget -qO- $GEOIP_URL > package/base-files/files/etc/openclash/GeoIP.dat
-wget -qO- $GEOSITE_URL > package/base-files/files/etc/openclash/GeoSite.dat
-chmod +x package/base-files/files/etc/openclash/core/clash*
+#wget -qO- $GEOIP_URL > package/base-files/files/etc/openclash/GeoIP.dat
+#wget -qO- $GEOSITE_URL > package/base-files/files/etc/openclash/GeoSite.dat
+#chmod +x package/base-files/files/etc/openclash/core/clash*
 
 # 4、mihomo nikki（只支持firewall4.lede无望）
 rm -rf package/helloworld/luci-app-nikki

@@ -2,6 +2,55 @@
 
 #################################################################
 
+#增加一个函数 注销93-104行
+#######OprX的相关优化#######
+#一、定义克隆功能函数
+#第一种
+#git clone -b 分支 --single-branch 仓库地址 到本地目录（如：package/文件名 #文件名不能相同）
+#cd  package/文件名  #主注意目录级别（此处为二级，退出为cd ../..  一级：./diydata  退出为 cd ..  三级 package/文件名1/文件名2 退出为cd ../../..）
+#git sparse-checkout init --cone 
+#git sparse-checkout set 目标文件  #可以一级或者二级，三级，多个目录用空格隔开。注意是连上级目录一起。
+#cd ../..  #退出本地目录（）
+
+#第二种  来源https://github.com/Jejz168/OpenWrt
+mkdir package/new
+function merge_package() {
+	# 参数1是分支名,参数2是库地址,参数3是所有文件下载到指定路径。
+	# 同一个仓库下载多个文件夹直接在后面跟文件名或路径，空格分开。
+	# 示例:
+	# merge_package 分支 仓库地址 下载到指定路径(已存在或者自定义) 目标文件（多个空格分开）
+	# 下载到不存在的目录时: rm -rf package/new; mkdir package/new
+	# merge_package master https://github.com/WYC-2020/openwrt-packages package/openwrt-packages luci-app-eqos luci-app-openclash luci-app-ddnsto ddnsto 
+	# merge_package master https://github.com/lisaac/luci-app-dockerman package/lean applications/luci-app-dockerman #结果是将luci-app-dockerman放在package/lean下
+	# merge_package main https://github.com/linkease/nas-packages-luci package/new luci/luci-app-ddnsto  #结果是package/new/luci-app-ddnsto
+	# merge_package master https://github.com/linkease/nas-packages package/new network/services/ddnsto  #结果是package/new/ddnsto 
+	# merge_package master https://github.com/coolsnowwolf/lede package/kernel package/kernel/mac80211  #将目标仓库的package/kernel/mac80211克隆到本地package/kernel下
+	#merge_package main https://github.com/Lienol/openwrt.git  ./tools tools/ucl tools/upx  #表示在根目录生成一个tools文件夹。本来就会有，所以报错。
+    #merge_package main https://github.com/Lienol/openwrt.git tools tools/ucl tools/upx  #表示目标目录tool下的ucl和upx移动到根目录已经存在的tools文件夹。
+	if [[ $# -lt 3 ]]; then
+		echo "Syntax error: [$#] [$*]" >&2
+		return 1
+	fi
+	trap 'rm -rf "$tmpdir"' EXIT
+	branch="$1" curl="$2" target_dir="$3" && shift 3
+	rootdir="$PWD"
+	localdir="$target_dir"
+	[ -d "$localdir" ] || mkdir -p "$localdir"
+	tmpdir="$(mktemp -d)" || exit 1
+        echo "开始下载：$(echo $curl | awk -F '/' '{print $(NF)}')"
+	git clone -b "$branch" --depth 1 --filter=blob:none --sparse "$curl" "$tmpdir"
+	cd "$tmpdir"
+	git sparse-checkout init --cone
+	git sparse-checkout set "$@"
+	# 使用循环逐个移动文件夹
+	for folder in "$@"; do
+		mv -f "$folder" "$rootdir/$localdir"
+	done
+	cd "$rootdir"
+}
+###################################################################################
+
+
 # autocore
 git clone https://$github/sbwml/autocore-arm -b openwrt-24.10 package/system/autocore
 
@@ -41,18 +90,22 @@ grep HASH include/kernel-6.12 | awk -F'HASH-' '{print $2}' | awk '{print $1}' | 
 
 # kernel generic patches
 curl -s $mirror/openwrt/patch/kernel-6.12/openwrt/linux-6.12-target-linux-generic.patch | patch -p1
-local_kernel_version=$(sed -n 's/^LINUX_KERNEL_HASH-\([0-9.]\+\) = .*/\1/p' include/kernel-6.12)
-release_kernel_version=$(curl -sL https://raw.githubusercontent.com/sbwml/r4s_build_script/master/tags/kernel-6.12 | sed -n 's/^LINUX_KERNEL_HASH-\([0-9.]\+\) = .*/\1/p')
-if [ "$local_kernel_version" = "$release_kernel_version" ] && [ -z "$git_password" ] && [ "$(whoami)" != "sbwml" ]; then
-    git clone https://$github/sbwml/target_linux_generic -b openwrt-24.10 target/linux/generic-6.12 --depth=1
-else
-    if [ "$(whoami)" = "sbwml" ]; then
-        git clone https://$gitea/sbwml/target_linux_generic -b openwrt-24.10 target/linux/generic-6.12 --depth=1
-    else
-        git clone https://"$git_name":"$git_password"@$gitea/sbwml/target_linux_generic -b openwrt-24.10 target/linux/generic-6.12 --depth=1
-    fi
-fi
-cp -a target/linux/generic-6.12/* target/linux/generic
+#local_kernel_version=$(sed -n 's/^LINUX_KERNEL_HASH-\([0-9.]\+\) = .*/\1/p' include/kernel-6.12)
+#release_kernel_version=$(curl -sL https://raw.githubusercontent.com/sbwml/r4s_build_script/master/tags/kernel-6.12 | sed -n 's/^LINUX_KERNEL_HASH-\([0-9.]\+\) = .*/\1/p')
+#if [ "$local_kernel_version" = "$release_kernel_version" ] && [ -z "$git_password" ] && [ "$(whoami)" != "sbwml" ]; then
+    #git clone https://$github/sbwml/target_linux_generic -b openwrt-24.10 target/linux/generic-6.12 --depth=1
+#else
+    #if [ "$(whoami)" = "sbwml" ]; then
+        #git clone https://$gitea/sbwml/target_linux_generic -b openwrt-24.10 target/linux/generic-6.12 --depth=1
+    #else
+        #git clone https://"$git_name":"$git_password"@$gitea/sbwml/target_linux_generic -b openwrt-24.10 target/linux/generic-6.12 --depth=1
+    #fi
+#fi
+#cp -a target/linux/generic-6.12/* target/linux/generic
+
+rm -rf target/linux/generic
+merge_package master https://github.com/coolsnowwolf/lede.git  target/linux  target/linux/generic
+
 
 # bcm53xx - fix build kernel with clang
 [ "$platform" = "bcm53xx" ] && [ "$KERNEL_CLANG_LTO" = "y" ] && rm -f target/linux/generic/hack-6.6/220-arm-gc_sections.patch target/linux/generic/hack-6.12/220-arm-gc_sections.patch
