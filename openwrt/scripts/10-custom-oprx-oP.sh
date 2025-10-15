@@ -102,8 +102,8 @@ cp -f ./diydata/data/default-settings-oP-sbwml package/new/addition-trans-zh/fil
 #三、编译出错的########
 rm -rf package/kernel/rtl8812au-ct
 
-rm -rf target/linux/generic/hack-6.12/952-net-conntrack-events-support-multiple-registrant.patch
-rm -rf target/linux/generic/hack-6.12/982-add-bcm-fullconenat-support.patch
+#rm -rf target/linux/generic/hack-6.12/952-net-conntrack-events-support-multiple-registrant.patch
+#rm -rf target/linux/generic/hack-6.12/982-add-bcm-fullconenat-support.patch
 
 ###################
 
