@@ -63,7 +63,7 @@ else
 fi
 
 # bpf-headers - 6.12
-sed -ri "s/(PKG_PATCHVER:=)[^\"]*/\16.12/" package/kernel/bpf-headers/Makefile
+#sed -ri "s/(PKG_PATCHVER:=)[^\"]*/\16.12/" package/kernel/bpf-headers/Makefile
 
 # x86_64 - target 6.12
 #curl -s $mirror/openwrt/patch/openwrt-6.x/x86/64/config-6.12 > target/linux/x86/64/config-6.12
@@ -72,8 +72,8 @@ sed -ri "s/(PKG_PATCHVER:=)[^\"]*/\16.12/" package/kernel/bpf-headers/Makefile
 #curl -s $mirror/openwrt/patch/openwrt-6.x/x86/patches-6.12/100-fix_cs5535_clockevt.patch > target/linux/x86/patches-6.12/100-fix_cs5535_clockevt.patch
 #curl -s $mirror/openwrt/patch/openwrt-6.x/x86/patches-6.12/103-pcengines_apu6_platform.patch > target/linux/x86/patches-6.12/103-pcengines_apu6_platform.patch
 # x86_64 - target
-sed -ri "s/(KERNEL_PATCHVER:=)[^\"]*/\16.12/" target/linux/x86/Makefile
-sed -i '/KERNEL_PATCHVER/a\KERNEL_TESTING_PATCHVER:=6.6' target/linux/x86/Makefile
+#sed -ri "s/(KERNEL_PATCHVER:=)[^\"]*/\16.12/" target/linux/x86/Makefile
+#sed -i '/KERNEL_PATCHVER/a\KERNEL_TESTING_PATCHVER:=6.6' target/linux/x86/Makefile
 curl -s $mirror/openwrt/patch/openwrt-6.x/x86/base-files/etc/board.d/01_leds > target/linux/x86/base-files/etc/board.d/01_leds
 #curl -s $mirror/openwrt/patch/openwrt-6.x/x86/base-files/etc/board.d/02_network > target/linux/x86/base-files/etc/board.d/02_network
 
@@ -82,14 +82,14 @@ rm -rf target/linux/armsr
 git clone https://nanopi:nanopi@$gitea/sbwml/target_linux_armsr target/linux/armsr -b main
 
 # kernel - 6.12
-curl -s $mirror/tags/kernel-6.12 > include/kernel-6.12
+#curl -s $mirror/tags/kernel-6.12 > include/kernel-6.12
 
 # kenrel Vermagic
 sed -ie 's/^\(.\).*vermagic$/\1cp $(TOPDIR)\/.vermagic $(LINUX_DIR)\/.vermagic/' include/kernel-defaults.mk
 grep HASH include/kernel-6.12 | awk -F'HASH-' '{print $2}' | awk '{print $1}' | md5sum | awk '{print $1}' > .vermagic
 
 # kernel generic patches
-curl -s $mirror/openwrt/patch/kernel-6.12/openwrt/linux-6.12-target-linux-generic.patch | patch -p1
+#curl -s $mirror/openwrt/patch/kernel-6.12/openwrt/linux-6.12-target-linux-generic.patch | patch -p1
 #local_kernel_version=$(sed -n 's/^LINUX_KERNEL_HASH-\([0-9.]\+\) = .*/\1/p' include/kernel-6.12)
 #release_kernel_version=$(curl -sL https://raw.githubusercontent.com/sbwml/r4s_build_script/master/tags/kernel-6.12 | sed -n 's/^LINUX_KERNEL_HASH-\([0-9.]\+\) = .*/\1/p')
 #if [ "$local_kernel_version" = "$release_kernel_version" ] && [ -z "$git_password" ] && [ "$(whoami)" != "sbwml" ]; then
@@ -104,12 +104,12 @@ curl -s $mirror/openwrt/patch/kernel-6.12/openwrt/linux-6.12-target-linux-generi
 #cp -a target/linux/generic-6.12/* target/linux/generic
 
 #采用 lede的6.12内核补丁
-merge_package master https://github.com/openwrt/openwrt.git  target/linux/generic target/linux/generic/config-6.12
-merge_package master https://github.com/openwrt/openwrt.git  target/linux/generic target/linux/generic/backport-6.12
-merge_package master https://github.com/openwrt/openwrt.git  target/linux/generic target/linux/generic/hack-6.12
-merge_package master https://github.com/openwrt/openwrt.git  target/linux/generic target/linux/generic/pending-6.12
-merge_package master https://github.com/openwrt/openwrt.git  target/linux/x86 target/linux/x86/patches-6.12
-merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/x86 target/linux/x86/config-6.12
+#merge_package master https://github.com/openwrt/openwrt.git  target/linux/generic target/linux/generic/config-6.12
+#merge_package master https://github.com/openwrt/openwrt.git  target/linux/generic target/linux/generic/backport-6.12
+#merge_package master https://github.com/openwrt/openwrt.git  target/linux/generic target/linux/generic/hack-6.12
+#merge_package master https://github.com/openwrt/openwrt.git  target/linux/generic target/linux/generic/pending-6.12
+#merge_package master https://github.com/openwrt/openwrt.git  target/linux/x86 target/linux/x86/patches-6.12
+#merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/x86 target/linux/x86/config-6.12
 
 # bcm53xx - fix build kernel with clang
 [ "$platform" = "bcm53xx" ] && [ "$KERNEL_CLANG_LTO" = "y" ] && rm -f target/linux/generic/hack-6.6/220-arm-gc_sections.patch target/linux/generic/hack-6.12/220-arm-gc_sections.patch
