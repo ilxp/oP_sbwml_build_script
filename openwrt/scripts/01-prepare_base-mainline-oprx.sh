@@ -108,7 +108,7 @@ merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/gene
 merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/backport-6.12
 merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/hack-6.12
 merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/pending-6.12
-merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/x86 target/linux/x86/patches-6.12
+#merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/x86 target/linux/x86/patches-6.12
 #merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/x86 target/linux/x86/config-6.12
 
 # bcm53xx - fix build kernel with clang
