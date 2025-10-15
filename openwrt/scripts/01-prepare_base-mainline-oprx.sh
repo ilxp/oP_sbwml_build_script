@@ -104,10 +104,10 @@ curl -s $mirror/openwrt/patch/kernel-6.12/openwrt/linux-6.12-target-linux-generi
 #cp -a target/linux/generic-6.12/* target/linux/generic
 
 #采用 lede的6.12内核补丁
-merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/config-6.12
-merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/backport-6.12
-merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/hack-6.12
-merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/pending-6.12
+merge_package master https://github.com/openwrt/openwrt.git  target/linux/generic target/linux/generic/config-6.12
+merge_package master https://github.com/openwrt/openwrt.git  target/linux/generic target/linux/generic/backport-6.12
+merge_package master https://github.com/openwrt/openwrt.git  target/linux/generic target/linux/generic/hack-6.12
+merge_package master https://github.com/openwrt/openwrt.git  target/linux/generic target/linux/generic/pending-6.12
 #merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/x86 target/linux/x86/patches-6.12
 #merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/x86 target/linux/x86/config-6.12
 
