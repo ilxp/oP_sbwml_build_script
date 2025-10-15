@@ -75,7 +75,7 @@ curl -s $mirror/openwrt/patch/openwrt-6.x/x86/patches-6.12/103-pcengines_apu6_pl
 sed -ri "s/(KERNEL_PATCHVER:=)[^\"]*/\16.12/" target/linux/x86/Makefile
 sed -i '/KERNEL_PATCHVER/a\KERNEL_TESTING_PATCHVER:=6.6' target/linux/x86/Makefile
 curl -s $mirror/openwrt/patch/openwrt-6.x/x86/base-files/etc/board.d/01_leds > target/linux/x86/base-files/etc/board.d/01_leds
-curl -s $mirror/openwrt/patch/openwrt-6.x/x86/base-files/etc/board.d/02_network > target/linux/x86/base-files/etc/board.d/02_network
+#curl -s $mirror/openwrt/patch/openwrt-6.x/x86/base-files/etc/board.d/02_network > target/linux/x86/base-files/etc/board.d/02_network
 
 # armsr/armv8
 rm -rf target/linux/armsr
@@ -108,6 +108,8 @@ merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/gene
 merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/backport-6.12
 merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/hack-6.12
 merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/pending-6.12
+merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/x86 target/linux/x86/patches-6.12
+#merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/x86 target/linux/x86/config-6.12
 
 # bcm53xx - fix build kernel with clang
 [ "$platform" = "bcm53xx" ] && [ "$KERNEL_CLANG_LTO" = "y" ] && rm -f target/linux/generic/hack-6.6/220-arm-gc_sections.patch target/linux/generic/hack-6.12/220-arm-gc_sections.patch
