@@ -115,9 +115,13 @@ curl -s $mirror/openwrt/patch/kernel-6.12/openwrt/linux-6.12-target-linux-generi
 #采用 namiltd的6.12内核补丁
 curl -s https://github.com/coolsnowwolf/lede/raw/master/target/linux/generic/config-6.12 > target/linux/generic/config-6.12
 #wget -P target/linux/generic/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/generic/config-6.12 
-merge_package main https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/backport-6.12
-merge_package main https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/hack-6.12
-merge_package main https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/pending-6.12
+merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/backport-6.12
+merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/hack-6.12
+merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/pending-6.12
+#X86
+#curl -s https://github.com/coolsnowwolf/lede/raw/master/target/linux/generic/x86/config-6.12 > target/linux/generic/x86/config-6.12
+#curl -s https://github.com/coolsnowwolf/lede/raw/master/target/linux/generic/x86/64/config-6.12 > target/linux/generic/x86/64/config-6.12
+#merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/generic/x86 target/linux/generic/x86/patches-6.12
 
 
 # bcm53xx - fix build kernel with clang
