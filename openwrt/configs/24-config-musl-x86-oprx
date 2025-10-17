@@ -99,7 +99,7 @@ CONFIG_PACKAGE_zsh=y
 
 #四、VPN翻墙系列
 #nikki minoho
-CONFIG_PACKAGE_luci-app-nikki=y
+CONFIG_PACKAGE_luci-app-nikki=n
 
 CONFIG_PACKAGE_luci-app-openvpn=n
 CONFIG_PACKAGE_luci-app-softethervpn=n
@@ -127,7 +127,7 @@ CONFIG_PACKAGE_luci-app-ota=n
 #sirpdboy大神重启计划等插件
 CONFIG_PACKAGE_luci-app-parentcontrol=y #家长控制
 CONFIG_PACKAGE_luci-app-lucky=n   #反想代理
-CONFIG_PACKAGE_luci-app-ddns-go=y #反向代理
+CONFIG_PACKAGE_luci-app-ddns-go=n #反向代理
 CONFIG_PACKAGE_luci-app-poweroffdevice=n #编译不成功，采用另一个
 CONFIG_PACKAGE_luci-app-poweroff=n  #关机
 CONFIG_PACKAGE_luci-app-taskplan=y #定时设置 
