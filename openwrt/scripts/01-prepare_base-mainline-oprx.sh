@@ -163,8 +163,8 @@ merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/x86 
 
 rm -rf package/kernel/linux
 merge_package master https://github.com/coolsnowwolf/lede.git  package/kernel package/kernel/linux
-rm -rf package/kernel/linux/modules/netdevices.mk
-curl -s https://github.com/sbwml/r4s_build_script/raw/master/openwrt/patch/openwrt-6.x/modules/netsupport.mk > package/kernel/linux/modules/netdevices.mk
+rm -rf package/kernel/linux/modules/netsupport.mk
+curl -s https://github.com/sbwml/r4s_build_script/raw/master/openwrt/patch/openwrt-6.x/modules/netsupport.mk > package/kernel/linux/modules/netsupport.mk
 
 # BBRv3 - linux-6.12
 pushd target/linux/generic/backport-6.12
