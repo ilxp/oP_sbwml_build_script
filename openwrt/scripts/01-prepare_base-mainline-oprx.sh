@@ -66,11 +66,11 @@ git clone https://$github/sbwml/autocore-arm -b openwrt-24.10 package/system/aut
 sed -ri "s/(PKG_PATCHVER:=)[^\"]*/\16.12/" package/kernel/bpf-headers/Makefile
 
 # x86_64 - target 6.12
-#curl -s $mirror/openwrt/patch/openwrt-6.x/x86/64/config-6.12 > target/linux/x86/64/config-6.12
-#curl -s $mirror/openwrt/patch/openwrt-6.x/x86/config-6.12 > target/linux/x86/config-6.12
-#mkdir -p target/linux/x86/patches-6.12
-#curl -s $mirror/openwrt/patch/openwrt-6.x/x86/patches-6.12/100-fix_cs5535_clockevt.patch > target/linux/x86/patches-6.12/100-fix_cs5535_clockevt.patch
-#curl -s $mirror/openwrt/patch/openwrt-6.x/x86/patches-6.12/103-pcengines_apu6_platform.patch > target/linux/x86/patches-6.12/103-pcengines_apu6_platform.patch
+curl -s $mirror/openwrt/patch/openwrt-6.x/x86/64/config-6.12 > target/linux/x86/64/config-6.12
+curl -s $mirror/openwrt/patch/openwrt-6.x/x86/config-6.12 > target/linux/x86/config-6.12
+mkdir -p target/linux/x86/patches-6.12
+curl -s $mirror/openwrt/patch/openwrt-6.x/x86/patches-6.12/100-fix_cs5535_clockevt.patch > target/linux/x86/patches-6.12/100-fix_cs5535_clockevt.patch
+curl -s $mirror/openwrt/patch/openwrt-6.x/x86/patches-6.12/103-pcengines_apu6_platform.patch > target/linux/x86/patches-6.12/103-pcengines_apu6_platform.patch
 # x86_64 - target
 sed -ri "s/(KERNEL_PATCHVER:=)[^\"]*/\16.12/" target/linux/x86/Makefile
 sed -i '/KERNEL_PATCHVER/a\KERNEL_TESTING_PATCHVER:=6.6' target/linux/x86/Makefile
@@ -119,52 +119,52 @@ merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/gene
 merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/hack-6.12
 merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/pending-6.12
 #X86
-curl -s https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/config-6.12 > target/linux/x86/config-6.12
-curl -s https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/64/config-6.12 > target/linux/x86/64/config-6.12
-merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/x86 target/linux/x86/patches-6.12
+#curl -s https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/config-6.12 > target/linux/x86/config-6.12
+#curl -s https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/64/config-6.12 > target/linux/x86/64/config-6.12
+#merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/x86 target/linux/x86/patches-6.12
 
 
 # bcm53xx - fix build kernel with clang
 [ "$platform" = "bcm53xx" ] && [ "$KERNEL_CLANG_LTO" = "y" ] && rm -f target/linux/generic/hack-6.6/220-arm-gc_sections.patch target/linux/generic/hack-6.12/220-arm-gc_sections.patch
 
 # kernel modules
-#rm -rf package/kernel/linux
-#git checkout package/kernel/linux
-#pushd package/kernel/linux/modules
-    #rm -f [a-z]*.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/block.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/can.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/crypto.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/firewire.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/fs.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/gpio.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/hwmon.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/i2c.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/iio.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/input.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/leds.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/lib.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/multiplexer.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/netdevices.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/netfilter.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/netsupport.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/nls.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/other.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/pcmcia.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/rtc.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/sound.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/spi.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/usb.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/video.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/virt.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/w1.mk
-    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/wpan.mk
-#popd
-
 rm -rf package/kernel/linux
-merge_package master https://github.com/coolsnowwolf/lede.git  package/kernel package/kernel/linux
-rm -rf package/kernel/linux/modules/netsupport.mk
-curl -s https://github.com/sbwml/r4s_build_script/raw/master/openwrt/patch/openwrt-6.x/modules/netsupport.mk > package/kernel/linux/modules/netsupport.mk
+git checkout package/kernel/linux
+pushd package/kernel/linux/modules
+    rm -f [a-z]*.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/block.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/can.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/crypto.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/firewire.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/fs.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/gpio.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/hwmon.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/i2c.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/iio.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/input.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/leds.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/lib.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/multiplexer.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/netdevices.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/netfilter.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/netsupport.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/nls.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/other.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/pcmcia.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/rtc.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/sound.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/spi.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/usb.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/video.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/virt.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/w1.mk
+    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/wpan.mk
+popd
+
+#rm -rf package/kernel/linux
+#merge_package master https://github.com/coolsnowwolf/lede.git  package/kernel package/kernel/linux
+#rm -rf package/kernel/linux/modules/netsupport.mk
+#curl -s https://github.com/sbwml/r4s_build_script/raw/master/openwrt/patch/openwrt-6.x/modules/netsupport.mk > package/kernel/linux/modules/netsupport.mk
 
 # BBRv3 - linux-6.12
 pushd target/linux/generic/backport-6.12
