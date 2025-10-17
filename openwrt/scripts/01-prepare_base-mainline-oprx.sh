@@ -55,12 +55,12 @@ function merge_package() {
 git clone https://$github/sbwml/autocore-arm -b openwrt-24.10 package/system/autocore
 
 # rockchip - target - r4s/r5s only
-rm -rf target/linux/rockchip
-if [ "$(whoami)" = "sbwml" ]; then
-    git clone https://$gitea/sbwml/target_linux_rockchip-6.x target/linux/rockchip -b openwrt-24.10
-else
-    git clone https://"$git_name":"$git_password"@$gitea/sbwml/target_linux_rockchip-6.x target/linux/rockchip -b openwrt-24.10
-fi
+#rm -rf target/linux/rockchip
+#if [ "$(whoami)" = "sbwml" ]; then
+    #git clone https://$gitea/sbwml/target_linux_rockchip-6.x target/linux/rockchip -b openwrt-24.10
+#else
+    #git clone https://"$git_name":"$git_password"@$gitea/sbwml/target_linux_rockchip-6.x target/linux/rockchip -b openwrt-24.10
+#fi
 
 # bpf-headers - 6.12
 sed -ri "s/(PKG_PATCHVER:=)[^\"]*/\16.12/" package/kernel/bpf-headers/Makefile
@@ -119,7 +119,7 @@ merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/gene
 merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/hack-6.12
 merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/pending-6.12
 #X86
-curl -s https://github.com/coolsnowwolf/lede/raw/master/target/linux/generic/x86/config-6.12 > target/linux/generic/x86/config-6.12
+curl -s https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/config-6.12 > target/linux/x86/config-6.12
 curl -s https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/64/config-6.12 > target/linux/x86/64/config-6.12
 merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/x86 target/linux/x86/patches-6.12
 
