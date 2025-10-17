@@ -161,8 +161,8 @@ merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/x86 
     #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/wpan.mk
 #popd
 
-rm -rf package/kernel/linux
-merge_package master https://github.com/coolsnowwolf/lede.git  package/kernel package/kernel/linux
+#rm -rf package/kernel/linux
+m#erge_package master https://github.com/coolsnowwolf/lede.git  package/kernel package/kernel/linux
 rm -rf package/kernel/linux/modules/netsupport.mk
 curl -s https://github.com/sbwml/r4s_build_script/raw/master/openwrt/patch/openwrt-6.x/modules/netsupport.mk > package/kernel/linux/modules/netsupport.mk
 
