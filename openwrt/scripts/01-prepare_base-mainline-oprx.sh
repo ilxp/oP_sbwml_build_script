@@ -103,6 +103,10 @@ curl -s $mirror/openwrt/patch/kernel-6.12/openwrt/linux-6.12-target-linux-generi
 #fi
 #cp -a target/linux/generic-6.12/* target/linux/generic
 
+
+# make olddefconfig
+wget -qO - https://github.com/openwrt/openwrt/commit/c21a3570.patch | patch -p1
+
 #采用 mj22226/openwrt的6.12内核补丁
 curl -s https://github.com/mj22226/openwrt/raw/main/target/linux/generic/config-6.12 > target/linux/generic/config-6.12
 #wget -P target/linux/generic/ https://github.com/mj22226/openwrt/raw/main/target/linux/generic/config-6.12 
