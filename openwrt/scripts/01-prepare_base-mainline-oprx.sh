@@ -103,10 +103,7 @@ curl -s $mirror/openwrt/patch/kernel-6.12/openwrt/linux-6.12-target-linux-generi
 #fi
 #cp -a target/linux/generic-6.12/* target/linux/generic
 
-
-# make olddefconfig
-wget -qO - https://github.com/openwrt/openwrt/commit/c21a3570.patch | patch -p1
-
+#==============================================================
 #采用 mj22226/openwrt的6.12内核补丁
 #curl -s https://github.com/mj22226/openwrt/raw/main/target/linux/generic/config-6.12 > target/linux/generic/config-6.12
 ##wget -P target/linux/generic/ https://github.com/mj22226/openwrt/raw/main/target/linux/generic/config-6.12 
@@ -130,6 +127,10 @@ curl -s https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/config-
 curl -s https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/64/config-6.12 > target/linux/x86/64/config-6.12
 merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/x86 target/linux/x86/patches-6.12
 
+# make olddefconfig 必须，否则无法编译
+wget -qO - https://github.com/openwrt/openwrt/commit/c21a3570.patch | patch -p1
+
+#==============================================================
 
 # bcm53xx - fix build kernel with clang
 [ "$platform" = "bcm53xx" ] && [ "$KERNEL_CLANG_LTO" = "y" ] && rm -f target/linux/generic/hack-6.6/220-arm-gc_sections.patch target/linux/generic/hack-6.12/220-arm-gc_sections.patch
@@ -169,7 +170,7 @@ pushd package/kernel/linux/modules
 popd
 
 #rm -rf package/kernel/linux
-#merge_package master https://github.com/mj22226/openwrt.git  package/kernel package/kernel/linux
+#merge_package master https://github.com/coolsnowwolf/lede.git  package/kernel package/kernel/linux
 #rm -rf package/kernel/linux/modules/netsupport.mk
 #curl -s https://github.com/sbwml/r4s_build_script/raw/master/openwrt/patch/openwrt-6.x/modules/netsupport.mk > package/kernel/linux/modules/netsupport.mk
 
