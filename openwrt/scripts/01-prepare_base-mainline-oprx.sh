@@ -104,13 +104,12 @@ curl -s $mirror/openwrt/patch/kernel-6.12/openwrt/linux-6.12-target-linux-generi
 #cp -a target/linux/generic-6.12/* target/linux/generic
 
 #采用 namiltd的6.12内核补丁
-merge_package main https://github.com/namiltd/openwrt.git  target/linux/generic target/linux/generic/config-6.12
+#merge_package main https://github.com/namiltd/openwrt.git  target/linux/generic target/linux/generic/config-6.12 #单文件不能采用这个
+curl -s https://raw.githubusercontent.com/namiltd/openwrt/refs/heads/main/target/linux/generic/config-6.12 > target/linux/generic/config-6.12
 merge_package main https://github.com/namiltd/openwrt.git  target/linux/generic target/linux/generic/backport-6.12
 merge_package main https://github.com/namiltd/openwrt.git  target/linux/generic target/linux/generic/hack-6.12
 merge_package main https://github.com/namiltd/openwrt.git  target/linux/generic target/linux/generic/pending-6.12
 
-#merge_package main https://github.com/namiltd/openwrt.git  target/linux/x86 target/linux/x86/patches-6.12
-#merge_package main https://github.com/namiltd/openwrt.git  target/linux/x86 target/linux/x86/config-6.12
 
 # bcm53xx - fix build kernel with clang
 [ "$platform" = "bcm53xx" ] && [ "$KERNEL_CLANG_LTO" = "y" ] && rm -f target/linux/generic/hack-6.6/220-arm-gc_sections.patch target/linux/generic/hack-6.12/220-arm-gc_sections.patch
