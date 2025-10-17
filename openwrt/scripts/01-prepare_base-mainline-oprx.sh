@@ -131,7 +131,7 @@ merge_package linux-6.6 https://github.com/mj22226/openwrt.git  target/linux/x86
 #merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/x86 target/linux/x86/patches-6.12
 
 # make olddefconfig
-#wget -qO - https://github.com/openwrt/openwrt/commit/c21a3570.patch | patch -p1
+wget -qO - https://github.com/openwrt/openwrt/commit/c21a3570.patch | patch -p1
 
 #==============================================================
 
