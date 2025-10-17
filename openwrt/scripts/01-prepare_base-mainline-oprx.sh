@@ -84,7 +84,8 @@ curl -s $mirror/openwrt/patch/openwrt-6.x/x86/base-files/etc/board.d/01_leds > t
 # kernel - 6.12
 #curl -s $mirror/tags/kernel-6.12 > include/kernel-6.12
 #curl -s https://github.com/coolsnowwolf/lede/raw/master/include/kernel-6.12 > include/kernel-6.12
-curl -s https://github.com/mj22226/openwrt/raw/linux-6.6/target/linux/generic/kernel-6.12 > include/kernel-6.12
+#curl -s https://github.com/mj22226/openwrt/raw/linux-6.6/target/linux/generic/kernel-6.12 > include/kernel-6.12
+wget -qO- "https://github.com/mj22226/openwrt/raw/linux-6.6/target/linux/generic/kernel-6.12"  >> include/kernel-6.12
 
 # kenrel Vermagic
 sed -ie 's/^\(.\).*vermagic$/\1cp $(TOPDIR)\/.vermagic $(LINUX_DIR)\/.vermagic/' include/kernel-defaults.mk
