@@ -105,12 +105,12 @@ curl -s $mirror/openwrt/patch/kernel-6.12/openwrt/linux-6.12-target-linux-generi
 
 #采用 namiltd的6.12内核补丁
 #merge_package main https://github.com/namiltd/openwrt.git  target/linux/generic target/linux/generic/config-6.12 #单文件不能采用这个
-curl -s https://github.com/namiltd/openwrt/raw/main/target/linux/generic/config-6.12 > target/linux/generic/config-6.12
+curl -s https://github.com/openwrt/openwrt/raw/main/target/linux/generic/config-6.12 > target/linux/generic/config-6.12
 #wget -P target/linux/generic/ https://github.com/namiltd/openwrt/raw/main/target/linux/generic/config-6.12 
 
-merge_package main https://github.com/namiltd/openwrt.git  target/linux/generic target/linux/generic/backport-6.12
-merge_package main https://github.com/namiltd/openwrt.git  target/linux/generic target/linux/generic/hack-6.12
-merge_package main https://github.com/namiltd/openwrt.git  target/linux/generic target/linux/generic/pending-6.12
+merge_package main https://github.com/openwrt/openwrt.git  target/linux/generic target/linux/generic/backport-6.12
+merge_package main https://github.com/openwrt/openwrt.git  target/linux/generic target/linux/generic/hack-6.12
+merge_package main https://github.com/openwrt/openwrt.git  target/linux/generic target/linux/generic/pending-6.12
 
 
 # bcm53xx - fix build kernel with clang
