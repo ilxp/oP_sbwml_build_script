@@ -226,7 +226,7 @@ else
 fi
 cat > feeds.conf <<EOF
 #src-git packages https://$github/openwrt/packages.git$packages
-src-git https://github.com/coolsnowwolf/packages;master
+src-git packages https://github.com/coolsnowwolf/packages;master
 src-git luci https://$github/openwrt/luci.git$luci
 src-git routing https://$github/openwrt/routing.git$routing
 src-git telephony https://$github/openwrt/telephony.git$telephony
