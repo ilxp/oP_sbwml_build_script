@@ -82,7 +82,9 @@ curl -s $mirror/openwrt/patch/openwrt-6.x/x86/base-files/etc/board.d/01_leds > t
 #git clone https://nanopi:nanopi@$gitea/sbwml/target_linux_armsr target/linux/armsr -b main
 
 # kernel - 6.12
-curl -s $mirror/tags/kernel-6.12 > include/kernel-6.12
+#curl -s $mirror/tags/kernel-6.12 > include/kernel-6.12
+curl -s https://github.com/coolsnowwolf/lede/raw/master/include/kernel-6.12 > include/kernel-6.12
+#curl -s https://github.com/mj22226/openwrt/raw/linux-6.6/target/linux/generic/kernel-6.12 > include/kernel-6.12
 
 # kenrel Vermagic
 sed -ie 's/^\(.\).*vermagic$/\1cp $(TOPDIR)\/.vermagic $(LINUX_DIR)\/.vermagic/' include/kernel-defaults.mk
@@ -105,15 +107,15 @@ grep HASH include/kernel-6.12 | awk -F'HASH-' '{print $2}' | awk '{print $1}' | 
 
 #==============================================================
 #采用 mj22226/openwrt的6.12内核补丁
-#curl -s https://github.com/mj22226/openwrt/raw/main/target/linux/generic/config-6.12 > target/linux/generic/config-6.12
-##wget -P target/linux/generic/ https://github.com/mj22226/openwrt/raw/main/target/linux/generic/config-6.12 
-#merge_package main https://github.com/mj22226/openwrt.git  target/linux/generic target/linux/generic/backport-6.12
-#merge_package main https://github.com/mj22226/openwrt.git  target/linux/generic target/linux/generic/hack-6.12
-#merge_package main https://github.com/mj22226/openwrt.git  target/linux/generic target/linux/generic/pending-6.12
+#curl -s https://github.com/mj22226/openwrt/raw/linux-6.6/target/linux/generic/config-6.12 > target/linux/generic/config-6.12
+##wget -P target/linux/generic/ https://github.com/mj22226/openwrt/raw/linux-6.6/target/linux/generic/config-6.12 
+#merge_package linux-6.6 https://github.com/mj22226/openwrt.git  target/linux/generic target/linux/generic/backport-6.12
+#merge_package linux-6.6 https://github.com/mj22226/openwrt.git  target/linux/generic target/linux/generic/hack-6.12
+#merge_package linux-6.6 https://github.com/mj22226/openwrt.git  target/linux/generic target/linux/generic/pending-6.12
 #X86
-#curl -s https://github.com/mj22226/openwrt/raw/main/target/linux/x86/config-6.12 > target/linux/x86/config-6.12
-#curl -s https://github.com/mj22226/openwrte/raw/mainr/target/linux/x86/64/config-6.12 > target/linux/x86/64/config-6.12
-#merge_package main https://github.com/mj22226/openwrt.git  target/linux/x86 target/linux/x86/patches-6.12
+#curl -s https://github.com/mj22226/openwrt/raw/linux-6.6/target/linux/x86/config-6.12 > target/linux/x86/config-6.12
+#curl -s https://github.com/mj22226/openwrte/raw/linux-6.6/target/linux/x86/64/config-6.12 > target/linux/x86/64/config-6.12
+#merge_package linux-6.6 https://github.com/mj22226/openwrt.git  target/linux/x86 target/linux/x86/patches-6.12
 
 
 #采用 lede的6.12内核补丁
@@ -127,8 +129,8 @@ curl -s https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/config-
 curl -s https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/64/config-6.12 > target/linux/x86/64/config-6.12
 merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/x86 target/linux/x86/patches-6.12
 
-# make olddefconfig 必须，否则无法编译
-wget -qO - https://github.com/openwrt/openwrt/commit/c21a3570.patch | patch -p1
+# make olddefconfig
+#wget -qO - https://github.com/openwrt/openwrt/commit/c21a3570.patch | patch -p1
 
 #==============================================================
 
