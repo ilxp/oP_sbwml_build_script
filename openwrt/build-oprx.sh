@@ -155,7 +155,9 @@ else
     echo -e "${GREEN_COLOR}Model: nanopi-r4s${RES}"
     [ "$1" = "rc2" ] && model="nanopi-r4s"
 fi
-get_kernel_version=$(curl -s $mirror/tags/kernel-6.12)
+
+#get_kernel_version=$(curl -s $mirror/tags/kernel-6.12)
+get_kernel_version=$(curl -s https://github.com/mj22226/openwrt/raw/linux-6.6/target/linux/generic/kernel-6.12)
 kmod_hash=$(echo -e "$get_kernel_version" | awk -F'HASH-' '{print $2}' | awk '{print $1}' | tail -1 | md5sum | awk '{print $1}')
 kmodpkg_name=$(echo $(echo -e "$get_kernel_version" | awk -F'HASH-' '{print $2}' | awk '{print $1}')~$(echo $kmod_hash)-r1)
 echo -e "${GREEN_COLOR}Kernel: $kmodpkg_name ${RES}"
@@ -191,7 +193,7 @@ rm -rf openwrt master
 [ "$(whoami)" = "runner" ] && group "source code"
 git clone --depth=1 https://$github/openwrt/openwrt -b $branch
 
-#git clone --depth=1  https://$github/mj22226/openwrt -b linux-6.12
+#git clone --depth=1  https://$github/mj22226/openwrt -b linux-6.6
 
 # immortalwrt master
 git clone https://$github/immortalwrt/packages master/immortalwrt_packages --depth=1
@@ -225,8 +227,7 @@ else
     telephony=";$branch"
 fi
 cat > feeds.conf <<EOF
-#src-git packages https://$github/openwrt/packages.git$packages
-src-git packages https://github.com/coolsnowwolf/packages;master
+src-git packages https://$github/openwrt/packages.git$packages
 src-git luci https://$github/openwrt/luci.git$luci
 src-git routing https://$github/openwrt/routing.git$routing
 src-git telephony https://$github/openwrt/telephony.git$telephony
