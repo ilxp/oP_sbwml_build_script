@@ -55,12 +55,12 @@ function merge_package() {
 git clone https://$github/sbwml/autocore-arm -b openwrt-24.10 package/system/autocore
 
 # rockchip - target - r4s/r5s only
-#rm -rf target/linux/rockchip
-#if [ "$(whoami)" = "sbwml" ]; then
-    #git clone https://$gitea/sbwml/target_linux_rockchip-6.x target/linux/rockchip -b openwrt-24.10
-#else
-    #git clone https://"$git_name":"$git_password"@$gitea/sbwml/target_linux_rockchip-6.x target/linux/rockchip -b openwrt-24.10
-#fi
+rm -rf target/linux/rockchip
+if [ "$(whoami)" = "sbwml" ]; then
+    git clone https://$gitea/sbwml/target_linux_rockchip-6.x target/linux/rockchip -b openwrt-24.10
+else
+    git clone https://"$git_name":"$git_password"@$gitea/sbwml/target_linux_rockchip-6.x target/linux/rockchip -b openwrt-24.10
+fi
 
 # bpf-headers - 6.12
 sed -ri "s/(PKG_PATCHVER:=)[^\"]*/\16.12/" package/kernel/bpf-headers/Makefile
@@ -83,9 +83,10 @@ curl -s $mirror/openwrt/patch/openwrt-6.x/x86/base-files/etc/board.d/01_leds > t
 
 # kernel - 6.12
 #curl -s $mirror/tags/kernel-6.12 > include/kernel-6.12
-curl -s https://github.com/coolsnowwolf/lede/raw/master/include/kernel-6.12 > include/kernel-6.12
+#curl -s https://github.com/coolsnowwolf/lede/raw/master/include/kernel-6.12 > include/kernel-6.12
 #curl -s https://github.com/mj22226/openwrt/raw/linux-6.6/target/linux/generic/kernel-6.12 > include/kernel-6.12
 #wget -qO- "https://github.com/mj22226/openwrt/raw/linux-6.6/target/linux/generic/kernel-6.12"  >> include/kernel-6.12
+wget -qO- "hhttps://github.com/coolsnowwolf/lede/raw/master/include/kernel-6.12"  >> include/kernel-6.12
 
 # kenrel Vermagic
 sed -ie 's/^\(.\).*vermagic$/\1cp $(TOPDIR)\/.vermagic $(LINUX_DIR)\/.vermagic/' include/kernel-defaults.mk
@@ -119,7 +120,7 @@ grep HASH include/kernel-6.12 | awk -F'HASH-' '{print $2}' | awk '{print $1}' | 
 #merge_package linux-6.6 https://github.com/mj22226/openwrt.git  target/linux/x86 target/linux/x86/patches-6.12
 
 
-#采用 lede的6.12内核补丁   无法使用
+#采用 lede的6.12内核补丁
 curl -s https://github.com/coolsnowwolf/lede/raw/master/target/linux/generic/config-6.12 > target/linux/generic/config-6.12
 #wget -P target/linux/generic/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/generic/config-6.12 
 merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/backport-6.12
