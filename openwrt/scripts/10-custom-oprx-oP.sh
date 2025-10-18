@@ -102,14 +102,6 @@ cp -f ./diydata/data/default-settings-oP-sbwml package/new/addition-trans-zh/fil
 #三、编译出错的########
 rm -rf package/kernel/rtl8812au-ct
 
-#删除多余的报错patch  lede
-rm -rf target/linux/generic/hack-6.12/952-net-conntrack-events-support-multiple-registrant.patch
-rm -rf target/linux/generic/hack-6.12/982-add-bcm-fullconenat-support.patch
-rm -rf target/linux/generic/hack-6.12/953-net-patch-linux-kernel-to-support-shortcut-fe.patch
-
-#rtl8261n报错  24.10分支需要
-cp -rf ./diydata/data/patches/735-net-phy-realtek-rtl8261n.patch  target/linux/generic/hack-6.12/
-
 ###################
 
 #四、系统优化########
