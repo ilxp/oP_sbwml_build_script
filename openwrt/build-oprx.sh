@@ -163,7 +163,8 @@ fi
 #echo -e "${GREEN_COLOR}Kernel: $kmodpkg_name ${RES}"
 
 ##curl -s $mirror/tags/kernel-6.12 > kernel.txt  #有时获取不到
-wget -qO- "https://github.com/mj22226/openwrt/raw/linux-6.6/target/linux/generic/kernel-6.12"  >> kernel.txt
+#wget -qO- "https://github.com/mj22226/openwrt/raw/linux-6.6/target/linux/generic/kernel-6.12"  >> kernel.txt
+wget -qO- "https://github.com/coolsnowwolf/lede/raw/master/include/kernel-6.12"  >> kernel.txt
 kmod_hash=$(grep HASH kernel.txt | awk -F'HASH-' '{print $2}' | awk '{print $1}' | md5sum | awk '{print $1}')
 kmodpkg_name=$(echo $(grep HASH kernel.txt | awk -F'HASH-' '{print $2}' | awk '{print $1}')~$(echo $kmod_hash)-r1)
 echo -e "${GREEN_COLOR}Kernel: $kmodpkg_name ${RES}"
