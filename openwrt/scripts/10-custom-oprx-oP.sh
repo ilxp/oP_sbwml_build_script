@@ -107,7 +107,7 @@ rm -rf target/linux/generic/hack-6.12/952-net-conntrack-events-support-multiple-
 rm -rf target/linux/generic/hack-6.12/982-add-bcm-fullconenat-support.patch
 rm -rf target/linux/generic/hack-6.12/953-net-patch-linux-kernel-to-support-shortcut-fe.patch
 
-#rtl8261n报错  24.10需要
+#rtl8261n报错  24.10分支需要
 cp -rf ./diydata/data/patches/735-net-phy-realtek-rtl8261n.patch  target/linux/generic/hack-6.12/
 
 ###################
