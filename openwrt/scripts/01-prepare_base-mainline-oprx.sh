@@ -83,13 +83,13 @@ curl -s $mirror/openwrt/patch/openwrt-6.x/x86/base-files/etc/board.d/01_leds > t
 
 # kernel - 6.12
 #curl -s $mirror/tags/kernel-6.12 > include/kernel-6.12
-curl -s https://github.com/coolsnowwolf/lede/raw/master/include/kernel-6.12 > include/kernel-6.12
+#curl -s https://github.com/coolsnowwolf/lede/raw/master/include/kernel-6.12 > include/kernel-6.12
 #curl -s https://github.com/mj22226/openwrt/raw/linux-6.6/target/linux/generic/kernel-6.12 > include/kernel-6.12
-#wget -qO- "https://github.com/mj22226/openwrt/raw/linux-6.6/target/linux/generic/kernel-6.12"  >> include/kernel-6.12
+wget -qO- "https://github.com/mj22226/openwrt/raw/linux-6.18/target/linux/generic/kernel-6.12"  >> include/kernel-6.18
 
 # kenrel Vermagic
 sed -ie 's/^\(.\).*vermagic$/\1cp $(TOPDIR)\/.vermagic $(LINUX_DIR)\/.vermagic/' include/kernel-defaults.mk
-grep HASH include/kernel-6.12 | awk -F'HASH-' '{print $2}' | awk '{print $1}' | md5sum | awk '{print $1}' > .vermagic
+grep HASH include/kernel-6.18 | awk -F'HASH-' '{print $2}' | awk '{print $1}' | md5sum | awk '{print $1}' > .vermagic
 
 # kernel generic patches
 #curl -s $mirror/openwrt/patch/kernel-6.12/openwrt/linux-6.12-target-linux-generic.patch | patch -p1
@@ -120,15 +120,15 @@ grep HASH include/kernel-6.12 | awk -F'HASH-' '{print $2}' | awk '{print $1}' | 
 
 
 #采用 lede的6.12内核补丁   无法使用
-curl -s https://github.com/coolsnowwolf/lede/raw/master/target/linux/generic/config-6.12 > target/linux/generic/config-6.12
+#curl -s https://github.com/coolsnowwolf/lede/raw/master/target/linux/generic/config-6.18 > target/linux/generic/config-6.18
 #wget -P target/linux/generic/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/generic/config-6.12 
-merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/backport-6.12
-merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/hack-6.12
-merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/pending-6.12
+#merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/backport-6.12
+#merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/hack-6.12
+#merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/generic target/linux/generic/pending-6.12
 #X86
-curl -s https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/config-6.12 > target/linux/x86/config-6.12
-curl -s https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/64/config-6.12 > target/linux/x86/64/config-6.12
-merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/x86 target/linux/x86/patches-6.12
+#curl -s https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/config-6.12 > target/linux/x86/config-6.12
+#curl -s https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/64/config-6.12 > target/linux/x86/64/config-6.12
+#merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/x86 target/linux/x86/patches-6.12
 
 # make olddefconfig
 wget -qO - https://github.com/openwrt/openwrt/commit/c21a3570.patch | patch -p1
@@ -139,38 +139,38 @@ wget -qO - https://github.com/openwrt/openwrt/commit/c21a3570.patch | patch -p1
 [ "$platform" = "bcm53xx" ] && [ "$KERNEL_CLANG_LTO" = "y" ] && rm -f target/linux/generic/hack-6.6/220-arm-gc_sections.patch target/linux/generic/hack-6.12/220-arm-gc_sections.patch
 
 # kernel modules
-rm -rf package/kernel/linux
-git checkout package/kernel/linux
-pushd package/kernel/linux/modules
-    rm -f [a-z]*.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/block.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/can.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/crypto.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/firewire.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/fs.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/gpio.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/hwmon.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/i2c.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/iio.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/input.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/leds.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/lib.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/multiplexer.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/netdevices.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/netfilter.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/netsupport.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/nls.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/other.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/pcmcia.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/rtc.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/sound.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/spi.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/usb.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/video.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/virt.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/w1.mk
-    curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/wpan.mk
-popd
+#rm -rf package/kernel/linux
+#git checkout package/kernel/linux
+#pushd package/kernel/linux/modules
+    #rm -f [a-z]*.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/block.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/can.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/crypto.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/firewire.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/fs.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/gpio.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/hwmon.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/i2c.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/iio.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/input.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/leds.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/lib.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/multiplexer.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/netdevices.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/netfilter.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/netsupport.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/nls.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/other.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/pcmcia.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/rtc.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/sound.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/spi.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/usb.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/video.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/virt.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/w1.mk
+    #curl -Os $mirror/openwrt/patch/openwrt-6.x/modules/wpan.mk
+#popd
 
 #rm -rf package/kernel/linux
 #merge_package linux-6.6 https://github.com/mj22226/openwrt.git  package/kernel package/kernel/linux
@@ -248,9 +248,9 @@ curl -s $mirror/openwrt/patch/iproute2/901-ip-introduce-the-ecn_low-per-route-fe
 curl -s $mirror/openwrt/patch/iproute2/902-ss-display-ecn_low-if-tcp_info-tcpi_options-TCPI_OPT.patch > package/network/utils/iproute2/patches/902-ss-display-ecn_low-if-tcp_info-tcpi_options-TCPI_OPT.patch
 
 # linux-firmware
-rm -rf package/firmware/linux-firmware
+#rm -rf package/firmware/linux-firmware
 #git clone https://$github/sbwml/package_firmware_linux-firmware package/firmware/linux-firmware
-merge_package linux-6.6 https://github.com/mj22226/openwrt.git  package/firmware package/firmware/linux-firmware
+#merge_package linux-6.6 https://github.com/mj22226/openwrt.git  package/firmware package/firmware/linux-firmware
 
 
 # mt76
