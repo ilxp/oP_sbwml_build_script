@@ -250,7 +250,9 @@ curl -s $mirror/openwrt/patch/iproute2/902-ss-display-ecn_low-if-tcp_info-tcpi_o
 # linux-firmware
 rm -rf package/firmware/linux-firmware
 #git clone https://$github/sbwml/package_firmware_linux-firmware package/firmware/linux-firmware
-merge_package linux-6.6 https://github.com/mj22226/openwrt.git  package/firmware package/firmware/linux-firmware
+merge_package master https://github.com/coolsnowwolf/lede.git  package/firmware package/firmware/linux-firmware
+#merge_package linux-6.6 https://github.com/mj22226/openwrt.git  package/firmware package/firmware/linux-firmware
+
 
 
 # mt76
