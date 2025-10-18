@@ -108,7 +108,7 @@ rm -rf target/linux/generic/hack-6.12/982-add-bcm-fullconenat-support.patch
 rm -rf target/linux/generic/hack-6.12/953-net-patch-linux-kernel-to-support-shortcut-fe.patch
 
 #rtl8261n报错  24.10需要
-patch -p1 <./diydata/data/patches/735-net-phy-realtek-rtl8261n.patch
+cp -rf ./diydata/data/patches/735-net-phy-realtek-rtl8261n.patch  target/linux/generic/hack-6.12/
 
 ###################
 
