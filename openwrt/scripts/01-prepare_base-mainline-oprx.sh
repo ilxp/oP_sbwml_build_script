@@ -134,6 +134,9 @@ merge_package master https://github.com/coolsnowwolf/lede.git  target/linux/x86 
 # make olddefconfig
 wget -qO - https://github.com/openwrt/openwrt/commit/c21a3570.patch | patch -p1
 
+#rtl8261n报错  24.10需要
+wget -qO - https://github.com/Lienol/openwrt/raw/24.10/target/linux/generic/hack-6.12/735-net-phy-realtek-rtl8261n.patch | patch -p1
+
 #==============================================================
 
 # bcm53xx - fix build kernel with clang
