@@ -192,7 +192,7 @@ rm -rf openwrt master
 
 # openwrt - releases
 [ "$(whoami)" = "runner" ] && group "source code"
-g#it clone --depth=1 https://$github/openwrt/openwrt -b $branch
+#git clone --depth=1 https://$github/openwrt/openwrt -b $branch
 
 git clone --depth=1  https://$github/mj22226/openwrt -b linux-6.18
 
