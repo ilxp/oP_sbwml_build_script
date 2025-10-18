@@ -53,7 +53,7 @@ curl -s $mirror/openwrt/patch/kernel-6.12/openwrt/linux-6.12-target-linux-generi
         #git clone https://"$git_name":"$git_password"@$gitea/sbwml/target_linux_generic -b openwrt-24.10 target/linux/generic-6.12 --depth=1
     #fi
 #fi
-git clone https://$gihub/ilxp/target_linux_generic -b openwrt-24.10 target/linux/generic-6.12 --depth=1
+git clone https://$gihub/ilxp/linux_generic -b openwrt-24.10 target/linux/generic-6.12 --depth=1
 cp -a target/linux/generic-6.12/* target/linux/generic
 
 
