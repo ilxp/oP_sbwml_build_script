@@ -1,0 +1,22 @@
+From c21a357093afc1ffeec11b6bb63d241899c1cf68 Mon Sep 17 00:00:00 2001
+From: QiuSimons <45143996+QiuSimons@users.noreply.github.com>
+Date: Wed, 15 Mar 2023 16:17:14 +0800
+Subject: [PATCH] Update kernel-defaults.mk
+
+Signed-off-by: QiuSimons <45143996+QiuSimons@users.noreply.github.com>
+---
+ include/kernel-defaults.mk | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/kernel-defaults.mk b/include/kernel-defaults.mk
+index 2e2139201689fc..a0a776f09bb4c5 100644
+--- a/include/kernel-defaults.mk
++++ b/include/kernel-defaults.mk
+@@ -127,6 +127,7 @@ endef
+ 
+ define Kernel/CompileModules/Default
+ 	rm -f $(LINUX_DIR)/vmlinux $(LINUX_DIR)/System.map
++	+$(KERNEL_MAKE) olddefconfig
+ 	+$(KERNEL_MAKE) $(if $(KERNELNAME),$(KERNELNAME),all) modules
+ 	# If .config did not change, use the previous timestamp to avoid package rebuilds
+ 	cmp -s $(LINUX_DIR)/.config $(LINUX_DIR)/.config.modules.save && \
