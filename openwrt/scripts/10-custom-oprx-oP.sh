@@ -925,9 +925,9 @@ merge_package master https://github.com/QiuSimons/OpenWrt-Add.git package/new op
 
 # Boost 通用即插即用  #采用yaof的
 rm -rf ./feeds/packages/net/miniupnpd
-mkdir -p feeds/packages/net/miniupnpd/patches
 #cp -rf ../openwrt_pkg_ma/net/miniupnpd ./feeds/packages/net/miniupnpd
 merge_package master https://github.com/openwrt/packages.git feeds/packages/net net/miniupnpd
+mkdir -p feeds/packages/net/miniupnpd/patches
 wget https://github.com/miniupnp/miniupnp/commit/0e8c68d.patch -O feeds/packages/net/miniupnpd/patches/0e8c68d.patch
 sed -i 's,/miniupnpd/,/,g' ./feeds/packages/net/miniupnpd/patches/0e8c68d.patch
 wget https://github.com/miniupnp/miniupnp/commit/21541fc.patch -O feeds/packages/net/miniupnpd/patches/21541fc.patch
