@@ -699,20 +699,14 @@ sed -i 's/\/bin\/bash/\/usr\/bin\/zsh/g' package/base-files/files/etc/passwd
 #rm -rf ./feeds/luci/collections/luci-lib-docker
 #merge_package master https://github.com/lisaac/luci-lib-docker.git package/new collections/luci-lib-docker
 
-# sbwml大神 【00-prepare_base-6.6已经有了】
-# sbwml大神 【yaof使用sbwml的最新】
+# sbwml大神 【00-prepare_base已经有了】
 #rm -rf feeds/luci/applications/luci-app-dockerman
-#git clone https://git.cooluc.com/sbwml/luci-app-dockerman -b openwrt-24.10 feeds/luci/applications/luci-app-dockerman
+#git clone https://git.cooluc.com/sbwml/luci-app-dockerman -b nft feeds/luci/applications/luci-app-dockerman
 #rm -rf feeds/packages/utils/{docker,dockerd,containerd,runc}
 #git clone https://github.com/sbwml/packages_utils_docker feeds/packages/utils/docker
 #git clone https://github.com/sbwml/packages_utils_dockerd feeds/packages/utils/dockerd
 #git clone https://github.com/sbwml/packages_utils_containerd feeds/packages/utils/containerd
 #git clone https://github.com/sbwml/packages_utils_runc feeds/packages/utils/runc
-
-#为系统添加挂载目录：
-#pushd feeds/luci
-    #curl -s https://raw.githubusercontent.com/sbwml/r4s_build_script/master/openwrt/patch/luci/0006-luci-mod-system-mounts-add-docker-directory-mount-po.patch | patch -p1
-#popd
 
 #9、全能推送（商店自己安装）
 #rm -rf feeds/luci/applications/luci-app-pushbot
