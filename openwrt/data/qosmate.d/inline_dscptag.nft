@@ -1,0 +1,43 @@
+# ICMP
+meta l4proto icmp ip dscp set ef counter
+meta l4proto icmp ip6 dscp set ef counter
+
+# default everything Bulk
+meta l4proto { tcp, udp } th dport 1-65535 ip dscp set cs1 counter
+meta l4proto { tcp, udp } th dport 1-65535 ip6 dscp set cs1 counter
+
+# TCP Header
+meta l4proto tcp tcp flags syn ct state new ip dscp set ef counter
+meta l4proto tcp tcp flags syn ct state new ip6 dscp set ef counter   
+
+# Web
+meta l4proto { tcp, udp } th dport { 80, 443 } ip dscp set cs0 counter
+meta l4proto { tcp, udp } th dport { 80, 443 } ip6 dscp set cs0 counter
+meta l4proto { tcp, udp } th sport { 80, 443 } ip dscp set cs0 counter
+meta l4proto { tcp, udp } th sport { 80, 443 } ip6 dscp set cs0 counter
+
+# Down Web > 1MB set cs2
+meta l4proto  {tcp, udp} th sport {80, 443} ct bytes > 1048576 ip dscp set cs2 counter
+meta l4proto  {tcp, udp} th sport {80, 443} ct bytes > 1048576 ip6 dscp set cs2 counter
+
+# Down Web > 20MB set cs1
+meta l4proto  {tcp, udp} th sport {80, 443} ct bytes > 20971520 ip dscp set cs1 counter
+meta l4proto  {tcp, udp} th sport {80, 443} ct bytes > 20971520 ip6 dscp set cs1 counter
+
+# Up Web > 1MB set cs2
+meta l4proto  {tcp, udp} th dport {80, 443} ct bytes > 1048576 ip dscp set cs2 counter
+meta l4proto  {tcp, udp} th dport {80, 443} ct bytes > 1048576 ip6 dscp set cs2 counter
+
+# Up Web > 20MB set cs1
+meta l4proto  {tcp, udp} th dport {80, 443} ct bytes > 20971520 ip dscp set cs1 counter
+meta l4proto  {tcp, udp} th dport {80, 443} ct bytes > 20971520 ip6 dscp set cs1 counter
+
+# small packet < 64K run first
+meta l4proto { tcp, udp } ct bytes < 65536 ip dscp set cs4 counter
+meta l4proto { tcp, udp } ct bytes < 65536 ip6 dscp set cs4 counter
+
+# DNS
+meta l4proto { tcp, udp } th dport 53 ip dscp set ef counter
+meta l4proto { tcp, udp } th dport 53 ip6 dscp set ef counter
+meta l4proto { tcp, udp } th sport 53 ip dscp set ef counter
+meta l4proto { tcp, udp } th sport 53 ip6 dscp set ef counter

@@ -159,7 +159,7 @@ CONFIG_PACKAGE_luci-app-ikoolproxy=n  #在6.12内核上无法下载证书。
 CONFIG_PACKAGE_libustream-openssl=n #选择导致编译不成功
 
 ##石像鬼qos
-CONFIG_PACKAGE_luci-app-qos-gargoyle=n
+CONFIG_PACKAGE_luci-app-qos-gargoyle=y
 
 #sqm-qos  #采用qosmate
 CONFIG_PACKAGE_luci-app-sqm=n

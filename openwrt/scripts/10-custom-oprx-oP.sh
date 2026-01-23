@@ -285,17 +285,19 @@ sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci-n
 #克隆官方的，以及删除sbwml的
 rm -rf package/new/helloworld
 rm -rf feeds/luci/applications/luci-app-passwall
-#git clone -b main https://github.com/xiaorouji/openwrt-passwall-packages.git package/diy/openwrt-passwall-packages
-#git clone -b main https://github.com/xiaorouji/openwrt-passwall.git  package/diy/openwrt-passwall
-# passwall
-#merge_package main https://github.com/xiaorouji/openwrt-passwall package/new luci-app-passwall
+# 移除 openwrt feeds 自带的核心库
+rm -rf feeds/packages/net/{xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,trojan-plus,tuic-client,v2ray-plugin,xray-plugin,geoview,shadow-tls}
+git clone https://github.com/xiaorouji/openwrt-passwall-packages package/passwall-packages
 
+# 移除 openwrt feeds 过时的luci版本
+rm -rf feeds/luci/applications/luci-app-passwall
+git clone https://github.com/xiaorouji/openwrt-passwall package/helloworld
 #采用kenzok8的small库
 #git clone https://github.com/kenzok8/small.git package/diy/openwrt-passwall
 
 # sbwml的SSRP & Passwall nikki
-rm -rf feeds/packages/net/{xray-core,v2ray-core,v2ray-geodata,sing-box}
-git clone https://github.com/sbwml/openwrt_helloworld package/helloworld -b v5
+#rm -rf feeds/packages/net/{xray-core,v2ray-core,v2ray-geodata,sing-box}
+#git clone https://github.com/sbwml/openwrt_helloworld package/helloworld -b v5
 
 ##FQ全部调到VPN菜单
 sed -i 's/services/vpn/g' package/helloworld/luci-app-passwall/luasrc/controller/*.lua
@@ -437,11 +439,14 @@ git clone https://github.com/sirpdboy/luci-app-advanced.git package/diy/luci-app
 
 ##五）QOS相关
 #石像鬼qos采用我自己的，会有一个QOS栏目生成
-#git clone -b openwrt-2305 https://github.com/ilxp/gargoyle-qos-openwrt.git  package/diy/gargoyle-qos-openwrt
+git clone -b nft https://github.com/ilxp/gargoyle-qos-openwrt.git  package/diy/gargoyle-qos-openwrt
 #sed -i 's/Gargoyle QoS/石像鬼 QoS/g' package/diy/gargoyle-qos-openwrt/luci-app-qos-gargoyle/luasrc/controller/qos_gargoyle.lua
 #sed -i 's/Download Settings/下载设置/g' package/diy/gargoyle-qos-openwrt/luci-app-qos-gargoyle/luasrc/controller/qos_gargoyle.lua
 #sed -i 's/Upload Settings/上传设置/g' package/diy/gargoyle-qos-openwrt/luci-app-qos-gargoyle/luasrc/controller/qos_gargoyle.lua
 #wget -qO - https://raw.gitmirror.com/ilxp/gargoyle-qos-openwrt/openwrt-2203/010-revert_to_iptables.patch | patch -p1  #去除firwall4，用3
+#wget -N https://raw.githubusercontent.com/ilxp/gargoyle-qos-openwrt/refs/heads/ipt/patch/iptables/608-add-gargoyle-netfilter-match-modules.patch -P package/network/utils/iptables/patches/
+#wget -N https://raw.githubusercontent.com/ilxp/gargoyle-qos-openwrt/refs/heads/ipt/patch/kernel/608-add-kernel-gargoyle-netfilter-match-modules.patch -P target/linux/generic/pending-6.6/
+
 
 #2）eqos，采用luci自带的即可。把eqos放在管控下。不在列入Qos目录下
 #rm -rf feeds/luci/applications/luci-app-eqos #lean库里没有eqos
@@ -472,6 +477,11 @@ git clone https://github.com/hudra0/luci-app-qosmate package/diy/luci-app-qosmat
 git clone https://github.com/hudra0/qosmate package/diy/qosmate
 #修改wan口eth0
 sed -i 's/eth1/eth0/g' package/diy/qosmate/etc/config/qosmate
+#载入规则
+mkdir -p package/base-files/files/etc/qosmate.d
+cp -f ./diydata/data/qosmate.d/inline_dscptag.nft package/base-files/files/etc/qosmate.d/inline_dscptag.nft
+#移动到qos栏目
+sed -i 's/\/network/\/qos/g' package/diy/luci-app-qosmate/root/usr/share/luci/menu.d/luci-app-qosmate.json
 
 #六）、DNS相关（openwrt带mosdns）
 #1）smartdns（lede是lede的luci18-branch，master分支是js，lede的luci-23.05分支是js）
