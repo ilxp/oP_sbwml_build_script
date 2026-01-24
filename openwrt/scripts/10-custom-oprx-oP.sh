@@ -293,9 +293,14 @@ rm -rf feeds/luci/applications/luci-app-passwall
 rm -rf feeds/packages/net/{xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,trojan-plus,tuic-client,v2ray-plugin,xray-plugin,geoview,shadow-tls}
 git clone https://github.com/Openwrt-Passwall/openwrt-passwall-packages package/passwall-packages
 
+#shadowsocks-rust报错
+rm -f package/passwall-packages/shadowsocks-rus
+merge_package v5 https://github.com/sbwml/openwrt_helloworld.git package/passwall-packages shadowsocks-rust
+
 # 移除 openwrt feeds 过时的luci版本
 rm -rf feeds/luci/applications/luci-app-passwall
 git clone https://github.com/Openwrt-Passwall/openwrt-passwall package/helloworld
+
 #采用kenzok8的small库
 #git clone https://github.com/kenzok8/small.git package/diy/openwrt-passwall
 
