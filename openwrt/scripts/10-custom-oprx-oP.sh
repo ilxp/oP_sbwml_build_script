@@ -261,6 +261,10 @@ sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' ./feeds/luci/collections/luci
 sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci-nginx/Makefile
 
 #二）、翻墙系列（openwrt编译系统自带为passwall+homeproxy）
+#golang版本【使用sbwnl库的记得要更新到最新26.x】
+rm -rf feeds/packages/lang/golang
+git clone https://github.com/sbwml/packages_lang_golang -b 25.x feeds/packages/lang/golang
+
 #1、ssr-plus
 #rm -rf package/helloworld
 #rm -rf feeds/luci/applications/luci-app-ssr-plus
@@ -288,9 +292,6 @@ rm -rf feeds/luci/applications/luci-app-passwall
 # 移除 openwrt feeds 自带的核心库
 rm -rf feeds/packages/net/{xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,trojan-plus,tuic-client,v2ray-plugin,xray-plugin,geoview,shadow-tls}
 git clone https://github.com/Openwrt-Passwall/openwrt-passwall-packages package/passwall-packages
-
-rm -rf package/passwall-packages/xray-core  #26.1.18编译不成功
-git clone https://github.com/ilxp/xray-core.git package/passwall-packages
 
 # 移除 openwrt feeds 过时的luci版本
 rm -rf feeds/luci/applications/luci-app-passwall
@@ -732,10 +733,7 @@ sed -i 's/\/bin\/bash/\/usr\/bin\/zsh/g' package/base-files/files/etc/passwd
 #git clone https://$github/sbwml/package_kernel_r8126 package/kernel/r8126
 #git clone https://$github/sbwml/package_kernel_r8127 package/kernel/r8127
 
-#11、golang以及openlist
-rm -rf feeds/packages/lang/golang
-git clone https://github.com/sbwml/packages_lang_golang -b 25.x feeds/packages/lang/golang
-
+#11、openlist2
 rm -rf feeds/luci/applications/luci-app-openlist
 rm -rf feeds/packages/net/openlist
 git clone https://github.com/sbwml/luci-app-openlist2 package/new/openlist2
