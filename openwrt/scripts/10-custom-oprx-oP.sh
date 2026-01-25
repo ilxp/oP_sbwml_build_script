@@ -763,7 +763,7 @@ git clone https://github.com/ilxp/openwrt-gpsysupgrade-kiddin9  package/diy/open
 #改固件（要先改）
 sed -i "s/oprx/oprx-oP/g" package/diy/openwrt-gpsysupgrade/luci-app-gpsysupgrade/luasrc/model/cbi/gpsysupgrade/sysupgrade.lua
 #改仓库名builder
-sed -i "s/builder/oprx-builder/g" package/diy/openwrt-gpsysupgrade/luci-app-gpsysupgrade/luasrc/model/cbi/gpsysupgrade/sysupgrade.lua
+sed -i "s/builder/oprx-release/g" package/diy/openwrt-gpsysupgrade/luci-app-gpsysupgrade/luasrc/model/cbi/gpsysupgrade/sysupgrade.lua
 #改vermd5名称：
 sed -i "s/vermd5/vermd5-oP/g" package/diy/openwrt-gpsysupgrade/luci-app-gpsysupgrade/luasrc/model/cbi/gpsysupgrade/sysupgrade.lua
 ##全部调到系统菜单
@@ -776,8 +776,7 @@ git clone -b main --single-branch https://github.com/ilxp/openwrt-autoupdate.git
 #将版本号以及固件的相关信息写入默认配置文件。
 #cat >> package/diy/openwrt-autoupdate/autoupdate/files/etc/autoupdate/default <<EOF
 #Author=ilxp
-#Github=https://github.com/ilxp/oprx-builder
-#TARGET_PROFILE=x86_64
+#Github=https://github.com/ilxp/oprx-release
 #TARGET_BOARD=x86
 #TARGET_SUBTARGET=64
 #TARGET_FLAG=${TARGET_FLAG}
