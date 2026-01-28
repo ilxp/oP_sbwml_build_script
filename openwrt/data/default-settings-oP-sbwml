@@ -289,22 +289,22 @@ echo "/etc/zerotier/" >> /etc/sysupgrade.conf && cat /etc/sysupgrade.conf | sort
 #echo "nobody:x:65534:" >> /etc/group
 
 #dnsmasq 设置以及开启 IPv6  
-uci del dhcp.lan.ra
-uci del dhcp.lan.dhcpv6
-uci del dhcp.lan.ndp
-uci del dhcp.lan.ra_useleasetime
-uci del dhcp.lan.preferred_lifetime
-uci set dhcp.lan.leasetime='12h'
-uci set dhcp.lan.ra='server'
-uci del dhcp.lan.ra_flags
-uci add_list dhcp.lan.ra_flags='none'
-uci del dhcp.lan.min_preferred_lifetime
-uci set dhcp.lan.max_preferred_lifetime='2700s'
-uci del dhcp.lan.min_valid_lifetime
-uci set dhcp.lan.max_valid_lifetime='5400s'
-uci set dhcp.lan.dns_service='0'
-uci set dhcp.@dnsmasq[0].rebind_protection='0'
-uci commit dhcp
+#uci del dhcp.lan.ra
+#uci del dhcp.lan.dhcpv6
+#uci del dhcp.lan.ndp
+#uci del dhcp.lan.ra_useleasetime
+#uci del dhcp.lan.preferred_lifetime
+#uci set dhcp.lan.leasetime='12h'
+#uci set dhcp.lan.ra='server'
+#uci del dhcp.lan.ra_flags
+#uci add_list dhcp.lan.ra_flags='none'
+#uci del dhcp.lan.min_preferred_lifetime
+#uci set dhcp.lan.max_preferred_lifetime='2700s'
+#uci del dhcp.lan.min_valid_lifetime
+#uci set dhcp.lan.max_valid_lifetime='5400s'
+#uci set dhcp.lan.dns_service='0'
+#uci set dhcp.@dnsmasq[0].rebind_protection='0'
+#uci commit dhcp
 uci set network.lan.ip6assign='64'
 uci set network.lan.ip6ifaceid='eui64'
 uci delete network.globals.ula_prefix
@@ -417,16 +417,16 @@ chmod 0755 /etc/init.d/*
 
 ####===========来源自己=====
 #dnsmasq 设置以及开启 IPv6
-#uci set dhcp.lan.ra='server'
-#uci set dhcp.lan.dhcpv6='server'
-#uci set dhcp.lan.ra_management='1'
-#uci set dhcp.lan.ra_default='1'
-#uci set dnsmasq.filter_aaaa='0' #开启解析ipv6
-##uci -q add_list dnsmasq.server='127.0.0.1#6053'
-##uci set dnsmasq.cachesize='0'
-##uci set dnsmasq.noresolv='1'
-##uci set dhcp.@dnsmasq[0].nohosts=1  #新增加一个选项
-#uci commit dhcp
+uci set dhcp.lan.ra='server'
+uci set dhcp.lan.dhcpv6='server'
+uci set dhcp.lan.ra_management='1'
+uci set dhcp.lan.ra_default='1'
+uci set dnsmasq.filter_aaaa='0' #开启解析ipv6
+#uci -q add_list dnsmasq.server='127.0.0.1#6053'
+#uci set dnsmasq.cachesize='0'
+#uci set dnsmasq.noresolv='1'
+#uci set dhcp.@dnsmasq[0].nohosts=1  #新增加一个选项
+uci commit dhcp
 #sed -i '/log-facility/d' /etc/dnsmasq.conf
 #echo "log-facility=/dev/null" >> /etc/dnsmasq.conf
 

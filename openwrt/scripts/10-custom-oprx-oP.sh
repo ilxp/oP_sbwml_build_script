@@ -398,7 +398,8 @@ rm -rf feeds/luci/applications/luci-app-netdata
 git clone https://github.com/sirpdboy/luci-app-netdata.git package/diy/luci-app-netdata
 
 #网络设置向导
-git clone https://github.com/sirpdboy/luci-app-netwizard.git package/diy/netwizard
+#git clone https://github.com/sirpdboy/luci-app-netwizard.git package/diy/netwizard
+git clone https://github.com/ilxp/luci-app-netwizard.git package/diy/netwizard
 sed -i 's/Netwizard/设置向导/g' package/diy/netwizard/luci-app-netwizard/root/usr/share/luci/menu.d/luci-app-netwizard.json
 sed -i 's/eth1/eth0/g' package/diy/netwizard/luci-app-netwizard/root/etc/init.d/netwizard
 
