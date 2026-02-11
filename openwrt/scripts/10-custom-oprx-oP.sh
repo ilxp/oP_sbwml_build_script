@@ -285,28 +285,30 @@ git clone https://github.com/sbwml/packages_lang_golang -b 25.x feeds/packages/l
 #解决缺乏libopenssl-legacy依赖
 #sed -i 's/ +libopenssl-legacy//g' package/helloworld/shadowsocksr-libev/Makefile
 
-#2、passwall
+#2、passwall【需要sbwml的仓库，记得要更新golang的版本】
 #克隆官方的，以及删除sbwml的
 rm -rf package/new/helloworld
 rm -rf feeds/luci/applications/luci-app-passwall
 # 移除 openwrt feeds 自带的核心库
-rm -rf feeds/packages/net/{xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,trojan-plus,tuic-client,v2ray-plugin,xray-plugin,geoview,shadow-tls}
-git clone https://github.com/Openwrt-Passwall/openwrt-passwall-packages package/passwall-packages
-
-#shadowsocks-rust报错
-rm -f package/passwall-packages/shadowsocks-rus
-merge_package v5 https://github.com/sbwml/openwrt_helloworld.git package/passwall-packages shadowsocks-rust
+#rm -rf feeds/packages/net/{xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,trojan-plus,tuic-client,v2ray-plugin,xray-plugin,geoview,shadow-tls}
+#git clone https://github.com/Openwrt-Passwall/openwrt-passwall-packages package/passwall-packages
 
 # 移除 openwrt feeds 过时的luci版本
-rm -rf feeds/luci/applications/luci-app-passwall
-git clone https://github.com/Openwrt-Passwall/openwrt-passwall package/helloworld
+#rm -rf feeds/luci/applications/luci-app-passwall
+#git clone https://github.com/Openwrt-Passwall/openwrt-passwall package/openwrt_helloworld
 
 #采用kenzok8的small库
-#git clone https://github.com/kenzok8/small.git package/diy/openwrt-passwall
+#git clone https://github.com/kenzok8/small.git package/openwrt_helloworld
 
 # sbwml的SSRP & Passwall nikki
 #rm -rf feeds/packages/net/{xray-core,v2ray-core,v2ray-geodata,sing-box}
-#git clone https://github.com/sbwml/openwrt_helloworld package/helloworld -b v5
+#git clone https://github.com/sbwml/openwrt_helloworld package/openwrt_helloworld -b v5
+
+#采用qiumos的库
+rm -rf feeds/packages/net/{xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,trojan-plus,tuic-client,v2ray-plugin,xray-plugin,geoview,shadow-tls}
+rm -rf feeds/luci/applications/luci-app-passwall
+merge_package master https://github.com/QiuSimons/OpenWrt-Add.git package openwrt_helloworld
+
 
 ##FQ全部调到VPN菜单
 sed -i 's/services/vpn/g' package/helloworld/luci-app-passwall/luasrc/controller/*.lua
