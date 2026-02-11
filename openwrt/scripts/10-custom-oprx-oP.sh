@@ -108,6 +108,8 @@ merge_package master https://github.com/openwrt/packages.git feeds/packages/util
 rm -rf feeds/luci/applications/luci-app-upnp
 merge_package master https://github.com/openwrt/luci.git feeds/luci/applications applications/luci-app-upnp
 
+rm -rf package/libs/openssl/patches/140-allow-prefer-chacha20.patch
+
 ###################
 
 #四、系统优化########
