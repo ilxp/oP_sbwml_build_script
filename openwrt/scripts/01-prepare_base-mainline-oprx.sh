@@ -94,6 +94,9 @@ curl -s $mirror/openwrt/patch/kernel-6.12/openwrt/linux-6.12-target-linux-generi
 
 #==============采用外来的内核补丁================================================
 #----------------采用 lede的6.12内核补丁-----------------------------------------
+rm -rf toolchain/kernel-headers
+merge_package master https://github.com/coolsnowwolf/lede.git toolchain toolchain/kernel-headers
+
 #generic
 wget -P target/linux/generic/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/generic/config-6.12
 merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/backport-6.12
