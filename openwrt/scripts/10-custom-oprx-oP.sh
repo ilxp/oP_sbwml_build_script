@@ -114,6 +114,7 @@ rm -rf target/linux/generic/backport-6.12/403-v6.19-mtd-mtdpart-ignore-error-ENO
 rm -rf target/linux/generic/backport-6.12/720-04-v6.13-net-phy-mediatek-Re-organize-MediaTek-ethernet-phy-d.patch
 rm -rf target/linux/generic/backport-6.12/720-05-v6.13-net-phy-mediatek-Move-LED-helper-functions-into-mtk-.patch
 rm -rf target/linux/generic/backport-6.12/720-06-v6.13-net-phy-mediatek-Improve-readability-of-mtk-phy-lib..patch
+rm -rf target/linux/generic/backport-6.12/720-07-v6.13-net-phy-mediatek-Integrate-read-write-page-helper-fu.patch
 
 ###################
 
