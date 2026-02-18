@@ -69,8 +69,8 @@ curl -s $mirror/openwrt/patch/openwrt-6.x/x86/base-files/etc/board.d/02_network 
 #git clone https://nanopi:nanopi@$gitea/sbwml/target_linux_armsr target/linux/armsr -b main
 
 # kernel - 6.12
-curl -s $mirror/tags/kernel-6.12 > include/kernel-6.12
-#curl -s https://github.com/coolsnowwolf/lede/raw/master/include/kernel-6.12 > include/kernel-6.12
+#curl -s $mirror/tags/kernel-6.12 > include/kernel-6.12
+curl -s https://github.com/coolsnowwolf/lede/raw/master/include/kernel-6.12 > include/kernel-6.12
 #wget -qO- "https://github.com/coolsnowwolf/lede/raw/master/include/kernel-6.12"  >> include/kernel-6.12
 
 # kenrel Vermagic
@@ -95,44 +95,15 @@ curl -s $mirror/openwrt/patch/kernel-6.12/openwrt/linux-6.12-target-linux-generi
 #==============采用外来的内核补丁================================================
 #----------------采用 lede的6.12内核补丁-----------------------------------------
 #generic
-#wget -P target/linux/generic/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/generic/config-6.12
-#merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/backport-6.12
-#merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/hack-6.12
-#merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/pending-6.12
+wget -P target/linux/generic/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/generic/config-6.12
+merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/backport-6.12
+merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/hack-6.12
+merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/pending-6.12
 
 #x86【用上面sbwml的也可以】
-#wget -P target/linux/x86/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/config-6.12
-#wget -P target/linux/x86/64/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/64/config-6.12
-#merge_package master https://github.com/coolsnowwolf/lede.git target/linux/x86 target/linux/x86/patches-6.12
-
-#编译内核选择
-#sed -ri "s/(KERNEL_PATCHVER:=)[^\"]*/\16.12/" target/linux/x86/Makefile
-#sed -i '/KERNEL_PATCHVER/a\KERNEL_TESTING_PATCHVER:=6.6' target/linux/x86/Makefile
-
-#删除lede多余的patch：952—953—982
-#rm -rf target/linux/generic/hack-6.12/952-add-net-conntrack-events-support-multiple-registrant.patch
-#rm -rf target/linux/generic/hack-6.12/982-add-bcm-fullconenat-support.patch
-#rm -rf target/linux/generic/hack-6.12/953-net-patch-linux-kernel-to-support-shortcut-fe.patch
-#---------------------------------------------------------------------------------------------------
-
-#----------------采用 lienol的6.12内核补丁-----------------------------------------
-#generic
-wget -P target/linux/generic/ https://github.com/lienol/openwrt/raw/24.10/target/linux/generic/config-6.12
-merge_package 24.10 https://github.com/lienol/openwrt.git target/linux/generic target/linux/generic/backport-6.12
-merge_package 24.10 https://github.com/lienol/openwrt.git target/linux/generic target/linux/generic/hack-6.12
-merge_package 24.10 https://github.com/lienol/openwrt.git target/linux/generic target/linux/generic/pending-6.12
-
-#x86【用上面sbwml的也可以】
-wget -P target/linux/x86/ https://github.com/lienol/openwrt/raw/24.10/target/linux/x86/config-6.12
-wget -P target/linux/x86/64/ https://github.com/lienol/openwrt/raw/24.10/target/linux/x86/64/config-6.12
-merge_package 24.10 https://github.com/lienol/openwrt.git target/linux/x86 target/linux/x86/patches-6.12
-
-#24.10缺失的rtl8261n与ssb、bcma
-merge_package main https://github.com/openwrt/openwrt.git target/linux/generic/files/drivers/net/phy target/linux/generic/files/drivers/net/phy/rtl8261n
-rm -rf target/linux/generic/files/drivers/ssb
-rm -rf target/linux/generic/files/drivers/bcma
-merge_package main https://github.com/openwrt/openwrt.git target/linux/generic/files/drivers target/linux/generic/files/drivers/ssb
-merge_package main https://github.com/openwrt/openwrt.git target/linux/generic/files/drivers target/linux/generic/files/drivers/bcma
+wget -P target/linux/x86/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/config-6.12
+wget -P target/linux/x86/64/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/64/config-6.12
+merge_package master https://github.com/coolsnowwolf/lede.git target/linux/x86 target/linux/x86/patches-6.12
 
 #编译内核选择
 sed -ri "s/(KERNEL_PATCHVER:=)[^\"]*/\16.12/" target/linux/x86/Makefile
@@ -142,6 +113,35 @@ sed -i '/KERNEL_PATCHVER/a\KERNEL_TESTING_PATCHVER:=6.6' target/linux/x86/Makefi
 rm -rf target/linux/generic/hack-6.12/952-add-net-conntrack-events-support-multiple-registrant.patch
 rm -rf target/linux/generic/hack-6.12/982-add-bcm-fullconenat-support.patch
 rm -rf target/linux/generic/hack-6.12/953-net-patch-linux-kernel-to-support-shortcut-fe.patch
+#---------------------------------------------------------------------------------------------------
+
+#----------------采用 lienol的6.12内核补丁-----------------------------------------
+#generic
+#wget -P target/linux/generic/ https://github.com/lienol/openwrt/raw/24.10/target/linux/generic/config-6.12
+#merge_package 24.10 https://github.com/lienol/openwrt.git target/linux/generic target/linux/generic/backport-6.12
+#merge_package 24.10 https://github.com/lienol/openwrt.git target/linux/generic target/linux/generic/hack-6.12
+#merge_package 24.10 https://github.com/lienol/openwrt.git target/linux/generic target/linux/generic/pending-6.12
+
+#x86【用上面sbwml的也可以】
+#wget -P target/linux/x86/ https://github.com/lienol/openwrt/raw/24.10/target/linux/x86/config-6.12
+#wget -P target/linux/x86/64/ https://github.com/lienol/openwrt/raw/24.10/target/linux/x86/64/config-6.12
+#merge_package 24.10 https://github.com/lienol/openwrt.git target/linux/x86 target/linux/x86/patches-6.12
+
+#24.10缺失的rtl8261n与ssb、bcma
+#merge_package main https://github.com/openwrt/openwrt.git target/linux/generic/files/drivers/net/phy target/linux/generic/files/drivers/net/phy/rtl8261n
+#rm -rf target/linux/generic/files/drivers/ssb
+#rm -rf target/linux/generic/files/drivers/bcma
+#merge_package main https://github.com/openwrt/openwrt.git target/linux/generic/files/drivers target/linux/generic/files/drivers/ssb
+#merge_package main https://github.com/openwrt/openwrt.git target/linux/generic/files/drivers target/linux/generic/files/drivers/bcma
+
+#编译内核选择
+sed -ri "s/(KERNEL_PATCHVER:=)[^\"]*/\16.12/" target/linux/x86/Makefile
+sed -i '/KERNEL_PATCHVER/a\KERNEL_TESTING_PATCHVER:=6.6' target/linux/x86/Makefile
+
+#删除lede多余的patch：952—953—982
+#rm -rf target/linux/generic/hack-6.12/952-add-net-conntrack-events-support-multiple-registrant.patch
+#rm -rf target/linux/generic/hack-6.12/982-add-bcm-fullconenat-support.patch
+#rm -rf target/linux/generic/hack-6.12/953-net-patch-linux-kernel-to-support-shortcut-fe.patch
 #---------------------------------------------------------------------------------------------------
 
 ##---------------------Other Kernel Hack 部分 ###------------------------------
