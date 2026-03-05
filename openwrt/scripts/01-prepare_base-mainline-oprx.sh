@@ -97,6 +97,9 @@ curl -s $mirror/openwrt/patch/kernel-6.12/openwrt/linux-6.12-target-linux-generi
 #rm -rf toolchain/kernel-headers
 #merge_package master https://github.com/coolsnowwolf/lede.git toolchain toolchain/kernel-headers
 
+rm -rf scripts/download.pl
+wget -P scripts/ https://github.com/coolsnowwolf/lede/raw/master/scripts/download.pl
+
 #generic
 wget -P target/linux/generic/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/generic/config-6.12
 merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/backport-6.12
