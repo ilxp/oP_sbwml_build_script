@@ -39,7 +39,7 @@ function merge_package() {
 ###################
 
 # autocore
-git clone https://$github/sbwml/autocore-arm -b openwrt-24.10 package/system/autocore
+git clone https://$github/sbwml/autocore-arm -b openwrt-25.12 package/system/autocore
 
 # rockchip - target - r4s/r5s only
 #rm -rf target/linux/rockchip
@@ -50,7 +50,7 @@ git clone https://$github/sbwml/autocore-arm -b openwrt-24.10 package/system/aut
 #fi
 
 # bpf-headers - 6.12
-sed -ri "s/(PKG_PATCHVER:=)[^\"]*/\16.12/" package/kernel/bpf-headers/Makefile
+#sed -ri "s/(PKG_PATCHVER:=)[^\"]*/\16.12/" package/kernel/bpf-headers/Makefile
 
 # x86_64 - target 6.12
 #curl -s $mirror/openwrt/patch/openwrt-6.x/x86/64/config-6.12 > target/linux/x86/64/config-6.12
@@ -97,28 +97,28 @@ curl -s $mirror/openwrt/patch/kernel-6.12/openwrt/linux-6.12-target-linux-generi
 #rm -rf toolchain/kernel-headers
 #merge_package master https://github.com/coolsnowwolf/lede.git toolchain toolchain/kernel-headers
 
-rm -rf scripts/download.pl
-wget -P scripts/ https://github.com/coolsnowwolf/lede/raw/master/scripts/download.pl
+#rm -rf scripts/download.pl
+#wget -P scripts/ https://github.com/coolsnowwolf/lede/raw/master/scripts/download.pl
 
 #generic
-wget -P target/linux/generic/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/generic/config-6.12
-merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/backport-6.12
-merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/hack-6.12
-merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/pending-6.12
+#wget -P target/linux/generic/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/generic/config-6.12
+#merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/backport-6.12
+#merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/hack-6.12
+#merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/pending-6.12
 
 #x86【用上面sbwml的也可以】
-wget -P target/linux/x86/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/config-6.12
-wget -P target/linux/x86/64/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/64/config-6.12
-merge_package master https://github.com/coolsnowwolf/lede.git target/linux/x86 target/linux/x86/patches-6.12
+#wget -P target/linux/x86/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/config-6.12
+#wget -P target/linux/x86/64/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/64/config-6.12
+#merge_package master https://github.com/coolsnowwolf/lede.git target/linux/x86 target/linux/x86/patches-6.12
 
 #编译内核选择
-sed -ri "s/(KERNEL_PATCHVER:=)[^\"]*/\16.12/" target/linux/x86/Makefile
-sed -i '/KERNEL_PATCHVER/a\KERNEL_TESTING_PATCHVER:=6.6' target/linux/x86/Makefile
+#sed -ri "s/(KERNEL_PATCHVER:=)[^\"]*/\16.12/" target/linux/x86/Makefile
+#sed -i '/KERNEL_PATCHVER/a\KERNEL_TESTING_PATCHVER:=6.6' target/linux/x86/Makefile
 
 #删除lede多余的patch：952—953—982
-rm -rf target/linux/generic/hack-6.12/952-add-net-conntrack-events-support-multiple-registrant.patch
-rm -rf target/linux/generic/hack-6.12/982-add-bcm-fullconenat-support.patch
-rm -rf target/linux/generic/hack-6.12/953-net-patch-linux-kernel-to-support-shortcut-fe.patch
+#rm -rf target/linux/generic/hack-6.12/952-add-net-conntrack-events-support-multiple-registrant.patch
+#rm -rf target/linux/generic/hack-6.12/982-add-bcm-fullconenat-support.patch
+#rm -rf target/linux/generic/hack-6.12/953-net-patch-linux-kernel-to-support-shortcut-fe.patch
 #---------------------------------------------------------------------------------------------------
 
 #----------------采用 lienol的6.12内核补丁-----------------------------------------
@@ -141,8 +141,8 @@ rm -rf target/linux/generic/hack-6.12/953-net-patch-linux-kernel-to-support-shor
 #merge_package main https://github.com/openwrt/openwrt.git target/linux/generic/files/drivers target/linux/generic/files/drivers/bcma
 
 #编译内核选择
-sed -ri "s/(KERNEL_PATCHVER:=)[^\"]*/\16.12/" target/linux/x86/Makefile
-sed -i '/KERNEL_PATCHVER/a\KERNEL_TESTING_PATCHVER:=6.6' target/linux/x86/Makefile
+#sed -ri "s/(KERNEL_PATCHVER:=)[^\"]*/\16.12/" target/linux/x86/Makefile
+#sed -i '/KERNEL_PATCHVER/a\KERNEL_TESTING_PATCHVER:=6.6' target/linux/x86/Makefile
 
 #删除lede多余的patch：952—953—982
 #rm -rf target/linux/generic/hack-6.12/952-add-net-conntrack-events-support-multiple-registrant.patch
