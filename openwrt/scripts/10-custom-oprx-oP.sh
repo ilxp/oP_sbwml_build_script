@@ -150,6 +150,8 @@ sed -i "s/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION='oP built by ilxp@%C'/g" pac
 
 sed -i "/OPENWRT_RELEASE/d" package/base-files/files/usr/lib/os-release
 sed -i "/OPENWRT_DEVICE_REVISION/aOPENWRT_RELEASE=\"oP built by ilxp@%C\"" package/base-files/files/usr/lib/os-release
+
+#sed -i "s#^OPENWRT_RELEASE=\".*\"#OPENWRT_RELEASE=\"oP built by ilxp@%C\"#" package/base-files/files/usr/lib/os-release     #原文是双引号
 	
 # 固件的命名格式：。
 #去掉版本号 openwrt-23.05.2-x86-64或者openwrt-23.05-snapshot-r0-60e49cf-x86-64改为openwrt-x86-64
