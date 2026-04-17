@@ -138,7 +138,7 @@ merge_package master https://github.com/openwrt/luci.git feeds/luci/applications
 # 固件版本号(21.3.2 %y : 年份的最后两位数字)
 #date=`TZ=UTC-8 date +%m.%d.%Y`  #升级用，统一这样
 #R$(TZ=UTC-8 date +'%y.%-m.%-d')
-ReV_Date=`TZ=UTC-8 date +%y.%-m.%-d`  #24年1月1日：24.1.1  #以上引用不用带{}，即$ReV_Date
+ReV_Date=`TZ=UTC-8 date +%y%-m%-d`  #24年1月1日：24.1.1  #以上引用不用带{}，即$ReV_Date
 #ReV_Date=$(TZ=UTC-8 date +'%y.%-m.%-d')  #这个引用要带{}，即${ReV_Date}
 Build_DATE=$(TZ=UTC-8 date +'%Y%m%d')  #这个引用要带{}，即${Build_DATE} 
 sed -i -e "/\(# \)\?REVISION:=/c\REVISION:=$ReV_Date" -e '/VERSION_CODE:=/c\VERSION_CODE:=$(REVISION)' include/version.mk
