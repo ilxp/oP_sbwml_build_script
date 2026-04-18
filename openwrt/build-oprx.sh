@@ -204,7 +204,7 @@ git clone https://$github/immortalwrt/packages master/immortalwrt_packages --dep
 
 if [ -d openwrt ]; then
     cd openwrt
-    curl -Os $mirror/openwrt/patch/key.tar.gz && tar zxf key.tar.gz && rm -f key.tar.gz
+    curl -Os $mirror/openwrt/patch/key2.tar.gz && tar zxf key2.tar.gz && rm -f key2.tar.gz
 else
     echo -e "${RED_COLOR}Failed to download source code${RES}"
     exit 1
@@ -285,7 +285,7 @@ rm -rf ../master
 
 # Load devices Config
 if [ "$platform" = "x86_64" ]; then
-    curl -s $mirror/openwrt/configs/24-config-musl-x86-oprx > .config
+    curl -s $mirror/openwrt/configs/25-config-musl-x86-oprx > .config
 elif [ "$platform" = "bcm53xx" ]; then
     if [ "$MINIMAL_BUILD" = "y" ]; then
         curl -s $mirror/openwrt/configs/24-config-musl-r8500-minimal > .config
@@ -306,7 +306,7 @@ if [ "$MINIMAL_BUILD" = "y" ]; then
     [ "$platform" != "bcm53xx" ] && curl -s $mirror/openwrt/configs/24-config-minimal-common >> .config
     echo 'VERSION_TYPE="minimal"' >> package/base-files/files/usr/lib/os-release
 else
-    [ "$platform" != "bcm53xx" ] && curl -s $mirror/openwrt/configs/24-config-common-oprx >> .config
+    [ "$platform" != "bcm53xx" ] && curl -s $mirror/openwrt/configs/25-config-common-oprx >> .config
     [ "$platform" = "armv8" ] && sed -i '/DOCKER/Id' .config
 fi
 

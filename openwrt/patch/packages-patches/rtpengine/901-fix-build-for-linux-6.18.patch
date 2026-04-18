@@ -1,0 +1,25 @@
+--- a/kernel-module/xt_RTPENGINE.c
++++ b/kernel-module/xt_RTPENGINE.c
+@@ -35,11 +35,7 @@
+ #include <linux/netfilter/x_tables.h>
+ #include <linux/crc32.h>
+ #include <linux/math64.h>
+-#ifndef __RE_EXTERNAL
+-#include <linux/netfilter/xt_RTPENGINE.h>
+-#else
+ #include "xt_RTPENGINE.h"
+-#endif
+ 
+ #include "rtpengine_config.h"
+ 
+--- a/kernel-module/xt_RTPENGINE.h
++++ b/kernel-module/xt_RTPENGINE.h
+@@ -1,7 +1,7 @@
+ #ifndef XT_RTPPROXY_H
+ #define XT_RTPPROXY_H
+ 
+-
++#define RTPENGINE_VERSION "11.5.1.49"
+ 
+ #define RTPE_NUM_PAYLOAD_TYPES 32
+ #define RTPE_MAX_FORWARD_DESTINATIONS 32
