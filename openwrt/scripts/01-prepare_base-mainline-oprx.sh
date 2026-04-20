@@ -94,26 +94,33 @@ curl -s $mirror/openwrt/patch/kernel-6.12/openwrt/linux-6.12-target-linux-generi
 
 #==============采用外来的内核补丁================================================
 #----------------采用 lede的6.12内核补丁-----------------------------------------
-#rm -rf toolchain/kernel-headers
-#merge_package master https://github.com/coolsnowwolf/lede.git toolchain toolchain/kernel-headers
+rm -rf toolchain/kernel-headers
+merge_package master https://github.com/coolsnowwolf/lede.git toolchain toolchain/kernel-headers
 
 #rm -rf scripts/download.pl
 #wget -P scripts/ https://github.com/coolsnowwolf/lede/raw/master/scripts/download.pl
 
 #generic
-#wget -P target/linux/generic/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/generic/config-6.12
-#merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/backport-6.12
-#merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/hack-6.12
-#merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/pending-6.12
+rm -rf target/linux/generic/config-6.12
+rm -rf target/linux/generic/backport-6.12
+rm -rf target/linux/generic/hack-6.12
+rm -rf target/linux/generic/pending-6.12
+wget -P target/linux/generic/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/generic/config-6.12
+merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/backport-6.12
+merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/hack-6.12
+merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/pending-6.12
 
 #x86【用上面sbwml的也可以】
-#wget -P target/linux/x86/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/config-6.12
-#wget -P target/linux/x86/64/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/64/config-6.12
-#merge_package master https://github.com/coolsnowwolf/lede.git target/linux/x86 target/linux/x86/patches-6.12
+rm -rf target/linux/x86/config-6.12
+rm -rf target/linux/x86/64/config-6.12
+rm -rf target/linux/x86/patches-6.12
+wget -P target/linux/x86/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/config-6.12
+wget -P target/linux/x86/64/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/64/config-6.12
+merge_package master https://github.com/coolsnowwolf/lede.git target/linux/x86 target/linux/x86/patches-6.12
 
 #编译内核选择
-#sed -ri "s/(KERNEL_PATCHVER:=)[^\"]*/\16.12/" target/linux/x86/Makefile
-#sed -i '/KERNEL_PATCHVER/a\KERNEL_TESTING_PATCHVER:=6.6' target/linux/x86/Makefile
+sed -ri "s/(KERNEL_PATCHVER:=)[^\"]*/\16.12/" target/linux/x86/Makefile
+sed -i '/KERNEL_PATCHVER/a\KERNEL_TESTING_PATCHVER:=6.6' target/linux/x86/Makefile
 
 #删除lede多余的patch：952—953—982
 #rm -rf target/linux/generic/hack-6.12/952-add-net-conntrack-events-support-multiple-registrant.patch
