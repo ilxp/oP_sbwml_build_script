@@ -122,6 +122,8 @@ merge_package master https://github.com/coolsnowwolf/lede.git target/linux/x86 t
 sed -ri "s/(KERNEL_PATCHVER:=)[^\"]*/\16.12/" target/linux/x86/Makefile
 sed -i '/KERNEL_PATCHVER/a\KERNEL_TESTING_PATCHVER:=6.6' target/linux/x86/Makefile
 
+rm -rf target/linux/generic/hack-6.12/902-debloat_proc.patch
+
 #删除lede多余的patch：952—953—982
 #rm -rf target/linux/generic/hack-6.12/952-add-net-conntrack-events-support-multiple-registrant.patch
 #rm -rf target/linux/generic/hack-6.12/982-add-bcm-fullconenat-support.patch
