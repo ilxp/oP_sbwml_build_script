@@ -78,7 +78,7 @@ sed -ie 's/^\(.\).*vermagic$/\1cp $(TOPDIR)\/.vermagic $(LINUX_DIR)\/.vermagic/'
 grep HASH include/kernel-6.12 | awk -F'HASH-' '{print $2}' | awk '{print $1}' | md5sum | awk '{print $1}' > .vermagic
 
 # kernel generic patches
-curl -s $mirror/openwrt/patch/kernel-6.12/openwrt/linux-6.12-target-linux-generic.patch | patch -p1
+#curl -s $mirror/openwrt/patch/kernel-6.12/openwrt/linux-6.12-target-linux-generic.patch | patch -p1
 #local_kernel_version=$(sed -n 's/^LINUX_KERNEL_HASH-\([0-9.]\+\) = .*/\1/p' include/kernel-6.12)
 #release_kernel_version=$(curl -sL https://raw.githubusercontent.com/sbwml/r4s_build_script/master/tags/kernel-6.12 | sed -n 's/^LINUX_KERNEL_HASH-\([0-9.]\+\) = .*/\1/p')
 #if [ "$local_kernel_version" = "$release_kernel_version" ] && [ -z "$git_password" ] && [ "$(whoami)" != "sbwml" ]; then
@@ -94,41 +94,36 @@ curl -s $mirror/openwrt/patch/kernel-6.12/openwrt/linux-6.12-target-linux-generi
 
 #==============采用外来的内核补丁================================================
 #----------------采用 lede的6.12内核补丁-----------------------------------------
-rm -rf toolchain/kernel-headers
-merge_package master https://github.com/coolsnowwolf/lede.git toolchain toolchain/kernel-headers
+#rm -rf toolchain/kernel-headers
+#merge_package master https://github.com/coolsnowwolf/lede.git toolchain toolchain/kernel-headers
 
 #rm -rf scripts/download.pl
 #wget -P scripts/ https://github.com/coolsnowwolf/lede/raw/master/scripts/download.pl
 
 #generic
-rm -rf target/linux/generic/config-6.12
-rm -rf target/linux/generic/backport-6.12
-rm -rf target/linux/generic/hack-6.12
-rm -rf target/linux/generic/pending-6.12
-wget -P target/linux/generic/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/generic/config-6.12
-merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/backport-6.12
-merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/hack-6.12
-merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/pending-6.12
+#wget -P target/linux/generic/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/generic/config-6.12
+#merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/backport-6.12
+#merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/hack-6.12
+#merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/pending-6.12
 
 #x86【用上面sbwml的也可以】
-rm -rf target/linux/x86/config-6.12
-rm -rf target/linux/x86/64/config-6.12
-rm -rf target/linux/x86/patches-6.12
-wget -P target/linux/x86/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/config-6.12
-wget -P target/linux/x86/64/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/64/config-6.12
-merge_package master https://github.com/coolsnowwolf/lede.git target/linux/x86 target/linux/x86/patches-6.12
+#rm -rf target/linux/x86/config-6.12
+#rm -rf target/linux/x86/64/config-6.12
+#rm -rf target/linux/x86/patches-6.12
+#wget -P target/linux/x86/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/config-6.12
+#wget -P target/linux/x86/64/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/x86/64/config-6.12
+#merge_package master https://github.com/coolsnowwolf/lede.git target/linux/x86 target/linux/x86/patches-6.12
 
 #编译内核选择
-sed -ri "s/(KERNEL_PATCHVER:=)[^\"]*/\16.12/" target/linux/x86/Makefile
-sed -i '/KERNEL_PATCHVER/a\KERNEL_TESTING_PATCHVER:=6.6' target/linux/x86/Makefile
+#sed -ri "s/(KERNEL_PATCHVER:=)[^\"]*/\16.12/" target/linux/x86/Makefile
+#sed -i '/KERNEL_PATCHVER/a\KERNEL_TESTING_PATCHVER:=6.6' target/linux/x86/Makefile
 
-rm -rf target/linux/generic/hack-6.12/902-debloat_proc.patch
 
 #删除lede多余的patch：952—953—982
-rm -rf target/linux/generic/hack-6.12/952-add-net-conntrack-events-support-multiple-registrant.patch
-rm -rf target/linux/generic/hack-6.12/982-add-bcm-fullconenat-support.patch
-rm -rf target/linux/generic/hack-6.12/953-net-patch-linux-kernel-to-support-shortcut-fe.patch
-rm -rf target/linux/generic/hack-6.12/983-add-bcm-fullconenat-to-nft.patch
+#rm -rf target/linux/generic/hack-6.12/952-add-net-conntrack-events-support-multiple-registrant.patch
+#rm -rf target/linux/generic/hack-6.12/982-add-bcm-fullconenat-support.patch
+#rm -rf target/linux/generic/hack-6.12/953-net-patch-linux-kernel-to-support-shortcut-fe.patch
+#rm -rf target/linux/generic/hack-6.12/983-add-bcm-fullconenat-to-nft.patch
 #---------------------------------------------------------------------------------------------------
 
 #----------------采用 lienol的6.12内核补丁-----------------------------------------
