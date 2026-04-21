@@ -128,6 +128,7 @@ rm -rf target/linux/generic/hack-6.12/902-debloat_proc.patch
 rm -rf target/linux/generic/hack-6.12/952-add-net-conntrack-events-support-multiple-registrant.patch
 rm -rf target/linux/generic/hack-6.12/982-add-bcm-fullconenat-support.patch
 rm -rf target/linux/generic/hack-6.12/953-net-patch-linux-kernel-to-support-shortcut-fe.patch
+rm -rf target/linux/generic/hack-6.12/983-add-bcm-fullconenat-to-nft.patch
 #---------------------------------------------------------------------------------------------------
 
 #----------------采用 lienol的6.12内核补丁-----------------------------------------
