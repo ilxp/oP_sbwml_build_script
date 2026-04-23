@@ -105,20 +105,6 @@ rm -rf feeds/packages/utils/bc
 merge_package master https://github.com/openwrt/packages.git feeds/packages/libs  libs/oniguruma
 merge_package master https://github.com/openwrt/packages.git feeds/packages/utils  utils/bc
 
-rm -rf feeds/luci/applications/luci-app-upnp
-merge_package master https://github.com/openwrt/luci.git feeds/luci/applications applications/luci-app-upnp
-
-rm -rf package/network/utils/iproute2
-merge_package main https://github.com/openwrt/openwrt.git  package/network/utils package/network/utils/iproute2
-
-#rm -rf package/libs/openssl/patches/140-allow-prefer-chacha20.patch
-#rm -rf package/libs/openssl/patches/500-e_devcrypto-default-to-not-use-digests-in-engine.patch
-#rm -rf target/linux/generic/backport-6.12/403-v6.19-mtd-mtdpart-ignore-error-ENOENT-from-parsers-on-subp.patch
-#rm -rf target/linux/generic/backport-6.12/720-04-v6.13-net-phy-mediatek-Re-organize-MediaTek-ethernet-phy-d.patch
-#rm -rf target/linux/generic/backport-6.12/720-05-v6.13-net-phy-mediatek-Move-LED-helper-functions-into-mtk-.patch
-#rm -rf target/linux/generic/backport-6.12/720-06-v6.13-net-phy-mediatek-Improve-readability-of-mtk-phy-lib..patch
-#rm -rf target/linux/generic/backport-6.12/720-07-v6.13-net-phy-mediatek-Integrate-read-write-page-helper-fu.patch
-
 ###################
 
 #四、系统优化########
@@ -276,7 +262,7 @@ sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci-n
 #二）、翻墙系列（openwrt编译系统自带为passwall+homeproxy）
 #golang版本【使用sbwnl库的记得要更新到最新26.x】
 rm -rf feeds/packages/lang/golang
-git clone https://github.com/sbwml/packages_lang_golang -b 25.x feeds/packages/lang/golang
+git clone https://github.com/sbwml/packages_lang_golang -b 26.x feeds/packages/lang/golang
 
 #1、ssr-plus
 #rm -rf package/helloworld
@@ -314,13 +300,13 @@ rm -rf feeds/luci/applications/luci-app-passwall
 #git clone https://github.com/kenzok8/small.git package/openwrt_helloworld
 
 # sbwml的SSRP & Passwall nikki
-#rm -rf feeds/packages/net/{xray-core,v2ray-core,v2ray-geodata,sing-box}
-#git clone https://github.com/sbwml/openwrt_helloworld package/openwrt_helloworld -b v5
+rm -rf feeds/packages/net/{xray-core,v2ray-core,v2ray-geodata,sing-box}
+git clone https://github.com/sbwml/openwrt_helloworld package/helloworld -b v5
 
 #采用qiumos的库
-rm -rf feeds/packages/net/{xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,trojan-plus,tuic-client,v2ray-plugin,xray-plugin,geoview,shadow-tls}
-rm -rf feeds/luci/applications/luci-app-passwall
-merge_package master https://github.com/QiuSimons/OpenWrt-Add.git package openwrt_helloworld
+#rm -rf feeds/packages/net/{xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,trojan-plus,tuic-client,v2ray-plugin,xray-plugin,geoview,shadow-tls}
+#rm -rf feeds/luci/applications/luci-app-passwall
+#merge_package master https://github.com/QiuSimons/OpenWrt-Add.git package helloworld
 
 
 ##FQ全部调到VPN菜单
@@ -464,7 +450,7 @@ git clone https://github.com/sirpdboy/luci-app-advanced.git package/diy/luci-app
 
 ##五）QOS相关
 #石像鬼qos采用我自己的，会有一个QOS栏目生成
-git clone -b main https://github.com/ilxp/gargoyle-qos-openwrt.git  package/diy/gargoyle-qos-openwrt
+git clone -b main https://github.com/ilxp/iqos-openwrt.git  package/diy/iqos-openwrt
 #sed -i 's/Gargoyle QoS/石像鬼 QoS/g' package/diy/gargoyle-qos-openwrt/luci-app-qos-gargoyle/luasrc/controller/qos_gargoyle.lua
 #sed -i 's/Download Settings/下载设置/g' package/diy/gargoyle-qos-openwrt/luci-app-qos-gargoyle/luasrc/controller/qos_gargoyle.lua
 #sed -i 's/Upload Settings/上传设置/g' package/diy/gargoyle-qos-openwrt/luci-app-qos-gargoyle/luasrc/controller/qos_gargoyle.lua
@@ -950,35 +936,35 @@ git clone https://github.com/timsaya/luci-app-bandix  package/new/bandix-luci
 git clone https://github.com/timsaya/openwrt-bandix  package/new/bandix
 
 #ddns
-merge_package master https://github.com/QiuSimons/OpenWrt-Add.git package/new openwrt_pkgs/ddns-scripts-aliyun
+#merge_package master https://github.com/QiuSimons/OpenWrt-Add.git package/new openwrt_pkgs/ddns-scripts-aliyun
 
 # Boost 通用即插即用  #采用yaof的
-rm -rf ./feeds/packages/net/miniupnpd
+#rm -rf ./feeds/packages/net/miniupnpd
 #cp -rf ../openwrt_pkg_ma/net/miniupnpd ./feeds/packages/net/miniupnpd
-merge_package master https://github.com/openwrt/packages.git feeds/packages/net net/miniupnpd
-mkdir -p feeds/packages/net/miniupnpd/patches
-wget https://github.com/miniupnp/miniupnp/commit/0e8c68d.patch -O feeds/packages/net/miniupnpd/patches/0e8c68d.patch
-sed -i 's,/miniupnpd/,/,g' ./feeds/packages/net/miniupnpd/patches/0e8c68d.patch
-wget https://github.com/miniupnp/miniupnp/commit/21541fc.patch -O feeds/packages/net/miniupnpd/patches/21541fc.patch
-sed -i 's,/miniupnpd/,/,g' ./feeds/packages/net/miniupnpd/patches/21541fc.patch
-wget https://github.com/miniupnp/miniupnp/commit/b78a363.patch -O feeds/packages/net/miniupnpd/patches/b78a363.patch
-sed -i 's,/miniupnpd/,/,g' ./feeds/packages/net/miniupnpd/patches/b78a363.patch
-wget https://github.com/miniupnp/miniupnp/commit/8f2f392.patch -O feeds/packages/net/miniupnpd/patches/8f2f392.patch
-sed -i 's,/miniupnpd/,/,g' ./feeds/packages/net/miniupnpd/patches/8f2f392.patch
-wget https://github.com/miniupnp/miniupnp/commit/60f5705.patch -O feeds/packages/net/miniupnpd/patches/60f5705.patch
-sed -i 's,/miniupnpd/,/,g' ./feeds/packages/net/miniupnpd/patches/60f5705.patch
-wget https://github.com/miniupnp/miniupnp/commit/3f3582b.patch -O feeds/packages/net/miniupnpd/patches/3f3582b.patch
-sed -i 's,/miniupnpd/,/,g' ./feeds/packages/net/miniupnpd/patches/3f3582b.patch
-wget https://github.com/miniupnp/miniupnp/commit/6aefa9a.patch -O feeds/packages/net/miniupnpd/patches/6aefa9a.patch
-sed -i 's,/miniupnpd/,/,g' ./feeds/packages/net/miniupnpd/patches/6aefa9a.patch
+#merge_package master https://github.com/openwrt/packages.git feeds/packages/net net/miniupnpd
+#mkdir -p feeds/packages/net/miniupnpd/patches
+#wget https://github.com/miniupnp/miniupnp/commit/0e8c68d.patch -O feeds/packages/net/miniupnpd/patches/0e8c68d.patch
+#sed -i 's,/miniupnpd/,/,g' ./feeds/packages/net/miniupnpd/patches/0e8c68d.patch
+#wget https://github.com/miniupnp/miniupnp/commit/21541fc.patch -O feeds/packages/net/miniupnpd/patches/21541fc.patch
+#sed -i 's,/miniupnpd/,/,g' ./feeds/packages/net/miniupnpd/patches/21541fc.patch
+#wget https://github.com/miniupnp/miniupnp/commit/b78a363.patch -O feeds/packages/net/miniupnpd/patches/b78a363.patch
+#sed -i 's,/miniupnpd/,/,g' ./feeds/packages/net/miniupnpd/patches/b78a363.patch
+#wget https://github.com/miniupnp/miniupnp/commit/8f2f392.patch -O feeds/packages/net/miniupnpd/patches/8f2f392.patch
+#sed -i 's,/miniupnpd/,/,g' ./feeds/packages/net/miniupnpd/patches/8f2f392.patch
+#wget https://github.com/miniupnp/miniupnp/commit/60f5705.patch -O feeds/packages/net/miniupnpd/patches/60f5705.patch
+#sed -i 's,/miniupnpd/,/,g' ./feeds/packages/net/miniupnpd/patches/60f5705.patch
+#wget https://github.com/miniupnp/miniupnp/commit/3f3582b.patch -O feeds/packages/net/miniupnpd/patches/3f3582b.patch
+#sed -i 's,/miniupnpd/,/,g' ./feeds/packages/net/miniupnpd/patches/3f3582b.patch
+#wget https://github.com/miniupnp/miniupnp/commit/6aefa9a.patch -O feeds/packages/net/miniupnpd/patches/6aefa9a.patch
+#sed -i 's,/miniupnpd/,/,g' ./feeds/packages/net/miniupnpd/patches/6aefa9a.patch
 #cp -rf ./diydata/data/patches/miniupnpd/301-options-force_forwarding-support.patch ./feeds/packages/net/miniupnpd/patches/
-pushd feeds/packages
-patch -p1 <../.././diydata/data/patches/miniupnpd/01-set-presentation_url.patch
-patch -p1 <../.././diydata/data/patches/miniupnpd/02-force_forwarding.patch
-popd
-pushd feeds/luci
-patch -p1 <../.././diydata/data/patches/miniupnpd/luci-upnp-support-force_forwarding-flag.patch
-popd
+#pushd feeds/packages
+#patch -p1 <../.././diydata/data/patches/miniupnpd/01-set-presentation_url.patch
+#patch -p1 <../.././diydata/data/patches/miniupnpd/02-force_forwarding.patch
+#popd
+#pushd feeds/luci
+#patch -p1 <../.././diydata/data/patches/miniupnpd/luci-upnp-support-force_forwarding-flag.patch
+#popd
 
 ##########################################################################
 

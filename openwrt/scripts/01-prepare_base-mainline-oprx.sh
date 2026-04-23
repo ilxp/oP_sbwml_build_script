@@ -69,13 +69,13 @@ curl -s $mirror/openwrt/patch/openwrt-6.x/x86/base-files/etc/board.d/02_network 
 #git clone https://nanopi:nanopi@$gitea/sbwml/target_linux_armsr target/linux/armsr -b main
 
 # kernel - 6.12
-#curl -s $mirror/tags/kernel-6.12 > include/kernel-6.12
-curl -s https://github.com/coolsnowwolf/lede/raw/master/include/kernel-6.12 > include/kernel-6.12
-#wget -qO- "https://github.com/coolsnowwolf/lede/raw/master/include/kernel-6.12"  >> include/kernel-6.12
+#curl -s $mirror/tags/kernel-6.12 > target/linux/generic/kernel-6.12
+curl -s https://github.com/coolsnowwolf/lede/raw/master/include/kernel-6.12 > target/linux/generic/kernel-6.12
+#wget -qO- "https://github.com/coolsnowwolf/lede/raw/master/include/kernel-6.12"  >> target/linux/generic/kernel-6.12
 
 # kenrel Vermagic
 sed -ie 's/^\(.\).*vermagic$/\1cp $(TOPDIR)\/.vermagic $(LINUX_DIR)\/.vermagic/' include/kernel-defaults.mk
-grep HASH include/kernel-6.12 | awk -F'HASH-' '{print $2}' | awk '{print $1}' | md5sum | awk '{print $1}' > .vermagic
+grep HASH target/linux/generic/kernel-6.12 | awk -F'HASH-' '{print $2}' | awk '{print $1}' | md5sum | awk '{print $1}' > .vermagic
 
 # kernel generic patches
 #curl -s $mirror/openwrt/patch/kernel-6.12/openwrt/linux-6.12-target-linux-generic.patch | patch -p1
@@ -263,11 +263,6 @@ pushd target/linux/generic/hack-6.12
     curl -Os $mirror/openwrt/patch/kernel-6.12/linux-rt/012-0008-Revert-drm-i915-Depend-on-PREEMPT_RT.patch
 popd
 
-# iproute2 - bbr3
-curl -s $mirror/openwrt/patch/iproute2/900-ss-output-TCP-BBRv3-diag-information.patch > package/network/utils/iproute2/patches/900-ss-output-TCP-BBRv3-diag-information.patch
-curl -s $mirror/openwrt/patch/iproute2/901-ip-introduce-the-ecn_low-per-route-feature.patch > package/network/utils/iproute2/patches/901-ip-introduce-the-ecn_low-per-route-feature.patch
-curl -s $mirror/openwrt/patch/iproute2/902-ss-display-ecn_low-if-tcp_info-tcpi_options-TCPI_OPT.patch > package/network/utils/iproute2/patches/902-ss-display-ecn_low-if-tcp_info-tcpi_options-TCPI_OPT.patch
-
 # linux-firmware
 rm -rf package/firmware/linux-firmware
 git clone https://$github/sbwml/package_firmware_linux-firmware package/firmware/linux-firmware
@@ -276,18 +271,21 @@ git clone https://$github/sbwml/package_firmware_linux-firmware package/firmware
 rm -rf package/kernel/mt76
 mkdir -p package/kernel/mt76/patches
 curl -s $mirror/openwrt/patch/mt76/Makefile > package/kernel/mt76/Makefile
-curl -s $mirror/openwrt/patch/mt76/patches/101-fix-build-with-linux-6.12rc2.patch > package/kernel/mt76/patches/101-fix-build-with-linux-6.12rc2.patch
+pushd package/kernel/mt76/patches
+    curl -Os $mirror/openwrt/patch/mt76/patches/100-fix-build-with-linux-6.12rc2.patch
+    curl -Os $mirror/openwrt/patch/mt76/patches/102-use-hrtimer_setup-in-mt76x02u-beacon-init.patch
+popd
 
 # wireless-regdb
 curl -s $mirror/openwrt/patch/openwrt-6.x/500-world-regd-5GHz.patch > package/firmware/wireless-regdb/patches/500-world-regd-5GHz.patch
 
-# mac80211 - 6.16.8
-#rm -rf package/kernel/mac80211
-#git clone https://$github/sbwml/package_kernel_mac80211 package/kernel/mac80211 -b openwrt-24.10
+# mac80211 - 6.18
+rm -rf package/kernel/mac80211
+git clone https://$github/sbwml/package_kernel_mac80211 package/kernel/mac80211 -b v6.18
 
 # ath10k-ct
 rm -rf package/kernel/ath10k-ct
-git clone https://$github/sbwml/package_kernel_ath10k-ct package/kernel/ath10k-ct -b v6.15
+git clone https://$github/sbwml/package_kernel_ath10k-ct package/kernel/ath10k-ct -b v6.18
 
 # kernel patch
 # btf: silence btf module warning messages
@@ -302,9 +300,6 @@ curl -s $mirror/openwrt/patch/kernel-6.12/net/983-add-bcm-fullcone-nft_masq-supp
 # shortcut-fe
 curl -s $mirror/openwrt/patch/kernel-6.12/net/601-netfilter-export-udp_get_timeouts-function.patch > target/linux/generic/hack-6.12/601-netfilter-export-udp_get_timeouts-function.patch
 curl -s $mirror/openwrt/patch/kernel-6.12/net/953-net-patch-linux-kernel-to-support-shortcut-fe.patch > target/linux/generic/hack-6.12/953-net-patch-linux-kernel-to-support-shortcut-fe.patch
-
-# rtl8822cs
-git clone https://$github/sbwml/package_kernel_rtl8822cs package/kernel/rtl8822cs
 
 # RTC
 if [ "$platform" = "rk3399" ] || [ "$platform" = "rk3568" ]; then
