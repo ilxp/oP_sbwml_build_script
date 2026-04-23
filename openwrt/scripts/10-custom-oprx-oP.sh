@@ -108,6 +108,9 @@ merge_package master https://github.com/openwrt/packages.git feeds/packages/util
 rm -rf feeds/luci/applications/luci-app-upnp
 merge_package master https://github.com/openwrt/luci.git feeds/luci/applications applications/luci-app-upnp
 
+rm -rf package/network/utils/iproute2
+merge_package main https://github.com/openwrt/openwrt.git  package/network/utils package/network/utils/iproute2
+
 #rm -rf package/libs/openssl/patches/140-allow-prefer-chacha20.patch
 #rm -rf package/libs/openssl/patches/500-e_devcrypto-default-to-not-use-digests-in-engine.patch
 #rm -rf target/linux/generic/backport-6.12/403-v6.19-mtd-mtdpart-ignore-error-ENOENT-from-parsers-on-subp.patch
