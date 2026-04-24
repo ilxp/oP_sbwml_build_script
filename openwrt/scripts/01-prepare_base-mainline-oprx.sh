@@ -70,7 +70,7 @@ curl -s $mirror/openwrt/patch/openwrt-6.x/x86/base-files/etc/board.d/02_network 
 
 # kernel - 6.12
 #curl -s $mirror/tags/kernel-6.12 > target/linux/generic/kernel-6.12
-curl -s https://github.com/coolsnowwolf/lede/raw/master/include/kernel-6.12 > target/linux/generic/kernel-6.12
+#curl -s https://github.com/coolsnowwolf/lede/raw/master/include/kernel-6.12 > target/linux/generic/kernel-6.12
 #wget -qO- "https://github.com/coolsnowwolf/lede/raw/master/include/kernel-6.12"  >> target/linux/generic/kernel-6.12
 
 # kenrel Vermagic
