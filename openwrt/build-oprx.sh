@@ -258,7 +258,7 @@ curl -sO $mirror/openwrt/scripts/00-prepare_base.sh
 curl -sO $mirror/openwrt/scripts/01-prepare_base-mainline-oprx.sh
 curl -sO $mirror/openwrt/scripts/02-prepare_package-oprx.sh
 curl -sO $mirror/openwrt/scripts/03-convert_translation.sh
-curl -sO $mirror/openwrt/scripts/04-fix_kmod.sh
+#curl -sO $mirror/openwrt/scripts/04-fix_kmod.sh
 curl -sO $mirror/openwrt/scripts/05-fix-source.sh
 curl -sO $mirror/openwrt/scripts/99_clean_build_cache.sh
 if [ -n "$git_password" ] && [ -n "$private_url" ]; then
@@ -273,7 +273,7 @@ bash 00-prepare_base.sh
 bash 01-prepare_base-mainline-oprx.sh
 bash 02-prepare_package-oprx.sh
 bash 03-convert_translation.sh
-bash 04-fix_kmod.sh
+#bash 04-fix_kmod.sh
 bash 05-fix-source.sh
 [ -f "10-custom.sh" ] && bash 10-custom.sh
 [ -f "10-custom-oprx-oP.sh" ] && bash 10-custom-oprx-oP.sh
