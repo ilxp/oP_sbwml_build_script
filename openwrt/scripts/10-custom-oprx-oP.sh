@@ -109,6 +109,7 @@ merge_package master https://github.com/openwrt/packages.git feeds/packages/util
 #merge_package main https://github.com/openwrt/openwrt.git package/kernel package/kernel/mac80211
 
 rm -rf feeds/packages/net/xl2tpd
+rm -rf package/kernel/rtl8812au-ct
 
 ###################
 
