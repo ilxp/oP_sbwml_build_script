@@ -166,7 +166,8 @@ fi
 
 #curl -s $mirror/tags/kernel-6.12 > kernel.txt  #有时获取不到
 #curl -s https://github.com/coolsnowwolf/lede/raw/master/include/kernel-6.12 > kernel.txt #获取不到
-wget -qO- "https://github.com/coolsnowwolf/lede/raw/master/include/kernel-6.12"  >> kernel.txt
+#wget -qO- "https://github.com/coolsnowwolf/lede/raw/master/include/kernel-6.12"  >> kernel.txt
+wget -qO- "https://github.com/openwrt/openwrt/raw/$branch/target/linux/generic/kernel-6.12"  >> kernel.txt
 kmod_hash=$(grep HASH kernel.txt | awk -F'HASH-' '{print $2}' | awk '{print $1}' | md5sum | awk '{print $1}')
 kmodpkg_name=$(echo $(grep HASH kernel.txt | awk -F'HASH-' '{print $2}' | awk '{print $1}')~$(echo $kmod_hash)-r1)
 echo -e "${GREEN_COLOR}Kernel: $kmodpkg_name ${RES}"
@@ -258,8 +259,8 @@ curl -sO $mirror/openwrt/scripts/00-prepare_base.sh
 curl -sO $mirror/openwrt/scripts/01-prepare_base-mainline-oprx.sh
 curl -sO $mirror/openwrt/scripts/02-prepare_package-oprx.sh
 curl -sO $mirror/openwrt/scripts/03-convert_translation.sh
-#curl -sO $mirror/openwrt/scripts/04-fix_kmod.sh
-#curl -sO $mirror/openwrt/scripts/05-fix-source.sh
+curl -sO $mirror/openwrt/scripts/04-fix_kmod.sh
+curl -sO $mirror/openwrt/scripts/05-fix-source.sh
 curl -sO $mirror/openwrt/scripts/99_clean_build_cache.sh
 if [ -n "$git_password" ] && [ -n "$private_url" ]; then
     curl -u openwrt:$git_password -sO "$private_url"
@@ -273,8 +274,8 @@ bash 00-prepare_base.sh
 bash 01-prepare_base-mainline-oprx.sh
 bash 02-prepare_package-oprx.sh
 bash 03-convert_translation.sh
-#bash 04-fix_kmod.sh
-#bash 05-fix-source.sh
+bash 04-fix_kmod.sh
+bash 05-fix-source.sh
 [ -f "10-custom.sh" ] && bash 10-custom.sh
 [ -f "10-custom-oprx-oP.sh" ] && bash 10-custom-oprx-oP.sh
 find feeds -type f -name "*.orig" -exec rm -f {} \;
