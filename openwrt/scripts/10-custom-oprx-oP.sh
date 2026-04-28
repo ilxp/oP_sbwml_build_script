@@ -134,10 +134,10 @@ rm -rf package/kernel/rtl8812au-ct
 #date=`TZ=UTC-8 date +%m.%d.%Y`  #升级用，统一这样
 #R$(TZ=UTC-8 date +'%y.%-m.%-d')
 ReV_Date=`TZ=UTC-8 date +%y%-m%-d`  #24年1月1日：24.1.1  #以上引用不用带{}，即$ReV_Date
-#ReV_Date=$(TZ=UTC-8 date +'%y%-m%-d')  #这个引用要带{}，即${ReV_Date}
+#ReV_Date=$(TZ=UTC-8 date +'%y%-m%-d')  #这个引用要带{}，即${ReV_Date}  25.12不能用.了
 Build_DATE=$(TZ=UTC-8 date +'%Y%m%d')  #这个引用要带{}，即${Build_DATE} 
 sed -i -e "/\(# \)\?REVISION:=/c\REVISION:=$ReV_Date" -e '/VERSION_CODE:=/c\VERSION_CODE:=$(REVISION)' include/version.mk
-sed -i "s/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION='oP built by ilxp@%C'/g" package/base-files/files/etc/openwrt_release
+sed -i "s/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION='oP built by ilxp@%C'/g" package/base-files/files/etc/openwrt_release   #原文是单引号
 
 #sbmwl大佬现实的在usr/lib/os-release中的PRETTY_NAME="OpenWrt SNAPSHOT"
 #sed -i "/PRETTY_NAME/d" package/base-files/files/usr/lib/os-release
@@ -267,8 +267,8 @@ sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci-n
 
 #二）、翻墙系列（openwrt编译系统自带为passwall+homeproxy）
 #golang版本【使用sbwnl库的记得要更新到最新26.x】
-rm -rf feeds/packages/lang/golang
-git clone https://github.com/sbwml/packages_lang_golang -b 26.x feeds/packages/lang/golang
+#rm -rf feeds/packages/lang/golang
+#git clone https://github.com/sbwml/packages_lang_golang -b 26.x feeds/packages/lang/golang
 
 #1、ssr-plus
 #rm -rf package/helloworld
@@ -395,9 +395,9 @@ sed -i 's/services/vpn/g' package/diy/luci-app-homeproxy/root/usr/share/luci/men
 #三）、应用商店
 #git clone https://github.com/linkease/nas-packages.git  package/diy/nas-packages
 #git clone https://github.com/linkease/nas-packages-luci.git  package/diy/nas-packages-luci
-git clone https://github.com/linkease/istore.git  package/diy/istore
-git clone https://github.com/linkease/istore-ui.git  package/diy/istore-ui
-rm -rf package/diy/istore-ui/app-store-ui/src/dist/luci-static/istore/i18n/en.json
+#git clone https://github.com/linkease/istore.git  package/diy/istore
+#git clone https://github.com/linkease/istore-ui.git  package/diy/istore-ui
+#rm -rf package/diy/istore-ui/app-store-ui/src/dist/luci-static/istore/i18n/en.json
 
 #四）、sirpdboy大神的相关插件
 #中文netdata
@@ -453,17 +453,9 @@ sed -i 's/enabled '1'/enabled '0'/g' package/diy/op-lucky/lucky/files/luckyuci
 git clone https://github.com/sirpdboy/luci-app-advanced.git package/diy/luci-app-advanced
 #rm -rf package/diy/luci-app-advanced/htdocs #不能删除
 
-
 ##五）QOS相关
 #石像鬼qos采用我自己的，会有一个QOS栏目生成
 git clone -b main https://github.com/ilxp/iqos-openwrt.git  package/diy/iqos-openwrt
-#sed -i 's/Gargoyle QoS/石像鬼 QoS/g' package/diy/gargoyle-qos-openwrt/luci-app-qos-gargoyle/luasrc/controller/qos_gargoyle.lua
-#sed -i 's/Download Settings/下载设置/g' package/diy/gargoyle-qos-openwrt/luci-app-qos-gargoyle/luasrc/controller/qos_gargoyle.lua
-#sed -i 's/Upload Settings/上传设置/g' package/diy/gargoyle-qos-openwrt/luci-app-qos-gargoyle/luasrc/controller/qos_gargoyle.lua
-#wget -qO - https://raw.gitmirror.com/ilxp/gargoyle-qos-openwrt/openwrt-2203/010-revert_to_iptables.patch | patch -p1  #去除firwall4，用3
-#wget -N https://raw.githubusercontent.com/ilxp/gargoyle-qos-openwrt/refs/heads/ipt/patch/iptables/608-add-gargoyle-netfilter-match-modules.patch -P package/network/utils/iptables/patches/
-#wget -N https://raw.githubusercontent.com/ilxp/gargoyle-qos-openwrt/refs/heads/ipt/patch/kernel/608-add-kernel-gargoyle-netfilter-match-modules.patch -P target/linux/generic/pending-6.6/
-
 
 #2）eqos，采用luci自带的即可。把eqos放在管控下。不在列入Qos目录下
 #rm -rf feeds/luci/applications/luci-app-eqos #lean库里没有eqos
