@@ -5,6 +5,7 @@
 . /lib/functions/uci-defaults.sh
 
 [ $(uname -m) = "x86_64" ] && alias board_name="echo x86_64"
+[ "$OPENWRT_BOARD" = "armsr/armv8" ] && alias board_name="echo armsr,armv8"
 
 # OTA
 if [ "$VERSION_TYPE" = "minimal" ]; then
@@ -14,19 +15,21 @@ else
 	OTA_URL="https://mirror.ghproxy.com/https://raw.githubusercontent.com/ilxp/builder/main/ota/fw.json"
 fi
 
+#修改kmod的链接  杂交不需要
+sed -i '/targets/d' /etc/apk/repositories.d/distfeeds.list
+
 devices_setup()
 {
     case "$(board_name)" in
-    x86_64)
-         [ $(uname -r | awk -F. '{print $1}') = 6 ] && {
-            [ -f /sys/kernel/btf/vmlinux ] && [ ! -d "/usr/share/openwrt_core" ] && {
-                #openwrt_core="openwrt_core/x86_64"
-                sed -i '/openwrt_core/d' /etc/opkg/distfeeds.conf
-                #sed -i "\$a\src/gz openwrt_core https://ghfast.top/raw.githubusercontent.com/ilxp/oprx-op_core/x86_64/$(grep Version /usr/lib/opkg/info/kernel.control | awk '{print $2}')" /etc/opkg/distfeeds.conf
-                #sed -i "\$a\src/gz openwrt_core https://raw.kkgithub.com/ilxp/oprx-op_core/x86_64/$(grep Version /usr/lib/opkg/info/kernel.control | awk '{print $2}')" /etc/opkg/distfeeds.conf
-                sed -i "\$a\src/gz openwrt_core https://gh-proxy.com/raw.githubusercontent.com/ilxp/oprx-op_core/x86_64/$(grep Version /usr/lib/opkg/info/kernel.control | awk '{print $2}')" /etc/opkg/distfeeds.conf
-			}
-        }
+   x86_64)
+            [ ! -d "/usr/share/openwrt_core" ] && {
+                sed -i '/targets/d' /etc/apk/repositories.d/distfeeds.list
+                #echo "https://core3.cooluc.com/x86_64/$(grep kernel /etc/apk/world | awk -F= '{print $2}')/packages.adb" >> /etc/apk/repositories.d/distfeeds.list
+				#echo "https://raw.kkgithub.com/ilxp/oprx-op_core/x86_64/$(grep kernel /etc/apk/world | awk -F= '{print $2}')/packages.adb" >> /etc/apk/repositories.d/distfeeds.list
+				echo "https://gh-proxy.com/raw.githubusercontent.com/ilxp/oprx-op_core/x86_64/$(grep kernel /etc/apk/world | awk -F= '{print $2}')/packages.adb" >> /etc/apk/repositories.d/distfeeds.list
+				#echo "https://ghfast.top/raw.githubusercontent.com/ilxp/oprx-op_core/x86_64/$(grep kernel /etc/apk/world | awk -F= '{print $2}')/packages.adb" >> /etc/apk/repositories.d/distfeeds.list
+
+            }
         uci set ota.config.api_url="$OTA_URL"
         uci commit ota
         ;;
@@ -57,16 +60,16 @@ uci set system.@system[0].zram_size_mb="$zram_size"
 uci set system.@system[0].zram_comp_algo='lz4'
 uci commit system
 
-# opkg mirror
-if [ $(grep -c SNAPSHOT /etc/opkg/distfeeds.conf) -eq '0' ]; then
-    sed -i 's,downloads.openwrt.org,mirrors.aliyun.com/openwrt,g' /etc/opkg/distfeeds.conf
-	#sed -i 's,downloads.openwrt.org,mirrors.xjtu.edu.cn/openwrt,g' /etc/opkg/distfeeds.conf
+# apk mirror
+distfeeds=/etc/apk/repositories.d/distfeeds.list
+if [ $(grep -c SNAPSHOT "$distfeeds") -eq '0' ]; then
+  sed -i 's,downloads.openwrt.org,mirrors.cloud.tencent.com/openwrt,g' "$distfeeds"
 else
-    sed -i 's,downloads.openwrt.org,mirrors.pku.edu.cn/openwrt,g' /etc/opkg/distfeeds.conf
+  sed -i 's,downloads.openwrt.org,mirror.sjtu.edu.cn/openwrt,g' "$distfeeds"
 fi
 
 # extra packages
-echo "src/gz openwrt_extras https://opkg.cooluc.com/openwrt-24.10/$(. /etc/openwrt_release ; echo $DISTRIB_ARCH)" >> /etc/opkg/distfeeds.conf
+echo "https://opkg.cooluc.com/openwrt-25.12/$(cat /etc/apk/arch)/packages.adb" >> "$distfeeds"
 
 # nginx  #oP系列用sbwml的
 uci set nginx.global.uci_enable='true'
@@ -203,6 +206,12 @@ done
 uci commit firewall
 #sysctl -w net.ipv4.tcp_congestion_control="bbr"
 /etc/init.d/autocore restart
+
+#turboacc默认关闭软件分流
+uci set turboacc.config.sw_flow=0
+uci set turboacc.config.hw_flow=0
+uci set turboacc.config.sfe_flow=0
+uci commit turboacc
 
 # einat 启动并确认
 #(
