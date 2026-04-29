@@ -15,7 +15,7 @@ else
 	OTA_URL="https://mirror.ghproxy.com/https://raw.githubusercontent.com/ilxp/builder/main/ota/fw.json"
 fi
 
-#修改kmod的链接  杂交不需要
+#修改kmod的链接
 sed -i '/targets/d' /etc/apk/repositories.d/distfeeds.list
 
 devices_setup()
