@@ -815,7 +815,7 @@ git clone https://github.com/sbwml/feeds_packages_lang_node-prebuilt -b packages
 # Shortcut Forwarding Engine
 git clone https://git.cooluc.com/sbwml/shortcut-fe package/new/shortcut-fe
 # FullCone module
-#git clone https://git.cooluc.com/sbwml/nft-fullcone package/new/nft-fullcone
+git clone https://git.cooluc.com/sbwml/nft-fullcone package/new/nft-fullcone
 # IPv6 NAT
 git clone https://github.com/sbwml/packages_new_nat6 package/new/nat6
 # natflow
@@ -823,7 +823,7 @@ git clone https://github.com/sbwml/package_new_natflow package/new/natflow
 
 #fullconenat-nft
 #rm -rf package/new/nft-fullcone
-merge_package master https://github.com/QiuSimons/OpenWrt-Add.git package/new lede_pkg/fullconenat-nft
+#merge_package master https://github.com/QiuSimons/OpenWrt-Add.git package/new lede_pkg/fullconenat-nft
 
 #19、sbwml大神的优化
 # x86 - disable intel_pstate & mitigations
