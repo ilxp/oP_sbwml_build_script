@@ -130,6 +130,9 @@ rm -rf package/kernel/rtl8812au-ct
 #内核破解，已经在01-prepare_base-mainline-oprx.sh破解。
 #patch -p1 <./diydata/data/patches/kernel-hack.patch
 
+#修改引导时间：
+
+
 # 固件版本号(21.3.2 %y : 年份的最后两位数字)
 #date=`TZ=UTC-8 date +%m.%d.%Y`  #升级用，统一这样
 #R$(TZ=UTC-8 date +'%y.%-m.%-d')
@@ -633,15 +636,15 @@ git clone -b main --depth 1 https://github.com/ilxp/openwrt-control  package/diy
 #merge_package master https://github.com/xiangfeidexiaohuo/openwrt-packages.git package/new patch/luci-app-turboacc
 
 #适配 firewall4
-#merge_package luci https://github.com/chenmozhijin/turboacc.git package/new/turboacc luci-app-turboacc
+merge_package luci https://github.com/chenmozhijin/turboacc.git package/new/turboacc luci-app-turboacc
 #修改 bbr为bbr3
-#sed -i 's/kmod-tcp-bbr/kmod-tcp-bbr3/g' package/new/turboacc/luci-app-turboacc/Makefile
+sed -i 's/kmod-tcp-bbr/kmod-tcp-bbr3/g' package/new/turboacc/luci-app-turboacc/Makefile
 
 #适lede的luci23.05已经适配 firewall4，#lede的在oP上安装不上
-merge_package openwrt-25.12 https://github.com/coolsnowwolf/luci.git package/new applications/luci-app-turboacc
-sed -i 's/kmod-ipt-offload/kmod-nft-offload /g' package/new/luci-app-turboacc/Makefile
+#merge_package openwrt-25.12 https://github.com/coolsnowwolf/luci.git package/new applications/luci-app-turboacc
+#sed -i 's/kmod-ipt-offload/kmod-nft-offload /g' package/new/luci-app-turboacc/Makefile
 #修改 bbr为bbr3
-sed -i 's/kmod-tcp-bbr/kmod-tcp-bbr3/g' package/new/luci-app-turboacc/Makefile
+#sed -i 's/kmod-tcp-bbr/kmod-tcp-bbr3/g' package/new/luci-app-turboacc/Makefile
 
 
 #2、京东签到 By Jerrykuku 作者已关闭了
