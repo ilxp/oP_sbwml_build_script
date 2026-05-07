@@ -130,9 +130,6 @@ rm -rf package/kernel/rtl8812au-ct
 #内核破解，已经在01-prepare_base-mainline-oprx.sh破解。
 #patch -p1 <./diydata/data/patches/kernel-hack.patch
 
-#修改引导时间：
-
-
 # 固件版本号(21.3.2 %y : 年份的最后两位数字)
 #date=`TZ=UTC-8 date +%m.%d.%Y`  #升级用，统一这样
 #R$(TZ=UTC-8 date +'%y.%-m.%-d')
@@ -645,7 +642,6 @@ sed -i 's/kmod-tcp-bbr/kmod-tcp-bbr3/g' package/new/turboacc/luci-app-turboacc/M
 #sed -i 's/kmod-ipt-offload/kmod-nft-offload /g' package/new/luci-app-turboacc/Makefile
 #修改 bbr为bbr3
 #sed -i 's/kmod-tcp-bbr/kmod-tcp-bbr3/g' package/new/luci-app-turboacc/Makefile
-
 
 #2、京东签到 By Jerrykuku 作者已关闭了
 #git clone --depth 1 https://github.com/jerrykuku/node-request.git package/new/node-request
