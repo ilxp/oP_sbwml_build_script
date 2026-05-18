@@ -51,10 +51,30 @@ endef
 
 $(eval $(call KernelPackage,nf-conncount))
 
+
+define KernelPackage/iptables
+  SUBMENU:=$(NF_MENU)
+  TITLE:=Iptables legacy
+  KCONFIG:= \
+	CONFIG_IP_NF_IPTABLES_LEGACY \
+	CONFIG_NETFILTER_XTABLES \
+	CONFIG_NETFILTER_XTABLES_LEGACY=y \
+	CONFIG_IP6_NF_IPTABLES_LEGACY \
+	CONFIG_BRIDGE_NF_EBTABLES_LEGACY
+  FILES:= \
+	$(LINUX_DIR)/net/ipv4/netfilter/ip_tables.ko \
+	$(LINUX_DIR)/net/netfilter/x_tables.ko
+  AUTOLOAD:=$(call AutoProbe,$(notdir ip_tables x_tables))
+endef
+
+$(eval $(call KernelPackage,iptables))
+
+
 define KernelPackage/nf-ipt
   SUBMENU:=$(NF_MENU)
   TITLE:=Iptables core
   KCONFIG:=$(KCONFIG_NF_IPT)
+  DEPENDS:=+kmod-iptables
   FILES:=$(foreach mod,$(NF_IPT-m),$(LINUX_DIR)/net/$(mod).ko)
   AUTOLOAD:=$(call AutoProbe,$(notdir $(NF_IPT-m)))
 endef
@@ -440,7 +460,7 @@ IPVS_MODULES:= \
 define KernelPackage/nf-ipvs
   SUBMENU:=Netfilter Extensions
   TITLE:=IP Virtual Server modules
-  DEPENDS:=@IPV6 +kmod-lib-crc32c +kmod-ipt-conntrack +kmod-nf-conntrack
+  DEPENDS:=@IPV6 +kmod-ipt-conntrack +kmod-nf-conntrack
   KCONFIG:= \
 	CONFIG_IP_VS \
 	CONFIG_IP_VS_IPV6=y \
@@ -1135,7 +1155,7 @@ $(eval $(call KernelPackage,ipt-rpfilter))
 define KernelPackage/nft-core
   SUBMENU:=$(NF_MENU)
   TITLE:=Netfilter nf_tables support
-  DEPENDS:=+kmod-nfnetlink +kmod-nf-reject +IPV6:kmod-nf-reject6 +IPV6:kmod-nf-conntrack6 +kmod-nf-nat +kmod-nf-log +IPV6:kmod-nf-log6 +kmod-lib-crc32c
+  DEPENDS:=+kmod-nfnetlink +kmod-nf-reject +IPV6:kmod-nf-reject6 +IPV6:kmod-nf-conntrack6 +kmod-nf-nat +kmod-nf-log +IPV6:kmod-nf-log6
   FILES:=$(foreach mod,$(NFT_CORE-m),$(LINUX_DIR)/net/$(mod).ko)
   AUTOLOAD:=$(call AutoProbe,$(notdir $(NFT_CORE-m)))
   KCONFIG:= \

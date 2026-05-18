@@ -4,9 +4,13 @@
 rm -rf feeds/packages/lang/golang
 git clone https://$github/sbwml/packages_lang_golang -b 26.x feeds/packages/lang/golang
 
+# rust
+rm -rf feeds/packages/lang/rust
+git clone https://$github/sbwml/packages_lang_rust feeds/packages/lang/rust
+
 # node - prebuilt
 rm -rf feeds/packages/lang/node
-git clone https://$github/sbwml/feeds_packages_lang_node-prebuilt feeds/packages/lang/node -b packages-24.10
+git clone https://$github/sbwml/feeds_packages_lang_node feeds/packages/lang/node -b packages-25.12
 
 # default settings
 git clone https://$github/sbwml/default-settings package/new/default-settings -b openwrt-25.12
@@ -21,6 +25,9 @@ git clone https://$github/sbwml/package_new_bluez-alsa package/new/bluez-alsa
 # bandix
 git clone https://$github/timsaya/openwrt-bandix package/new/bandix --depth=1
 git clone https://$github/timsaya/luci-app-bandix package/new/luci-app-bandix --depth=1
+
+# luci-app-diskman
+git clone https://$github/sbwml/luci-app-diskman package/new/diskman --depth=1
 
 # istore
 git clone https://$github/sbwml/package_new_istore package/new/istore --depth=1
