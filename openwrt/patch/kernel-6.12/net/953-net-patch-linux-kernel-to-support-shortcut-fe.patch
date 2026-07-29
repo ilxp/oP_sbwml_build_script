@@ -17,9 +17,9 @@ Signed-off-by: Xiaoping Fan <xfan@codeaurora.org>
 
 --- a/include/linux/if_bridge.h
 +++ b/include/linux/if_bridge.h
-@@ -72,6 +72,9 @@ void brioctl_set(int (*hook)(struct net
- int br_ioctl_call(struct net *net, struct net_bridge *br, unsigned int cmd,
- 		  struct ifreq *ifr, void __user *uarg);
+@@ -70,6 +70,9 @@ void brioctl_set(int (*hook)(struct net
+ 			     void __user *uarg));
+ int br_ioctl_call(struct net *net, unsigned int cmd, void __user *uarg);
  
 +extern void br_dev_update_stats(struct net_device *dev,
 +				struct rtnl_link_stats64 *nlstats);
@@ -29,7 +29,7 @@ Signed-off-by: Xiaoping Fan <xfan@codeaurora.org>
  			       struct list_head *br_ip_list);
 --- a/include/linux/skbuff.h
 +++ b/include/linux/skbuff.h
-@@ -1011,6 +1011,9 @@ struct sk_buff {
+@@ -1030,6 +1030,9 @@ struct sk_buff {
  	__u8			csum_not_inet:1;
  #endif
  	__u8			unreadable:1;
@@ -41,7 +41,7 @@ Signed-off-by: Xiaoping Fan <xfan@codeaurora.org>
  #endif
 --- a/include/net/netfilter/nf_conntrack_ecache.h
 +++ b/include/net/netfilter/nf_conntrack_ecache.h
-@@ -68,6 +68,8 @@ struct nf_ct_event_notifier {
+@@ -72,6 +72,8 @@ struct nf_ct_event_notifier {
  #ifdef CONFIG_NF_CONNTRACK_CHAIN_EVENTS
  extern int nf_conntrack_register_notifier(struct net *net, struct notifier_block *nb);
  extern int nf_conntrack_unregister_notifier(struct net *net, struct notifier_block *nb);
@@ -52,7 +52,7 @@ Signed-off-by: Xiaoping Fan <xfan@codeaurora.org>
  				   const struct nf_ct_event_notifier *nb);
 --- a/net/Kconfig
 +++ b/net/Kconfig
-@@ -518,6 +518,9 @@ config FAILOVER
+@@ -529,6 +529,9 @@ config FAILOVER
  	  migration of VMs with direct attached VFs by failing over to the
  	  paravirtual datapath when the VF is unplugged.
  
@@ -64,7 +64,7 @@ Signed-off-by: Xiaoping Fan <xfan@codeaurora.org>
  	select DIMLIB
 --- a/net/bridge/br_if.c
 +++ b/net/bridge/br_if.c
-@@ -764,6 +764,26 @@ void br_port_flags_change(struct net_bri
+@@ -766,6 +766,26 @@ void br_port_flags_change(struct net_bri
  		br_recalculate_neigh_suppress_enabled(br);
  }
  
@@ -93,7 +93,7 @@ Signed-off-by: Xiaoping Fan <xfan@codeaurora.org>
  	struct net_bridge_port *p;
 --- a/net/core/dev.c
 +++ b/net/core/dev.c
-@@ -3643,8 +3643,17 @@ static int xmit_one(struct sk_buff *skb,
+@@ -3867,8 +3867,17 @@ static int xmit_one(struct sk_buff *skb,
  	unsigned int len;
  	int rc;
  
@@ -103,7 +103,7 @@ Signed-off-by: Xiaoping Fan <xfan@codeaurora.org>
 +	 */
 +	if (!skb->fast_forwarded) {
 +#endif
- 	if (dev_nit_active(dev))
+ 	if (dev_nit_active_rcu(dev))
  		dev_queue_xmit_nit(skb, dev);
 +#ifdef CONFIG_SHORTCUT_FE
 +	}
@@ -111,7 +111,7 @@ Signed-off-by: Xiaoping Fan <xfan@codeaurora.org>
  
  #ifdef CONFIG_ETHERNET_PACKET_MANGLE
  	if (dev->eth_mangle_tx && !(skb = dev->eth_mangle_tx(dev, skb)))
-@@ -5493,6 +5502,11 @@ void netdev_rx_handler_unregister(struct
+@@ -5852,6 +5861,11 @@ void netdev_rx_handler_unregister(struct
  }
  EXPORT_SYMBOL_GPL(netdev_rx_handler_unregister);
  
@@ -123,7 +123,7 @@ Signed-off-by: Xiaoping Fan <xfan@codeaurora.org>
  /*
   * Limit the use of PFMEMALLOC reserves to those protocols that implement
   * the special handling of PFMEMALLOC skbs.
-@@ -5541,6 +5555,10 @@ static int __netif_receive_skb_core(stru
+@@ -5901,6 +5915,10 @@ static int __netif_receive_skb_core(stru
  	int ret = NET_RX_DROP;
  	__be16 type;
  
@@ -134,7 +134,7 @@ Signed-off-by: Xiaoping Fan <xfan@codeaurora.org>
  	net_timestamp_check(!READ_ONCE(net_hotdata.tstamp_prequeue), skb);
  
  	trace_netif_receive_skb(skb);
-@@ -5579,6 +5597,16 @@ another_round:
+@@ -5945,6 +5963,16 @@ another_round:
  			goto out;
  	}
  
@@ -179,7 +179,7 @@ Signed-off-by: Xiaoping Fan <xfan@codeaurora.org>
  	rcu_read_unlock();
  
  	if (likely(ret >= 0 && missed == 0))
-@@ -339,6 +351,11 @@ int nf_conntrack_register_notifier(struc
+@@ -351,6 +363,11 @@ int nf_conntrack_register_notifier(struc
  {
  	return atomic_notifier_chain_register(&net->ct.nf_conntrack_chain, nb);
  }
@@ -191,7 +191,7 @@ Signed-off-by: Xiaoping Fan <xfan@codeaurora.org>
  #else
  int nf_conntrack_register_notifier(struct net *net,
  				    const struct nf_ct_event_notifier *new)
-@@ -369,6 +386,11 @@ int nf_conntrack_unregister_notifier(str
+@@ -381,6 +398,11 @@ int nf_conntrack_unregister_notifier(str
  {
  	return atomic_notifier_chain_unregister(&net->ct.nf_conntrack_chain, nb);
  }
