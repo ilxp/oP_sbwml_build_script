@@ -266,9 +266,9 @@ sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' ./feeds/luci/collections/luci
 sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci-nginx/Makefile
 
 #二）、翻墙系列（openwrt编译系统自带为passwall+homeproxy）
-#golang版本【使用sbwnl库的记得要更新到最新26.x】
+#golang版本【使用sbwnl库的记得要更新到最新27.x】
 #rm -rf feeds/packages/lang/golang
-#git clone https://github.com/sbwml/packages_lang_golang -b 26.x feeds/packages/lang/golang
+#git clone https://github.com/sbwml/packages_lang_golang -b 27.x feeds/packages/lang/golang
 
 #1、ssr-plus
 #rm -rf package/helloworld
@@ -563,11 +563,11 @@ git clone -b main --single-branch https://github.com/ilxp/luci-app-ikoolproxy.gi
 #七、管控相关
 #1） APP 过滤
 rm -rf package/new/OpenAppFilter
-git clone -b master --depth 1 https://github.com/destan19/OpenAppFilter.git package/diy/OpenAppFilter
-sed -i 's/services/control/g' package/diy/OpenAppFilter/luci-app-oaf/luasrc/controller/appfilter.lua
+#git clone -b master --depth 1 https://github.com/destan19/OpenAppFilter.git package/diy/OpenAppFilter
+#sed -i 's/services/control/g' package/diy/OpenAppFilter/luci-app-oaf/luasrc/controller/appfilter.lua
 
-#git clone -b master --depth 1 https://github.com/sbwml/OpenAppFilter.git  package/diy/OpenAppFilter
-#sed -i 's/network/control/g' package/diy/OpenAppFilter/luci-app-oaf/luasrc/controller/appfilter.lua
+git clone -b master --depth 1 https://github.com/sbwml/OpenAppFilter.git  package/diy/OpenAppFilter
+sed -i 's/network/control/g' package/diy/OpenAppFilter/luci-app-oaf/root/usr/share/luci/menu.d/luci-app-oaf.json
 
 #git clone -b master --depth 1 https://github.com/QiuSimons/OpenAppFilter-destan19  package/diy/OpenAppFilter
 #sed -i 's/services/control/g' package/diy/OpenAppFilter/luci-app-oaf/luasrc/controller/appfilter.lua
