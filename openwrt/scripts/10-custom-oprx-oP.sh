@@ -592,8 +592,9 @@ rm -rf feeds/luci/applications/luci-app-timecontrol
 rm -rf feeds/luci/applications/luci-app-filebrowser
 rm -rf package/new/custom/luci-app-wolplus
 
-rm -rf feeds/luci/applications/luci-app-openvpn-server  #采用lienol的，会生成一个vpn的栏目
-merge_package main https://github.com/Lienol/openwrt-package.git package/new luci-app-openvpn-server
+rm -rf feeds/luci/applications/luci-app-openvpn-server 
+#merge_package main https://github.com/Lienol/openwrt-package.git package/new luci-app-openvpn-server   #采用最新lienol的，无法编译通过
+git clone -b main --depth 1 https://github.com/ixiaan/luci-app-openvpn-server  package/new/luci-app-openvpn-server 
 
 #采用我自己的control
 git clone -b main --depth 1 https://github.com/ilxp/openwrt-control  package/diy/openwrt-control
