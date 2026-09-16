@@ -5,7 +5,7 @@
 
 # golang 1.27
 rm -rf feeds/packages/lang/golang
-git clone https://$github/sbwml/packages_lang_golang -b 27.x feeds/packages/lang/golang
+git clone https://$github/sbwml/packages_lang_golang -b 26.x feeds/packages/lang/golang
 
 # rust
 rm -rf feeds/packages/lang/rust

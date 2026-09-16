@@ -268,7 +268,7 @@ sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci-n
 #二）、翻墙系列（openwrt编译系统自带为passwall+homeproxy）
 #golang版本【使用sbwnl库的记得要更新到最新27.x】
 #rm -rf feeds/packages/lang/golang
-#git clone https://github.com/sbwml/packages_lang_golang -b 27.x feeds/packages/lang/golang
+#git clone https://github.com/sbwml/packages_lang_golang -b 26.x feeds/packages/lang/golang
 
 #1、ssr-plus
 #rm -rf package/helloworld
@@ -528,6 +528,7 @@ git clone -b v5 --single-branch https://github.com/sbwml/luci-app-mosdns package
 rm -rf feeds/packages/net/adguardhome
 rm -rf feeds/luci/applications/luci-app-adguardhome
 rm -rf package/new/luci-app-adguardhome
+rm -rf package/new/custom/luci-app-adguardhome
 #可以选择版本的luci-app-adguardhome
 merge_package master https://github.com/Hyy2001X/AutoBuild-Packages.git package/new luci-app-adguardhome
 #kiddin9的luci-app-adguardhome
@@ -566,8 +567,8 @@ rm -rf package/new/OpenAppFilter
 #git clone -b master --depth 1 https://github.com/destan19/OpenAppFilter.git package/diy/OpenAppFilter
 #sed -i 's/services/control/g' package/diy/OpenAppFilter/luci-app-oaf/luasrc/controller/appfilter.lua
 
-git clone -b master --depth 1 https://github.com/sbwml/OpenAppFilter.git  package/diy/OpenAppFilter
-sed -i 's/network/control/g' package/diy/OpenAppFilter/luci-app-oaf/root/usr/share/luci/menu.d/luci-app-oaf.json
+git clone -b main --depth 1 https://github.com/sbwml/OpenAppFilter.git  package/diy/OpenAppFilter
+sed -i 's/services/control/g' package/diy/OpenAppFilter/luci-app-oaf/root/usr/share/luci/menu.d/luci-app-oaf.json
 
 #git clone -b master --depth 1 https://github.com/QiuSimons/OpenAppFilter-destan19  package/diy/OpenAppFilter
 #sed -i 's/services/control/g' package/diy/OpenAppFilter/luci-app-oaf/luasrc/controller/appfilter.lua
@@ -591,8 +592,8 @@ rm -rf feeds/luci/applications/luci-app-timecontrol
 rm -rf feeds/luci/applications/luci-app-filebrowser
 rm -rf package/new/custom/luci-app-wolplus
 
-#rm -rf feeds/luci/applications/luci-app-openvpn-server  #采用lienol的，会生成一个vpn的栏目
-#merge_package main https://github.com/Lienol/openwrt-package.git package/new luci-app-openvpn-server
+rm -rf feeds/luci/applications/luci-app-openvpn-server  #采用lienol的，会生成一个vpn的栏目
+merge_package main https://github.com/Lienol/openwrt-package.git package/new luci-app-openvpn-server
 
 #采用我自己的control
 git clone -b main --depth 1 https://github.com/ilxp/openwrt-control  package/diy/openwrt-control
@@ -739,7 +740,8 @@ sed -i 's/\/bin\/bash/\/usr\/bin\/zsh/g' package/base-files/files/etc/passwd
 
 #11、openlist2
 rm -rf feeds/luci/applications/luci-app-openlist
-rm -rf feeds/packages/net/openlist
+rm -rf feeds/packages/net/openlist   
+rm -rf package/new/openlist
 git clone https://github.com/sbwml/luci-app-openlist2 package/new/openlist2
 #移动到nas栏目
 sed -i 's/services/nas/g' package/new/openlist2/luci-app-openlist2/root/usr/share/luci/menu.d/luci-app-openlist2.json
