@@ -135,6 +135,10 @@ git clone https://$github/eamonxg/luci-app-aurora-config package/new/luci-app-au
 rm -rf package/new/luci-theme-aurora/root/etc/uci-defaults
 sed -i 's/100/85/g' package/new/luci-app-aurora-config/root/usr/share/luci/menu.d/luci-app-aurora.json
 
+# luci-theme-bootstrap SPA
+rm -rf feeds/luci/themes/luci-theme-bootstrap
+git clone https://$github/sbwml/luci-theme-bootstrap feeds/luci/themes/luci-theme-bootstrap
+
 # Mosdns
 git clone https://$github/sbwml/luci-app-mosdns -b v5 package/new/mosdns --depth=1
 
