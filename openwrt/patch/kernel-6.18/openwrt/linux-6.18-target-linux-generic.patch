@@ -1,0 +1,218 @@
+diff --git a/target/linux/generic/files/drivers/net/phy/adm6996.c b/target/linux/generic/files/drivers/net/phy/adm6996.c
+index d917427..0f70634 100644
+--- a/target/linux/generic/files/drivers/net/phy/adm6996.c
++++ b/target/linux/generic/files/drivers/net/phy/adm6996.c
+@@ -1209,7 +1209,7 @@ static void adm6996_gpio_remove(struct platform_device *pdev)
+ 
+ static struct platform_driver adm6996_gpio_driver = {
+ 	.probe = adm6996_gpio_probe,
+-	.remove_new = adm6996_gpio_remove,
++	.remove = adm6996_gpio_remove,
+ 	.driver = {
+ 		.name = "adm6996_gpio",
+ 	},
+@@ -1219,14 +1219,14 @@ static int __init adm6996_init(void)
+ {
+ 	int err;
+ 
+-	phy_register_fixup_for_id(PHY_ANY_ID, adm6996_fixup);
+-	err = phy_driver_register(&adm6996_phy_driver, THIS_MODULE);
++	phy_register_fixup_for_id("MATCH ANY PHY", adm6996_fixup);
++	err = phy_drivers_register(&adm6996_phy_driver, 1, THIS_MODULE);
+ 	if (err)
+ 		return err;
+ 
+ 	err = platform_driver_register(&adm6996_gpio_driver);
+ 	if (err)
+-		phy_driver_unregister(&adm6996_phy_driver);
++		phy_drivers_unregister(&adm6996_phy_driver, 1);
+ 
+ 	return err;
+ }
+@@ -1234,7 +1234,7 @@ static int __init adm6996_init(void)
+ static void __exit adm6996_exit(void)
+ {
+ 	platform_driver_unregister(&adm6996_gpio_driver);
+-	phy_driver_unregister(&adm6996_phy_driver);
++	phy_drivers_unregister(&adm6996_phy_driver, 1);
+ }
+ 
+ module_init(adm6996_init);
+diff --git a/target/linux/generic/files/drivers/net/phy/b53/b53_mdio.c b/target/linux/generic/files/drivers/net/phy/b53/b53_mdio.c
+index fdcebc7..ad3f308 100644
+--- a/target/linux/generic/files/drivers/net/phy/b53/b53_mdio.c
++++ b/target/linux/generic/files/drivers/net/phy/b53/b53_mdio.c
+@@ -404,29 +404,29 @@ static int __init b53_phy_driver_register(void)
+ {
+ 	int ret;
+ 
+-	ret = phy_driver_register(&b53_phy_driver_id1, THIS_MODULE);
++	ret = phy_drivers_register(&b53_phy_driver_id1, 1, THIS_MODULE);
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = phy_driver_register(&b53_phy_driver_id2, THIS_MODULE);
++	ret = phy_drivers_register(&b53_phy_driver_id2, 1, THIS_MODULE);
+ 	if (ret)
+ 		goto err1;
+ 
+-	ret = phy_driver_register(&b53_phy_driver_id3, THIS_MODULE);
++	ret = phy_drivers_register(&b53_phy_driver_id3, 1, THIS_MODULE);
+ 	if (!ret)
+ 		return 0;
+ 
+-	phy_driver_unregister(&b53_phy_driver_id2);
++	phy_drivers_unregister(&b53_phy_driver_id2, 1);
+ err1:
+-	phy_driver_unregister(&b53_phy_driver_id1);
++	phy_drivers_unregister(&b53_phy_driver_id1, 1);
+ 	return ret;
+ }
+ 
+ static void __exit b53_phy_driver_unregister(void)
+ {
+-	phy_driver_unregister(&b53_phy_driver_id3);
+-	phy_driver_unregister(&b53_phy_driver_id2);
+-	phy_driver_unregister(&b53_phy_driver_id1);
++	phy_drivers_unregister(&b53_phy_driver_id3, 1);
++	phy_drivers_unregister(&b53_phy_driver_id2, 1);
++	phy_drivers_unregister(&b53_phy_driver_id1, 1);
+ }
+ 
+ module_init(b53_phy_driver_register);
+diff --git a/target/linux/generic/files/drivers/net/phy/b53/b53_mmap.c b/target/linux/generic/files/drivers/net/phy/b53/b53_mmap.c
+index 62dfe1c..04625c5 100644
+--- a/target/linux/generic/files/drivers/net/phy/b53/b53_mmap.c
++++ b/target/linux/generic/files/drivers/net/phy/b53/b53_mmap.c
+@@ -227,7 +227,7 @@ static void b53_mmap_remove(struct platform_device *pdev)
+ 
+ static struct platform_driver b53_mmap_driver = {
+ 	.probe = b53_mmap_probe,
+-	.remove_new = b53_mmap_remove,
++	.remove = b53_mmap_remove,
+ 	.driver = {
+ 		.name = "b53-switch",
+ 	},
+diff --git a/target/linux/generic/files/drivers/net/phy/b53/b53_phy_fixup.c b/target/linux/generic/files/drivers/net/phy/b53/b53_phy_fixup.c
+index 5a41507..3059d39 100644
+--- a/target/linux/generic/files/drivers/net/phy/b53/b53_phy_fixup.c
++++ b/target/linux/generic/files/drivers/net/phy/b53/b53_phy_fixup.c
+@@ -49,7 +49,7 @@ static int b53_phy_fixup(struct phy_device *dev)
+ 
+ static int __init b53_phy_fixup_register(void)
+ {
+-	return phy_register_fixup_for_id(PHY_ANY_ID, b53_phy_fixup);
++	return phy_register_fixup_for_id("MATCH ANY PHY", b53_phy_fixup);
+ }
+ 
+ subsys_initcall(b53_phy_fixup_register);
+diff --git a/target/linux/generic/files/drivers/net/phy/b53/b53_srab.c b/target/linux/generic/files/drivers/net/phy/b53/b53_srab.c
+index f8cb993..869f920 100644
+--- a/target/linux/generic/files/drivers/net/phy/b53/b53_srab.c
++++ b/target/linux/generic/files/drivers/net/phy/b53/b53_srab.c
+@@ -364,7 +364,7 @@ static void b53_srab_remove(struct platform_device *pdev)
+ 
+ static struct platform_driver b53_srab_driver = {
+ 	.probe = b53_srab_probe,
+-	.remove_new = b53_srab_remove,
++	.remove = b53_srab_remove,
+ 	.driver = {
+ 		.name = "b53-srab-switch",
+ 	},
+diff --git a/target/linux/generic/files/drivers/net/phy/psb6970.c b/target/linux/generic/files/drivers/net/phy/psb6970.c
+index e8b1b06..97af784 100644
+--- a/target/linux/generic/files/drivers/net/phy/psb6970.c
++++ b/target/linux/generic/files/drivers/net/phy/psb6970.c
+@@ -425,15 +425,15 @@ static struct phy_driver psb6970_driver = {
+ 
+ static int __init psb6970_init(void)
+ {
+-	phy_register_fixup_for_id(PHY_ANY_ID, psb6970_fixup);
+-	return phy_driver_register(&psb6970_driver, THIS_MODULE);
++	phy_register_fixup_for_id("MATCH ANY PHY", psb6970_fixup);
++	return phy_drivers_register(&psb6970_driver, 1, THIS_MODULE);
+ }
+ 
+ module_init(psb6970_init);
+ 
+ static void __exit psb6970_exit(void)
+ {
+-	phy_driver_unregister(&psb6970_driver);
++	phy_drivers_unregister(&psb6970_driver, 1);
+ }
+ 
+ module_exit(psb6970_exit);
+diff --git a/target/linux/generic/files/drivers/net/phy/rtl8306.c b/target/linux/generic/files/drivers/net/phy/rtl8306.c
+index 9bd1735..a4b2664 100644
+--- a/target/linux/generic/files/drivers/net/phy/rtl8306.c
++++ b/target/linux/generic/files/drivers/net/phy/rtl8306.c
+@@ -1047,14 +1047,14 @@ static struct phy_driver rtl8306_driver = {
+ static int __init
+ rtl_init(void)
+ {
+-	phy_register_fixup_for_id(PHY_ANY_ID, rtl8306_fixup);
+-	return phy_driver_register(&rtl8306_driver, THIS_MODULE);
++	phy_register_fixup_for_id("MATCH ANY PHY", rtl8306_fixup);
++	return phy_drivers_register(&rtl8306_driver, 1, THIS_MODULE);
+ }
+ 
+ static void __exit
+ rtl_exit(void)
+ {
+-	phy_driver_unregister(&rtl8306_driver);
++	phy_drivers_unregister(&rtl8306_driver, 1);
+ }
+ 
+ module_init(rtl_init);
+diff --git a/target/linux/generic/files/drivers/net/phy/rtl8366rb.c b/target/linux/generic/files/drivers/net/phy/rtl8366rb.c
+index 0f4bbb1..3d4daec 100644
+--- a/target/linux/generic/files/drivers/net/phy/rtl8366rb.c
++++ b/target/linux/generic/files/drivers/net/phy/rtl8366rb.c
+@@ -1498,7 +1498,7 @@ static struct platform_driver rtl8366rb_driver = {
+ 		.of_match_table = rtl8366rb_match,
+ 	},
+ 	.probe		= rtl8366rb_probe,
+-	.remove_new		= rtl8366rb_remove,
++	.remove		= rtl8366rb_remove,
+ };
+ 
+ static int __init rtl8366rb_module_init(void)
+diff --git a/target/linux/generic/files/drivers/net/phy/rtl8366s.c b/target/linux/generic/files/drivers/net/phy/rtl8366s.c
+index 0b37a4e..298faed 100644
+--- a/target/linux/generic/files/drivers/net/phy/rtl8366s.c
++++ b/target/linux/generic/files/drivers/net/phy/rtl8366s.c
+@@ -1275,7 +1275,7 @@ static struct platform_driver rtl8366s_driver = {
+ 		.of_match_table = rtl8366s_match,
+ 	},
+ 	.probe		= rtl8366s_probe,
+-	.remove_new	= rtl8366s_remove,
++	.remove		= rtl8366s_remove,
+ };
+ 
+ static int __init rtl8366s_module_init(void)
+diff --git a/target/linux/generic/files/drivers/net/phy/rtl8367.c b/target/linux/generic/files/drivers/net/phy/rtl8367.c
+index 2c11190..96f866a 100644
+--- a/target/linux/generic/files/drivers/net/phy/rtl8367.c
++++ b/target/linux/generic/files/drivers/net/phy/rtl8367.c
+@@ -1812,7 +1812,7 @@ static struct platform_driver rtl8367_driver = {
+ 		.of_match_table = rtl8367_match,
+ 	},
+ 	.probe		= rtl8367_probe,
+-	.remove_new	= rtl8367_remove,
++	.remove		= rtl8367_remove,
+ 	.shutdown	= rtl8367_shutdown,
+ };
+ 
+diff --git a/target/linux/generic/files/drivers/net/phy/rtl8367b.c b/target/linux/generic/files/drivers/net/phy/rtl8367b.c
+index ae30936..c1a2868 100644
+--- a/target/linux/generic/files/drivers/net/phy/rtl8367b.c
++++ b/target/linux/generic/files/drivers/net/phy/rtl8367b.c
+@@ -1610,7 +1610,7 @@ static struct platform_driver rtl8367b_driver = {
+ 		.of_match_table = rtl8367b_match,
+ 	},
+ 	.probe		= rtl8367b_probe,
+-	.remove_new	= rtl8367b_remove,
++	.remove		= rtl8367b_remove,
+ 	.shutdown	= rtl8367b_shutdown,
+ };
+ 

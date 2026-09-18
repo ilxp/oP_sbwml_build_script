@@ -21,7 +21,7 @@ on:
         type: choice
         options:
           - 'release'
-          - 'snapshot-24.10'
+          - 'snapshot-25.12'
       ccache:
         description: 'Enable ccache (Use Cache to speed up next build)'
         type: boolean
@@ -102,10 +102,10 @@ jobs:
 
     - name: Restore Cached
       if: ${{ github.event.inputs.ccache == 'true' && github.event.inputs.device != 'armv8' && github.event.inputs.device != 'nanopi-r4s' }}
-      uses: actions/cache/restore@v4
+      uses: actions/cache/restore@main
       with:
         path: /builder/.ccache
-        key: openwrt-24.10-${{ github.event.inputs.device }}-ccache
+        key: openwrt-25.12-${{ github.event.inputs.device }}-ccache
 
     - name: Restore Cached (releases)
       if: ${{ github.event.inputs.ccache == 'true' && github.event.inputs.device == 'armv8' || github.event.inputs.device == 'nanopi-r4s' }}
@@ -137,7 +137,7 @@ jobs:
         if [ "${{ github.event.inputs.version }}" = release ]; then
           tags=OpenWrt-$(git describe --abbrev=0 --tags)
         else
-          tags=snapshot-24.10-$(git log -n 1 --date=format:"%Y%m%d" --format="%cd")-$(git log --pretty=format:"%h" -1)
+          tags=snapshot-25.12-$(git log -n 1 --date=format:"%Y%m%d" --format="%cd")-$(git log --pretty=format:"%h" -1)
         fi
         echo "latest_release=$tags" >>$GITHUB_ENV
 
@@ -156,15 +156,15 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GH_REPO: ${{ github.repository }}
       run: |
-        gh cache delete openwrt-24.10-${{ github.event.inputs.device }}-ccache || true
+        gh cache delete openwrt-25.12-${{ github.event.inputs.device }}-ccache || true
 
     - name: Save Cached
       if: ${{ github.event.inputs.ccache == 'true' && github.event.inputs.device != 'armv8' && github.event.inputs.device != 'nanopi-r4s' }}
       continue-on-error: true
-      uses: actions/cache/save@v4
+      uses: actions/cache/save@main
       with:
         path: /builder/.ccache
-        key: openwrt-24.10-${{ github.event.inputs.device }}-ccache
+        key: openwrt-25.12-${{ github.event.inputs.device }}-ccache
 
     - name: Create ccache tar files
       if: ${{ github.event.inputs.ccache == 'true' && github.event.inputs.device == 'armv8' || github.event.inputs.device == 'nanopi-r4s' }}
@@ -177,7 +177,7 @@ jobs:
     - name: Upload Cached (releases - ccache)
       if: ${{ github.event.inputs.ccache == 'true' && github.event.inputs.device == 'armv8' || github.event.inputs.device == 'nanopi-r4s' }}
       continue-on-error: true
-      uses: ncipollo/release-action@v1.14.0
+      uses: ncipollo/release-action@main
       with:
         name: ccache
         allowUpdates: true
@@ -218,14 +218,14 @@ jobs:
         fi
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@main
       with:
         name: ${{ github.event.inputs.device }}-openwrt-${{ env.latest_release }}
         path: ${{ env.build_dir }}/rom/*
 
     - name: Create release
       continue-on-error: true
-      uses: ncipollo/release-action@v1
+      uses: ncipollo/release-action@main
       with:
         name: ${{ env.latest_release }}
         allowUpdates: true

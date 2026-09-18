@@ -4,7 +4,7 @@
 
 ---------------
 
-## 基于 Linux 6.12 LTS 固件下载:
+## 基于 Linux 6.18 LTS 固件下载:
 
 #### NanoPi R4S: https://r4s.cooluc.com
 
@@ -14,7 +14,7 @@
 
 #### X86_64: https://x86.cooluc.com
 
-#### Snapshot 24.10: https://snapshot.cooluc.com
+#### Snapshot 25.12: https://snapshot.cooluc.com
 
 #### 构建来源: https://github.com/sbwml/builder
 
@@ -46,8 +46,8 @@ export git_name=账户名 git_password=密码
 export KERNEL_CLANG_LTO=y
 ```
 
-### 启用 [GCC13](https://gcc.gnu.org/gcc-13/)/[GCC14](https://gcc.gnu.org/gcc-14/)/[GCC15](https://gcc.gnu.org/gcc-15/) 工具链编译
-##### 只需在构建固件前执行以下命令即可启用 GCC13/GCC14/GCC15 交叉工具链
+### 启用 [GCC13](https://gcc.gnu.org/gcc-13/)/[GCC14](https://gcc.gnu.org/gcc-14/)/[GCC15](https://gcc.gnu.org/gcc-15/)/[GCC16](https://gcc.gnu.org/gcc-16/) 工具链编译
+##### 只需在构建固件前执行以下命令即可启用对应交叉工具链版本
 
 ```
 # GCC13
@@ -64,6 +64,11 @@ export USE_GCC14=y
 export USE_GCC15=y
 ```
 
+```
+# GCC16
+export USE_GCC16=y
+```
+
 ### 启用 [LTO](https://gcc.gnu.org/onlinedocs/gccint/LTO-Overview.html) 优化
 ##### 只需在构建固件前执行以下命令即可启用编译器 LTO 优化
 
@@ -71,7 +76,7 @@ export USE_GCC15=y
 export ENABLE_LTO=y
 ```
 
-### 启用 [MOLD](https://github.com/rui314/mold) 现代链接器（需要启用 `USE_GCC13=y` 或 `USE_GCC14=y` 或 `USE_GCC15=y`）
+### 启用 [MOLD](https://github.com/rui314/mold) 现代链接器
 ##### 只需在构建固件前执行以下命令即可启用 MOLD 链接，如果使用它建议同时启用 LTO 优化
 
 ```
@@ -92,9 +97,9 @@ export ENABLE_BPF=y
 export ENABLE_LRNG=y
 ```
 
-### 启用 [Glibc](https://www.gnu.org/software/libc/) 库构建 （实验性）
-##### 启用 glibc 库进行构建时，构建的固件将会同时兼容 musl/glibc 的预构建二进制程序，但缺失 `opkg install` 安装源支持
-##### 只需在构建固件前执行以下命令即可启用 glibc 构建
+### ~~启用 [Glibc](https://www.gnu.org/software/libc/) 库构建 （实验性）~~
+##### ~~启用 glibc 库进行构建时，构建的固件将会同时兼容 musl/glibc 的预构建二进制程序，但缺失 `apk install` 安装源支持~~
+##### ~~只需在构建固件前执行以下命令即可启用 glibc 构建~~
 
 ```
 export ENABLE_GLIBC=y
@@ -133,6 +138,14 @@ export BUILD_FAST=y
 export MINIMAL_BUILD=y
 ```
 
+### 构建 iStoreOS 样式
+##### 包含 iStoreOS 的商店、状态页
+##### 只需在构建固件前执行以下命令即可构建 iStoreOS 样式
+
+```
+export ENABLE_ISTORE=y
+```
+
 ### 更改 LAN IP 地址
 ##### 自定义默认 LAN IP 地址
 ##### 只需在构建固件前执行以下命令即可覆盖默认 LAN 地址（默认：10.0.0.1）
@@ -166,7 +179,7 @@ export NO_KMOD=y
 
 ---------------
 
-## 构建 OpenWrt 24.10 最新 Releases
+## 构建 OpenWrt 25.12 最新 Releases
 
 ### nanopi-r4s
 ```shell
@@ -176,45 +189,45 @@ bash <(curl -sS https://init2.cooluc.com/build.sh) rc2 nanopi-r4s
 
 ### nanopi-r5s/r5c
 ```shell
-# linux-6.12
+# linux-6.18
 bash <(curl -sS https://init2.cooluc.com/build.sh) rc2 nanopi-r5s
 ```
 
 ### nanopi-r76s
 ```shell
-# linux-6.12
+# linux-6.18
 bash <(curl -sS https://init2.cooluc.com/build.sh) rc2 nanopi-r76s
 ```
 
 ### x86_64
 ```shell
-# linux-6.12
+# linux-6.18
 bash <(curl -sS https://init2.cooluc.com/build.sh) rc2 x86_64
 ```
 
-## 构建 OpenWrt 24.10 开发版（24.10-SNAPSHOT）
+## 构建 OpenWrt 25.12 开发版（25.12-SNAPSHOT）
 
 ### nanopi-r4s
 ```shell
-# linux-6.12
+# linux-6.18
 bash <(curl -sS https://init2.cooluc.com/build.sh) dev nanopi-r4s
 ```
 
 ### nanopi-r5s/r5c
 ```shell
-# linux-6.12
+# linux-6.18
 bash <(curl -sS https://init2.cooluc.com/build.sh) dev nanopi-r5s
 ```
 
 ### nanopi-r76s
 ```shell
-# linux-6.12
+# linux-6.18
 bash <(curl -sS https://init2.cooluc.com/build.sh) dev nanopi-r76s
 ```
 
 ### x86_64
 ```shell
-# linux-6.12
+# linux-6.18
 bash <(curl -sS https://init2.cooluc.com/build.sh) dev x86_64
 ```
 
@@ -232,32 +245,27 @@ bash <(curl -sS https://init2.cooluc.com/build.sh) dev x86_64
 
 ```diff
  # script url
- if [ "$isCN" = "CN" ]; then
--    export mirror=https://init.cooluc.com
-+    export mirror=https://raw.githubusercontent.com/你的用户名/r4s_build_script/refs/heads/master
- else
--    export mirror=https://init2.cooluc.com
-+    export mirror=https://raw.githubusercontent.com/你的用户名/r4s_build_script/refs/heads/master
- fi
+-export mirror=https://init.cooluc.com
++export mirror=https://raw.githubusercontent.com/你的用户名/r4s_build_script/refs/heads/master
 ```
 
 ### 三、在本地 Linux 执行基于你自己仓库的构建脚本，即可编译所需固件
 
-#### nanopi-r4s openwrt-24.10
+#### nanopi-r4s openwrt-25.12
 ```shell
-# linux-6.12
+# linux-6.18
 bash <(curl -sS https://raw.githubusercontent.com/你的用户名/r4s_build_script/refs/heads/master/openwrt/build.sh) rc2 nanopi-r4s
 ```
 
-#### nanopi-r5s/r5c openwrt-24.10
+#### nanopi-r5s/r5c openwrt-25.12
 ```shell
-# linux-6.12
+# linux-6.18
 bash <(curl -sS https://raw.githubusercontent.com/你的用户名/r4s_build_script/refs/heads/master/openwrt/build.sh) rc2 nanopi-r5s
 ```
 
-#### x86_64 openwrt-24.10
+#### x86_64 openwrt-25.12
 ```shell
-# linux-6.12
+# linux-6.18
 bash <(curl -sS https://raw.githubusercontent.com/你的用户名/r4s_build_script/refs/heads/master/openwrt/build.sh) rc2 x86_64
 ```
 

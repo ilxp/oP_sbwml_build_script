@@ -69,6 +69,13 @@ pushd feeds/telephony
   git clone https://$github/sbwml/feeds_telephony_libs_dahdi-linux libs/dahdi-linux -b v6.18
 popd
 
+# routing
+pushd feeds/routing
+  # batman-adv
+  rm -rf batman-adv
+  git clone https://$github/sbwml/feeds_routing_batman-adv batman-adv
+popd
+
 # clang
 if [ "$KERNEL_CLANG_LTO" = "y" ]; then
     # xtables-addons module
@@ -85,7 +92,4 @@ if [ "$KERNEL_CLANG_LTO" = "y" ]; then
     # coova-chilli module
     rm -rf feeds/packages/net/coova-chilli
     git clone https://$github/sbwml/kmod_packages_net_coova-chilli feeds/packages/net/coova-chilli
-else
-    # coova-chilli - fix gcc 15 c23
-    [ "$USE_GCC15" = y ] && sed -i '/TARGET_CFLAGS/s/$/ -std=gnu17/' feeds/packages/net/coova-chilli/Makefile
 fi

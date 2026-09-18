@@ -11,7 +11,7 @@ define KernelPackage/lib-crc-ccitt
   SUBMENU:=$(LIB_MENU)
   TITLE:=CRC-CCITT support
   KCONFIG:=CONFIG_CRC_CCITT
-  FILES:=$(LINUX_DIR)/lib/crc-ccitt.ko
+  FILES:=$(LINUX_DIR)/lib/crc/crc-ccitt.ko
   AUTOLOAD:=$(call AutoProbe,crc-ccitt)
 endef
 
@@ -26,7 +26,7 @@ define KernelPackage/lib-crc-itu-t
   SUBMENU:=$(LIB_MENU)
   TITLE:=CRC ITU-T V.41 support
   KCONFIG:=CONFIG_CRC_ITU_T
-  FILES:=$(LINUX_DIR)/lib/crc-itu-t.ko
+  FILES:=$(LINUX_DIR)/lib/crc/crc-itu-t.ko
   AUTOLOAD:=$(call AutoProbe,crc-itu-t)
 endef
 
@@ -41,7 +41,7 @@ define KernelPackage/lib-crc7
   SUBMENU:=$(LIB_MENU)
   TITLE:=CRC7 support
   KCONFIG:=CONFIG_CRC7
-  FILES:=$(LINUX_DIR)/lib/crc7.ko
+  FILES:=$(LINUX_DIR)/lib/crc/crc7.ko
   AUTOLOAD:=$(call AutoProbe,crc7)
 endef
 
@@ -56,7 +56,7 @@ define KernelPackage/lib-crc8
   SUBMENU:=$(LIB_MENU)
   TITLE:=CRC8 support
   KCONFIG:=CONFIG_CRC8
-  FILES:=$(LINUX_DIR)/lib/crc8.ko
+  FILES:=$(LINUX_DIR)/lib/crc/crc8.ko
   AUTOLOAD:=$(call AutoProbe,crc8)
 endef
 
@@ -71,7 +71,7 @@ define KernelPackage/lib-crc16
   SUBMENU:=$(LIB_MENU)
   TITLE:=CRC16 support
   KCONFIG:=CONFIG_CRC16
-  FILES:=$(LINUX_DIR)/lib/crc16.ko
+  FILES:=$(LINUX_DIR)/lib/crc/crc16.ko
   AUTOLOAD:=$(call AutoLoad,20,crc16,1)
 endef
 
@@ -87,7 +87,7 @@ define KernelPackage/lib-crc32c
   TITLE:=CRC32 support
   KCONFIG:=CONFIG_LIBCRC32C
   DEPENDS:=+kmod-crypto-crc32c
-  FILES:=$(LINUX_DIR)/lib/libcrc32c.ko
+  FILES:=$(LINUX_DIR)/lib/crc/libcrc32c.ko
   AUTOLOAD:=$(call AutoProbe,libcrc32c)
 endef
 
@@ -359,6 +359,7 @@ $(eval $(call KernelPackage,oid-registry))
 define KernelPackage/lib-objagg
   SUBMENU:=$(LIB_MENU)
   TITLE:=objagg support
+  HIDDEN:=1
   FILES:=$(LINUX_DIR)/lib/objagg.ko
   KCONFIG:= \
   CONFIG_OBJAGG \
@@ -372,6 +373,7 @@ $(eval $(call KernelPackage,lib-objagg))
 define KernelPackage/lib-parman
   SUBMENU:=$(LIB_MENU)
   TITLE:=parman support
+  HIDDEN:=1
   FILES:=$(LINUX_DIR)/lib/parman.ko
   KCONFIG:= \
   CONFIG_PARMAN \
@@ -385,7 +387,7 @@ $(eval $(call KernelPackage,lib-parman))
 define KernelPackage/libwx
   SUBMENU:=$(NETWORK_DEVICES_MENU)
   TITLE:=Wangxun(R) Ethernet driver common library
-  DEPENDS:=@PCI_SUPPORT +kmod-phylink
+  DEPENDS:=@PCI_SUPPORT +kmod-phylink +kmod-ptp
   KCONFIG:=CONFIG_LIBWX
   FILES:=$(LINUX_DIR)/drivers/net/ethernet/wangxun/libwx/libwx.ko
   AUTOLOAD:=$(call AutoProbe,libwx)
@@ -398,33 +400,24 @@ endef
 $(eval $(call KernelPackage,libwx))
 
 
-define KernelPackage/libie
+define KernelPackage/libie-fwlog
   SUBMENU:=$(NETWORK_DEVICES_MENU)
-  TITLE:=Intel Ethernet library
-  DEPENDS:=@LINUX_6_12
-  KCONFIG:=CONFIG_LIBIE
-  FILES:=$(LINUX_DIR)/drivers/net/ethernet/intel/libie/libie.ko
-  AUTOLOAD:=$(call AutoLoad,15,libie,1)
+  TITLE:=LIBIE_FWLOG
+  KCONFIG:=CONFIG_LIBIE_FWLOG
+  FILES:=$(LINUX_DIR)/drivers/net/ethernet/intel/libie/libie_fwlog.ko
+  AUTOLOAD:=$(call AutoLoad,15,libie_fwlog,1)
 endef
 
-define KernelPackage/libie/description
- Intel Ethernet library
-endef
-
-$(eval $(call KernelPackage,libie))
+$(eval $(call KernelPackage,libie-fwlog))
 
 
-define KernelPackage/libeth
+define KernelPackage/libie-adminq
   SUBMENU:=$(NETWORK_DEVICES_MENU)
-  TITLE:=Intel Ethernet common library
-  DEPENDS:=@LINUX_6_12
-  KCONFIG:=CONFIG_LIBETH
-  FILES:=$(LINUX_DIR)/drivers/net/ethernet/intel/libeth/libeth.ko
-  AUTOLOAD:=$(call AutoLoad,15,libeth,1)
+  TITLE:=LIBIE_ADMINQ
+  KCONFIG:=CONFIG_LIBIE_ADMINQ
+  FILES:=$(LINUX_DIR)/drivers/net/ethernet/intel/libie/libie_adminq.ko
+  AUTOLOAD:=$(call AutoLoad,15,libie_adminq,1)
 endef
 
-define KernelPackage/libeth/description
-endef
-
-$(eval $(call KernelPackage,libeth))
+$(eval $(call KernelPackage,libie-adminq))
 
