@@ -165,10 +165,12 @@ wget -qO - https://github.com/openwrt/openwrt/commit/c21a3570.patch | patch -p1
 #sed -i 's/kmod-tcp-bbr/kmod-tcp-bbr3/g' feeds/luci/applications/luci-app-turboacc/Makefile
 
 # Modules  （package/kernel/linux/modules）  
-rm -rf package/kernel/linux/modules/hwmon.mk  #修改CONFIG_ALL_KMODS
-rm -rf package/kernel/linux/modules/netsupport.mk   #tcp-bbr为tcp-bbr3
-cp -rf ./diydata/data/modules-sbwml/hwmon.mk ./package/kernel/linux/modules/
-cp -rf ./diydata/data/modules-sbwml/netsupport.mk ./package/kernel/linux/modules/
+pushd package/kernel/linux/modules
+rm -rf hwmon.mk  #修改CONFIG_ALL_KMODS
+rm -rf netsupport.mk   #tcp-bbr为tcp-bbr3
+ curl -Os $mirror/openwrt/data/modules-sbwml/hwmon.mk
+ curl -Os $mirror/openwrt/data/modules-sbwml/netsupport.mk
+popd
 
 #==============================================================
 
