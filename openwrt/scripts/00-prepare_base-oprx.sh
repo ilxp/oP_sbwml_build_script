@@ -26,11 +26,13 @@ curl -s $mirror/openwrt/patch/generic-25.12/0009-tools-squashfs4-enable-lz4-zstd
 curl -s $mirror/openwrt/patch/generic-25.12/0010-kernel-add-PREEMPT_RT-support-for-aarch64-x86_64.patch | patch -p1
 curl -s $mirror/openwrt/patch/generic-25.12/0011-config-include-image-add-support-for-squashfs-zstd-c.patch | patch -p1
 curl -s $mirror/openwrt/patch/generic-25.12/0012-include-kernel-Always-collect-module-symvers.patch | patch -p1
-curl -s $mirror/openwrt/patch/generic-25.12/0013-include-netfilter-update-kernel-config-options-for-l.patch | patch -p1
+curl -s $mirror/openwrt/patch/generic-25.12/0013-toolchain-gcc-add-support-for-GCC-16.patch | patch -p1
+curl -s $mirror/openwrt/patch/generic-25.12/0014-tools-mold-update-to-2.41.0.patch | patch -p1
+curl -s $mirror/openwrt/patch/generic-25.12/0015-tools-build-lz4-by-default.patch | patch -p1
 
 # add source mirror
 #sed -i '/"@OPENWRT": \[/a\\t\t"https://sources-cdn-openwrt.cooluc.com",' scripts/projectsmirrors.json
-#sed -i '/"@OPENWRT": \[/a\\t\t"https://source.cooluc.com",' scripts/projectsmirrors.json
+sed -i '/"@OPENWRT": \[/a\\t\t"https://source.cooluc.com",' scripts/projectsmirrors.json
 
 # attr no-mold
 [ "$ENABLE_MOLD" = "y" ] && sed -i '/PKG_BUILD_PARALLEL/aPKG_BUILD_FLAGS:=no-mold' feeds/packages/utils/attr/Makefile
@@ -78,8 +80,8 @@ git clone https://$github/sbwml/package_kernel_r8125 package/kernel/r8125
 git clone https://$github/sbwml/package_kernel_r8126 package/kernel/r8126
 git clone https://$github/sbwml/package_kernel_r8127 package/kernel/r8127
 # Realtek Wireless driver - RTL8822CS & RTL8852AU
-#git clone https://$github/sbwml/package_kernel_rtl8822cs package/kernel/rtl8822cs
-#git clone https://$github/sbwml/package_kernel_rtl8852au package/kernel/rtl8852au
+git clone https://$github/sbwml/package_kernel_rtl8822cs package/kernel/rtl8822cs
+git clone https://$github/sbwml/package_kernel_rtl8852au package/kernel/rtl8852au
 
 # GCC Optimization level -O3
 curl -s $mirror/openwrt/patch/target-modify_for_aarch64_x86_64.patch | patch -p1
@@ -134,7 +136,7 @@ if [ "$version" = "dev" ] || [ "$version" = "rc2" ]; then
     curl -s $mirror/openwrt/patch/firewall4/firewall4_patches/001-fix-fw4-flow-offload.patch > package/network/config/firewall4/patches/001-fix-fw4-flow-offload.patch
     # add custom nft command support
     curl -s $mirror/openwrt/patch/firewall4/100-openwrt-firewall4-add-custom-nft-command-support.patch | patch -p1
-	# fw4 - github mirror
+    # fw4 - github mirror
     sed -i 's|$(PROJECT_GIT)/project|https://github.com/openwrt|g' package/network/config/firewall4/Makefile
     # libnftnl
     mkdir -p package/libs/libnftnl/patches
@@ -225,6 +227,9 @@ sed -i '/ubus_parallel_req/a\        ubus_script_timeout 300;' feeds/packages/ne
 curl -s $mirror/openwrt/nginx/luci.locations > feeds/packages/net/nginx/files-luci-support/luci.locations
 curl -s $mirror/openwrt/nginx/uci.conf.template > feeds/packages/net/nginx-util/files/uci.conf.template
 
+# nginx-util
+sed -i '/\/etc\/nginx\/uci.conf.template/d' feeds/packages/net/nginx-util/Makefile
+
 # netifd
 curl -s $mirror/openwrt/patch/netifd/001-hack-packet_steering-for-nanopi-r76s.patch | patch -p1
 
@@ -261,7 +266,7 @@ pushd feeds/luci
     curl -s $mirror/openwrt/patch/luci/0005-luci-mod-system-add-refresh-interval-setting.patch | patch -p1
     curl -s $mirror/openwrt/patch/luci/0006-luci-mod-system-mounts-add-docker-directory-mount-po.patch | patch -p1
     curl -s $mirror/openwrt/patch/luci/0007-luci-mod-system-add-ucitrack-luci-mod-system-zram.js.patch | patch -p1
-	curl -s $mirror/openwrt/patch/luci/0008-luci-mod-status-dmesg-add-ANSI-terminal-color-and-re.patch | patch -p1
+    curl -s $mirror/openwrt/patch/luci/0008-luci-mod-status-dmesg-add-ANSI-terminal-color-and-re.patch | patch -p1
 popd
 
 # Luci diagnostics.js
@@ -290,6 +295,9 @@ sed -i '\#export ENV=/etc/shinit#a export HISTCONTROL=ignoredups' package/base-f
 mkdir -p files/root
 curl -so files/root/.bash_profile $mirror/openwrt/files/root/.bash_profile
 curl -so files/root/.bashrc $mirror/openwrt/files/root/.bashrc
+
+# busybox
+sed -i '/profile\.d/d' package/utils/busybox/Makefile
 
 # rootfs files
 mkdir -p files/etc/sysctl.d

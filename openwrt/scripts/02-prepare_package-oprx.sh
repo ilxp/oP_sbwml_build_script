@@ -3,7 +3,7 @@
 #!/bin/bash -e
 #复制过来，注释掉108-110行# SSRP & Passwall
 
-# golang 1.27
+# golang 1.26
 rm -rf feeds/packages/lang/golang
 git clone https://$github/sbwml/packages_lang_golang -b 26.x feeds/packages/lang/golang
 
@@ -29,8 +29,8 @@ git clone https://$github/sbwml/package_new_bluez-alsa package/new/bluez-alsa
 git clone https://$github/timsaya/openwrt-bandix package/new/bandix --depth=1
 git clone https://$github/timsaya/luci-app-bandix package/new/luci-app-bandix --depth=1
 
-# luci-app-diskman  js
-#git clone https://$github/sbwml/luci-app-diskman package/new/diskman --depth=1
+# luci-app-diskman
+git clone https://$github/sbwml/luci-app-diskman package/new/diskman --depth=1
 
 # istore
 git clone https://$github/sbwml/package_new_istore package/new/istore --depth=1
