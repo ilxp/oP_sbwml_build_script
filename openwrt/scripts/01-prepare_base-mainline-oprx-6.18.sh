@@ -97,11 +97,6 @@ wget -qO - https://github.com/openwrt/openwrt/commit/c21a3570.patch | patch -p1
 #==============================================================
 
 #----------------采用 lede的6.18内核补丁-----------------------------------------
-#rm -rf toolchain/kernel-headers
-#merge_package master https://github.com/coolsnowwolf/lede.git toolchain toolchain/kernel-headers
-
-#rm -rf scripts/download.pl
-#wget -P scripts/ https://github.com/coolsnowwolf/lede/raw/master/scripts/download.pl
 
 #generic
 wget -P target/linux/generic/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/generic/config-6.18
@@ -121,14 +116,12 @@ merge_package master https://github.com/coolsnowwolf/lede.git target/linux/gener
 #sed -ri "s/(KERNEL_PATCHVER:=)[^\"]*/\16.12/" target/linux/x86/Makefile
 #sed -i '/KERNEL_PATCHVER/a\KERNEL_TESTING_PATCHVER:=6.6' target/linux/x86/Makefile
 
-
 #删除lede多余的patch：952—953—982
 rm -rf target/linux/generic/hack-6.18/952-add-net-conntrack-events-support-multiple-registrant.patch
 rm -rf target/linux/generic/hack-6.18/982-add-bcm-fullconenat-support.patch
 rm -rf target/linux/generic/hack-6.18/953-net-patch-linux-kernel-to-support-shortcut-fe.patch
 rm -rf target/linux/generic/hack-6.18/983-add-bcm-fullconenat-to-nft.patch
 #---------------------------------------------------------------------------------------------------
-
 
 # kernel modules
 rm -rf package/kernel/linux
@@ -261,7 +254,7 @@ curl -s $mirror/openwrt/patch/openwrt-6.x/500-world-regd-5GHz.patch > package/fi
 
 # mac80211 - linux 7.x
 rm -rf package/kernel/mac80211
-#git clone https://$github/sbwml/package_kernel_mac80211 package/kernel/mac80211 -b v7.0.13
+#git clone https://$github/sbwml/package_kernel_mac80211 package/kernel/mac80211 -b v7.0.13  #编译不成功
 
 merge_package master https://github.com/coolsnowwolf/lede.git package/kernel package/kernel/mac80211
 

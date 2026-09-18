@@ -314,7 +314,6 @@ git clone https://github.com/sbwml/openwrt_helloworld package/helloworld -b v5
 #rm -rf feeds/luci/applications/luci-app-passwall
 #merge_package master https://github.com/QiuSimons/OpenWrt-Add.git package helloworld
 
-
 ##FQ全部调到VPN菜单
 sed -i 's/services/vpn/g' package/helloworld/luci-app-passwall/luasrc/controller/*.lua
 sed -i 's/services/vpn/g' package/helloworld/luci-app-passwall/luasrc/passwall/*.lua
