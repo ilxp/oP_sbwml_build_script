@@ -1016,7 +1016,7 @@ SCHED_FILES_EXTRA = $(foreach mod,$(SCHED_MODULES_EXTRA),$(LINUX_DIR)/net/sched/
 define KernelPackage/sched
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
   TITLE:=Extra traffic schedulers
-  DEPENDS:=+kmod-sched-core +kmod-lib-textsearch
+  DEPENDS:=+kmod-sched-core +kmod-lib-crc32c +kmod-lib-textsearch
   KCONFIG:= \
 	CONFIG_NET_SCH_CODEL \
 	CONFIG_NET_SCH_GRED \
@@ -1060,9 +1060,9 @@ define KernelPackage/tcp-bbr3
 endef
 
 define KernelPackage/tcp-bbr3/description
- Kernel module for BBRv3 (Bottleneck Bandwidth and RTT) TCP congestion
+ Kernel module for BBR (Bottleneck Bandwidth and RTT) TCP congestion
  control. It requires the fq ("Fair Queue") pacing packet scheduler.
- For kernel 6.4+, TCP internal pacing is implemented as fallback.
+ For kernel 4.13+, TCP internal pacing is implemented as fallback.
 endef
 
 TCP_BBR_SYSCTL_CONF:=sysctl-tcp-bbr.conf
@@ -1073,7 +1073,6 @@ define KernelPackage/tcp-bbr3/install
 endef
 
 $(eval $(call KernelPackage,tcp-bbr3))
-
 
 define KernelPackage/tls
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
@@ -1234,11 +1233,10 @@ define KernelPackage/sctp
      CONFIG_SCTP_COOKIE_HMAC_MD5=y \
      CONFIG_SCTP_DEFAULT_COOKIE_HMAC_NONE=n \
      CONFIG_SCTP_DEFAULT_COOKIE_HMAC_SHA1=n \
-     CONFIG_SCTP_DEFAULT_COOKIE_HMAC_SHA256=n \
      CONFIG_SCTP_DEFAULT_COOKIE_HMAC_MD5=y
   FILES:= $(LINUX_DIR)/net/sctp/sctp.ko
   AUTOLOAD:= $(call AutoLoad,32,sctp)
-  DEPENDS:=+kmod-crypto-md5 +kmod-crypto-hmac \
+  DEPENDS:=+kmod-lib-crc32c +kmod-crypto-md5 +kmod-crypto-hmac \
     +kmod-udptunnel4 +kmod-udptunnel6
 endef
 
@@ -1493,8 +1491,8 @@ define KernelPackage/inet-diag
 endef
 
 define KernelPackage/inet-diag/description
-  Support for INET (TCP, DCCP, etc) socket monitoring interface used by
-  native Linux tools such as ss.
+Support for INET (TCP, DCCP, etc) socket monitoring interface used by
+native Linux tools such as ss.
 endef
 
 $(eval $(call KernelPackage,inet-diag))

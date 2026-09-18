@@ -168,8 +168,8 @@ wget -qO - https://github.com/openwrt/openwrt/commit/c21a3570.patch | patch -p1
 pushd package/kernel/linux/modules
 rm -rf hwmon.mk  #修改CONFIG_ALL_KMODS
 rm -rf netsupport.mk   #tcp-bbr为tcp-bbr3
- curl -Os $mirror/openwrt/data/modules-sbwml/hwmon.mk
- curl -Os $mirror/openwrt/data/modules-sbwml/netsupport.mk
+ curl -Os $mirror/openwrt/data/modules-6.12/hwmon.mk
+ curl -Os $mirror/openwrt/data/modules-6.12/netsupport.mk
 popd
 
 #==============================================================
