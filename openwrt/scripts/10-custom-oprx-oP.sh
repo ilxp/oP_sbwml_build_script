@@ -637,7 +637,7 @@ git clone -b main --depth 1 https://github.com/ilxp/openwrt-control  package/diy
 #适配 firewall4
 merge_package luci https://github.com/chenmozhijin/turboacc.git package/new/turboacc luci-app-turboacc
 #修改 bbr为bbr3
-sed -i 's/kmod-tcp-bbr/kmod-tcp-bbr3/g' package/new/turboacc/luci-app-turboacc/Makefile
+#sed -i 's/kmod-tcp-bbr/kmod-tcp-bbr3/g' package/new/turboacc/luci-app-turboacc/Makefile
 
 #适lede的luci23.05已经适配 firewall4，#lede的在oP上安装不上
 #merge_package openwrt-25.12 https://github.com/coolsnowwolf/luci.git package/new applications/luci-app-turboacc
