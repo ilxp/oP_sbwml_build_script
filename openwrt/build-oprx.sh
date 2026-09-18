@@ -261,7 +261,7 @@ echo -e "\n${GREEN_COLOR}Patching ...${RES}\n"
 
 # scripts
 curl -sO $mirror/openwrt/scripts/00-prepare_base-oprx.sh
-curl -sO $mirror/openwrt/scripts/01-prepare_base-mainline-oprx.sh
+curl -sO $mirror/openwrt/scripts/01-prepare_base-mainline-oprx618.sh
 curl -sO $mirror/openwrt/scripts/02-prepare_package-oprx.sh
 curl -sO $mirror/openwrt/scripts/03-convert_translation.sh
 curl -sO $mirror/openwrt/scripts/04-fix_kmod.sh
@@ -276,7 +276,7 @@ fi
 chmod 0755 *sh
 [ "$(whoami)" = "runner" ] && group "patching openwrt"
 bash 00-prepare_base-oprx.sh
-bash 01-prepare_base-mainline-oprx.sh
+bash 01-prepare_base-mainline-oprx618.sh
 bash 02-prepare_package-oprx.sh
 bash 03-convert_translation.sh
 bash 04-fix_kmod.sh
