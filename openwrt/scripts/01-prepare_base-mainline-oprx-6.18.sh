@@ -260,8 +260,10 @@ popd
 curl -s $mirror/openwrt/patch/openwrt-6.x/500-world-regd-5GHz.patch > package/firmware/wireless-regdb/patches/500-world-regd-5GHz.patch
 
 # mac80211 - linux 7.x
-#rm -rf package/kernel/mac80211
+rm -rf package/kernel/mac80211
 #git clone https://$github/sbwml/package_kernel_mac80211 package/kernel/mac80211 -b v7.0.13
+
+merge_package master https://github.com/coolsnowwolf/lede.git package/kernel package/kernel/mac80211
 
 # ath10k-ct
 rm -rf package/kernel/ath10k-ct
