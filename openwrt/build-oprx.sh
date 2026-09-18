@@ -143,7 +143,7 @@ export \
     KERNEL_CLANG_LTO=$KERNEL_CLANG_LTO \
     ROOT_PASSWORD=$ROOT_PASSWORD
 	
-export kernel_version=6.18
+export kernel_version=6.12
 
 # print version
 echo -e "\r\n${GREEN_COLOR}Building $branch${RES}\r\n"
@@ -164,15 +164,14 @@ else
 fi
 
 # print build opt
-#get_kernel_version=$(curl -s $mirror/tags/kernel-6.18)
+#get_kernel_version=$(curl -s $mirror/tags/kernel-$kernel_version)
 #kmod_hash=$(echo -e "$get_kernel_version" | awk -F'HASH-' '{print $2}' | awk '{print $1}' | tail -1 | md5sum | awk '{print $1}')
 #kmodpkg_name=$(echo $(echo -e "$get_kernel_version" | awk -F'HASH-' '{print $2}' | awk '{print $1}')~$(echo $kmod_hash)-r1)
 #echo -e "${GREEN_COLOR}Kernel: $kmodpkg_name ${RES}"
 
 #curl -s $mirror/tags/kernel-6.12 > kernel.txt  #有时获取不到
-#curl -s https://github.com/coolsnowwolf/lede/raw/master/include/kernel-6.18 > kernel.txt #获取不到
-#wget -qO- "https://github.com/coolsnowwolf/lede/raw/master/include/kernel-6.18"  >> kernel.txt
-wget -qO- "https://github.com/openwrt/openwrt/raw/$branch/target/linux/generic/kernel-6.18"  >> kernel.txt
+#curl -s https://github.com/coolsnowwolf/lede/raw/master/include/kernel-$kernel_version"  >> kernel.txt
+wget -qO- "https://github.com/openwrt/openwrt/raw/$branch/target/linux/generic/kernel-$kernel_version"  >> kernel.txt
 kmod_hash=$(grep HASH kernel.txt | awk -F'HASH-' '{print $2}' | awk '{print $1}' | md5sum | awk '{print $1}')
 kmodpkg_name=$(echo $(grep HASH kernel.txt | awk -F'HASH-' '{print $2}' | awk '{print $1}')~$(echo $kmod_hash)-r1)
 echo -e "${GREEN_COLOR}Kernel: $kmodpkg_name ${RES}"
@@ -261,7 +260,7 @@ echo -e "\n${GREEN_COLOR}Patching ...${RES}\n"
 
 # scripts
 curl -sO $mirror/openwrt/scripts/00-prepare_base-oprx.sh
-curl -sO $mirror/openwrt/scripts/01-prepare_base-mainline-oprx618.sh
+curl -sO $mirror/openwrt/scripts/01-prepare_base-mainline-oprx612.sh
 curl -sO $mirror/openwrt/scripts/02-prepare_package-oprx.sh
 curl -sO $mirror/openwrt/scripts/03-convert_translation.sh
 curl -sO $mirror/openwrt/scripts/04-fix_kmod.sh
@@ -276,7 +275,7 @@ fi
 chmod 0755 *sh
 [ "$(whoami)" = "runner" ] && group "patching openwrt"
 bash 00-prepare_base-oprx.sh
-bash 01-prepare_base-mainline-oprx618.sh
+bash 01-prepare_base-mainline-oprx612.sh
 bash 02-prepare_package-oprx.sh
 bash 03-convert_translation.sh
 bash 04-fix_kmod.sh

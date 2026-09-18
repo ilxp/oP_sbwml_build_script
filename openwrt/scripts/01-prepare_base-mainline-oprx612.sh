@@ -75,7 +75,7 @@ git clone https://$github/sbwml/autocore-arm -b openwrt-25.12 package/system/aut
 
 # kenrel Vermagic
 sed -ie 's/^\(.\).*vermagic$/\1cp $(TOPDIR)\/.vermagic $(LINUX_DIR)\/.vermagic/' include/kernel-defaults.mk
-grep HASH target/linux/generic/kernel-6.12 | awk -F'HASH-' '{print $2}' | awk '{print $1}' | md5sum | awk '{print $1}' > .vermagic
+grep HASH target/linux/generic/kernel-$kernel_version | awk -F'HASH-' '{print $2}' | awk '{print $1}' | md5sum | awk '{print $1}' > .vermagic
 
 # kernel generic patches
 #curl -s $mirror/openwrt/patch/kernel-6.12/openwrt/linux-6.12-target-linux-generic.patch | patch -p1
@@ -158,6 +158,17 @@ grep HASH target/linux/generic/kernel-6.12 | awk -F'HASH-' '{print $2}' | awk '{
 ##---------------------Other Kernel Hack 部分 ###------------------------------
 # make olddefconfig  内核破解，必须要，否则无法编译
 wget -qO - https://github.com/openwrt/openwrt/commit/c21a3570.patch | patch -p1
+
+# BBRv3  
+#cp -rf ./diydata/data/bbr3-yaof6.18/* ./target/linux/generic/backport-6.18/
+#修改turboacc的依赖 bbr为bbr3
+#sed -i 's/kmod-tcp-bbr/kmod-tcp-bbr3/g' feeds/luci/applications/luci-app-turboacc/Makefile
+
+# Modules  （package/kernel/linux/modules）  
+rm -rf package/kernel/linux/modules/hwmon.mk  #修改CONFIG_ALL_KMODS
+rm -rf package/kernel/linux/modules/netsupport.mk   #tcp-bbr为tcp-bbr3
+cp -rf ./diydata/data/modules-sbwml/hwmon.mk ./package/kernel/linux/modules/
+cp -rf ./diydata/data/modules-sbwml/netsupport.mk ./package/kernel/linux/modules/
 
 #==============================================================
 
@@ -268,13 +279,13 @@ popd
 #git clone https://$github/sbwml/package_firmware_linux-firmware package/firmware/linux-firmware
 
 # mt76
-rm -rf package/kernel/mt76
-mkdir -p package/kernel/mt76/patches
-curl -s $mirror/openwrt/patch/mt76/Makefile > package/kernel/mt76/Makefile
-pushd package/kernel/mt76/patches
-    curl -Os $mirror/openwrt/patch/mt76/patches/100-fix-build-with-linux-6.12rc2.patch
-    curl -Os $mirror/openwrt/patch/mt76/patches/102-use-hrtimer_setup-in-mt76x02u-beacon-init.patch
-popd
+#rm -rf package/kernel/mt76
+#mkdir -p package/kernel/mt76/patches
+#curl -s $mirror/openwrt/patch/mt76/Makefile > package/kernel/mt76/Makefile
+#pushd package/kernel/mt76/patches
+    #curl -Os $mirror/openwrt/patch/mt76/patches/100-fix-build-with-linux-6.12rc2.patch
+    #curl -Os $mirror/openwrt/patch/mt76/patches/102-use-hrtimer_setup-in-mt76x02u-beacon-init.patch
+#popd
 
 # wireless-regdb
 curl -s $mirror/openwrt/patch/openwrt-6.x/500-world-regd-5GHz.patch > package/firmware/wireless-regdb/patches/500-world-regd-5GHz.patch

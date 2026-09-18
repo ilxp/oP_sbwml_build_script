@@ -41,7 +41,7 @@ wget -qO- "https://github.com/coolsnowwolf/lede/raw/master/include/kernel-6.18" 
 
 # kenrel Vermagic
 sed -ie 's/^\(.\).*vermagic$/\1cp $(TOPDIR)\/.vermagic $(LINUX_DIR)\/.vermagic/' include/kernel-defaults.mk
-grep HASH target/linux/generic/kernel-6.18 | awk -F'HASH-' '{print $2}' | awk '{print $1}' | md5sum | awk '{print $1}' > .vermagic
+grep HASH target/linux/generic/kernel-$kernel_version | awk -F'HASH-' '{print $2}' | awk '{print $1}' | md5sum | awk '{print $1}' > .vermagic
 
 # kernel generic patches
 curl -s $mirror/openwrt/patch/kernel-6.18/openwrt/linux-6.18-target-linux-generic.patch | patch -p1
