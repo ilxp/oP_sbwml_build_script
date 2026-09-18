@@ -316,7 +316,7 @@ elif [ "$STD_BUILD" = "y" ]; then
     curl -s $mirror/openwrt/25-config-std-common >> .config
     echo 'VERSION_TYPE="standard"' >> package/base-files/files/usr/lib/os-release
 else
-    curl -s $mirror/openwrt/25-config-common >> .config
+    curl -s $mirror/openwrt/25-config-common-oprx >> .config
     [ "$platform" = "armv8" ] && sed -i '/DOCKER/Id' .config
 fi
 
