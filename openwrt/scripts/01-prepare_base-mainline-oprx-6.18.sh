@@ -96,7 +96,6 @@ wget -qO - https://github.com/openwrt/openwrt/commit/c21a3570.patch | patch -p1
 #==============================================================
 
 #----------------采用 lede的6.18内核补丁-----------------------------------------
-
 #generic
 wget -P target/linux/generic/ https://github.com/coolsnowwolf/lede/raw/master/target/linux/generic/config-6.18
 merge_package master https://github.com/coolsnowwolf/lede.git target/linux/generic target/linux/generic/backport-6.18
