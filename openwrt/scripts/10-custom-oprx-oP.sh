@@ -702,23 +702,10 @@ sed -i 's/\/bin\/bash/\/usr\/bin\/zsh/g' package/base-files/files/etc/passwd
 #sbwml大神已经改成bash了。所以将bash改为zsh
 sed -i 's/\/bin\/bash/\/usr\/bin\/zsh/g' package/base-files/files/etc/passwd
 
-#8、Docker 容器
-## QiuSimons大神
-#rm -rf feeds/luci/applications/luci-app-dockerman
-#rm -rf feeds/luci/collections/luci-lib-docker
-#merge_package master https://github.com/lisaac/luci-app-dockerman.git feeds/luci/applications applications/luci-app-dockerman
-#sed -i '/auto_start/d' feeds/luci/applications/luci-app-dockerman/root/etc/uci-defaults/luci-app-dockerman
-#pushd feeds/packages
-#wget -qO- https://github.com/openwrt/packages/commit/e2e5ee69.patch | patch -p1
-#wget -qO- https://github.com/openwrt/packages/pull/20054.patch | patch -p1
-#popd
-#sed -i '/sysctl.d/d' feeds/packages/utils/dockerd/Makefile
-#rm -rf ./feeds/luci/collections/luci-lib-docker
-#merge_package master https://github.com/lisaac/luci-lib-docker.git package/new collections/luci-lib-docker
-
+#8、Docker 容器 js
 # sbwml大神 【00-prepare_base已经有了】
 #rm -rf feeds/luci/applications/luci-app-dockerman
-#git clone https://git.cooluc.com/sbwml/luci-app-dockerman -b nft feeds/luci/applications/luci-app-dockerman
+#git clone https://github.com/sbwml/luci-app-dockerman -b openwrt-25.12 feeds/luci/applications/luci-app-dockerman
 #rm -rf feeds/packages/utils/{docker,dockerd,containerd,runc}
 #git clone https://github.com/sbwml/packages_utils_docker feeds/packages/utils/docker
 #git clone https://github.com/sbwml/packages_utils_dockerd feeds/packages/utils/dockerd
