@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 #!/bin/bash -e
-#复制过来，注释掉108-110行# SSRP & Passwall
+#复制过来，注释掉108-110行# SSRP & Passwall 和istore
 
 # golang 1.26
 rm -rf feeds/packages/lang/golang
@@ -33,7 +33,7 @@ git clone https://$github/timsaya/luci-app-bandix package/new/luci-app-bandix --
 git clone https://$github/sbwml/luci-app-diskman package/new/diskman --depth=1
 
 # istore
-git clone https://$github/sbwml/package_new_istore package/new/istore --depth=1
+#git clone https://$github/sbwml/package_new_istore package/new/istore --depth=1
 
 # luci-app-filemanager
 rm -rf feeds/luci/applications/luci-app-filemanager
