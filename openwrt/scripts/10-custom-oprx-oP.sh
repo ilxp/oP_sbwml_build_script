@@ -395,9 +395,9 @@ sed -i 's/services/vpn/g' package/diy/luci-app-homeproxy/root/usr/share/luci/men
 rm -rf package/new/istore
 #git clone https://github.com/linkease/nas-packages.git  package/diy/nas-packages
 #git clone https://github.com/linkease/nas-packages-luci.git  package/diy/nas-packages-luci
-#git clone https://github.com/linkease/istore.git  package/diy/istore
-#git clone https://github.com/linkease/istore-ui.git  package/diy/istore-ui
-#rm -rf package/diy/istore-ui/app-store-ui/src/dist/luci-static/istore/i18n/en.json
+git clone https://github.com/linkease/istore.git  package/diy/istore
+git clone https://github.com/linkease/istore-ui.git  package/diy/istore-ui
+rm -rf package/diy/istore-ui/app-store-ui/src/dist/luci-static/istore/i18n/en.json
 
 #四）、sirpdboy大神的相关插件
 #中文netdata
@@ -565,7 +565,7 @@ git clone -b main --single-branch https://github.com/ilxp/luci-app-ikoolproxy.gi
 #1） APP 过滤
 rm -rf package/new/OpenAppFilter
 #git clone -b master --depth 1 https://github.com/destan19/OpenAppFilter.git package/diy/OpenAppFilter
-#sed -i 's/services/control/g' package/diy/OpenAppFilter/luci-app-oaf/luasrc/controller/appfilter.lua
+#sed -i 's/services/control/g' package/diy/OpenAppFilter/luci-app-oaf/luasrc/controller/oaf.lua  #不能移动，否则没有数据
 
 git clone -b main --depth 1 https://github.com/sbwml/OpenAppFilter.git  package/diy/OpenAppFilter
 sed -i 's/services/control/g' package/diy/OpenAppFilter/luci-app-oaf/root/usr/share/luci/menu.d/luci-app-oaf.json
@@ -712,6 +712,9 @@ sed -i 's/\/bin\/bash/\/usr\/bin\/zsh/g' package/base-files/files/etc/passwd
 #git clone https://github.com/sbwml/packages_utils_dockerd feeds/packages/utils/dockerd
 #git clone https://github.com/sbwml/packages_utils_containerd feeds/packages/utils/containerd
 #git clone https://github.com/sbwml/packages_utils_runc feeds/packages/utils/runc
+
+#采用nftables的podman替代docker 
+git clone https://github.com/Zerogiven-OpenWRT-Packages/luci-app-podman  package/diy/luci-app-podman
 
 #9、全能推送（商店自己安装）
 #rm -rf feeds/luci/applications/luci-app-pushbot
