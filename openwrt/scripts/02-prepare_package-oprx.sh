@@ -3,9 +3,9 @@
 #!/bin/bash -e
 #复制过来，注释掉108-110行# SSRP & Passwall 和istore
 
-# golang 1.26
+# golang 1.27
 rm -rf feeds/packages/lang/golang
-git clone https://$github/sbwml/packages_lang_golang -b 26.x feeds/packages/lang/golang
+git clone https://$github/sbwml/packages_lang_golang -b 27.x feeds/packages/lang/golang
 
 # rust
 rm -rf feeds/packages/lang/rust
