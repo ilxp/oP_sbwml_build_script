@@ -69,6 +69,9 @@ CONFIG_MODULES=y
 # 兼容iptables
 CONFIG_PACKAGE_iptables-nft=y
 
+#原生 BTF 内核硬核支持
+CONFIG_DEBUG_INFO_BTF=y
+
 ### Kernel driver
 CONFIG_PACKAGE_kmod-bnx2=y
 CONFIG_PACKAGE_kmod-bnx2x=y
