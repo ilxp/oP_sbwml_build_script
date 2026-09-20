@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 #!/bin/bash -e
-#复制过来，注释掉108-110行# SSRP & Passwall 和istore
+#复制过来，注释掉108-110行# SSRP & Passwall 和istore（要使用官方版本，sbwml的全是英文）
 
 # golang 1.27
 rm -rf feeds/packages/lang/golang
