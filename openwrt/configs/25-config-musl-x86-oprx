@@ -81,6 +81,7 @@ CONFIG_PACKAGE_kmod-ipvlan=y
 CONFIG_PACKAGE_kmod-ixgbe=y
 CONFIG_PACKAGE_kmod-ixgbevf=y
 CONFIG_PACKAGE_kmod-mlxfw=y
+CONFIG_PACKAGE_kmod-atlantic=y
 
 ### Utilities--pve平台
 CONFIG_PACKAGE_qemu-ga=y  #已经由open-vm-tools提供
