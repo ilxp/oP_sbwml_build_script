@@ -597,7 +597,7 @@ fi
 uci delete ttyd.@ttyd[0].interface
 
 # 设置所有网口可连接 SSH
-#uci set dropbear.@dropbear[0].Interface=''
+uci set dropbear.@dropbear[0].Interface=''
 uci commit
 
 #----------网络端口配置结束-----
