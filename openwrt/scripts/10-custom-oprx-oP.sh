@@ -268,7 +268,7 @@ sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci-n
 #二）、翻墙系列（openwrt编译系统自带为passwall+homeproxy）
 #golang版本【使用sbwnl库的记得要更新到最新27.x】
 #rm -rf feeds/packages/lang/golang
-#git clone https://github.com/sbwml/packages_lang_golang -b 26.x feeds/packages/lang/golang
+#git clone https://github.com/sbwml/packages_lang_golang -b 27.x feeds/packages/lang/golang
 
 #1、ssr-plus
 #rm -rf package/helloworld
