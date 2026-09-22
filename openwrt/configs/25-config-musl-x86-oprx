@@ -99,7 +99,7 @@ CONFIG_PACKAGE_open-vm-tools=n  #sbwml的6.12无法编译成功
 ###其他
 CONFIG_PACKAGE_luci-app-unblockneteasemusic=y
 CONFIG_PACKAGE_default-settings=n
-CONFIG_PACKAGE_addition-trans-zh=y  #采用yaof的翻译，才能将istore翻译成英文
+CONFIG_PACKAGE_addition-trans-zh=y  #采用yaof的翻译
 CONFIG_PACKAGE_ipv6-helper=y
 CONFIG_PACKAGE_luci-app-autoreboot=n
 CONFIG_PACKAGE_luci-app-adguardhome=n
