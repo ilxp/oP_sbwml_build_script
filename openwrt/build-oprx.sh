@@ -212,6 +212,8 @@ git clone https://$github/immortalwrt/packages master/immortalwrt_packages --dep
 if [ -d openwrt ]; then
     cd openwrt
     curl -Os $mirror/openwrt/patch/key2.tar.gz && tar zxf key2.tar.gz && rm -f key2.tar.gz
+	# upx压缩列表：【squashfs格式固件不需要造成双层压缩】
+    #curl -s $mirror/openwrt/generic/upx_list.txt -o upx_list.txt
 else
     echo -e "${RED_COLOR}Failed to download source code${RES}"
     exit 1

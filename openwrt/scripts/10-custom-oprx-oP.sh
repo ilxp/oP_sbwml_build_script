@@ -907,13 +907,15 @@ git clone -b master --depth 1 https://github.com/NateLol/luci-app-oled.git packa
 #git clone --depth 1 https://github.com/muink/luci-app-natmapt  package/new/luci-app-natmapt
 #git clone --depth 1 https://github.com/muink/openwrt-natmapt  package/new/openwrt-natmapt 
 
-# 22、UPX 可执行软件压缩  sbwml已经在mainline
+# 22、UPX 可执行软件压缩  来源sbwml的00-prepare_base.sh
 #sed -i '/patchelf pkgconf/i\tools-y += ucl upx' ./tools/Makefile
 #sed -i '\/autoconf\/compile :=/i\$(curdir)/upx/compile := $(curdir)/ucl/compile' ./tools/Makefile
-##merge_package main https://github.com/Lienol/openwrt.git  ./tools tools/ucl tools/upx  #表示在根目录生成一个tools文件夹。本来就会有，所以报错。
-##merge_package main https://github.com/Lienol/openwrt.git tools tools/ucl tools/upx  #表示在移动到根目录已经存在的tools文件夹。lienol版本有点旧3.95。
-#merge_package main https://github.com/Lienol/openwrt.git tools tools/ucl
-#merge_package main https://github.com/ilxp/upx-openwrt.git tools upx   #最新版4.2.4
+#merge_package main https://github.com/ilxp/upx-openwrt.git tools upx   #最新版5.2.1
+
+#patch -p1 <./diydata/data/patches/upx/0001-tools-add-upx-tools.patch
+#patch -p1 <./diydata/data/patches/upx/0002-rootfs-add-upx-compression-support.patch
+#将需要压缩的upx_list.txt 【已经build-oprx中处理】
+#curl -s https://raw.githubusercontent.com/sbwml/r4s_build_script/master/openwrt/generic/upx_list.txt -o upx_list.txt
 
 #23 v2raya
 git clone --depth 1 https://github.com/zxlhhyccc/luci-app-v2raya.git package/new/luci-app-v2raya
