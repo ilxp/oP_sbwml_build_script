@@ -108,8 +108,8 @@ merge_package master https://github.com/openwrt/packages.git feeds/packages/util
 #rm -rf package/kernel/mac80211
 #merge_package main https://github.com/openwrt/openwrt.git package/kernel package/kernel/mac80211
 
-rm -rf feeds/packages/net/xl2tpd
-rm -rf package/kernel/rtl8812au-ct
+#rm -rf feeds/packages/net/xl2tpd
+#rm -rf package/kernel/rtl8812au-ct
 
 ###################
 
@@ -119,7 +119,7 @@ rm -rf package/kernel/rtl8812au-ct
 #grep HASH include/kernel-6.12 | awk -F'HASH-' '{print $2}' | awk '{print $1}' | md5sum | awk '{print $1}' > .vermagic
 #grep HASH include/kernel-$kernel_version | awk -F'HASH-' '{print $2}' | awk '{print $1}' | md5sum | awk '{print $1}' > .vermagic
 
-# Optimization level -Ofast 【已经在target-modify_for_x86_64.patch】
+# Optimization level -O2 O3 【已经在target-modify_for_x86_64.patch】
 #sed -i 's/Os/O2/g' include/target.mk
 #sed -i 's/Os/O2 -march=x86-64-v2/g' include/target.mk
 #sed -i 's/Os/O3 -mtune=generic/g' include/target.mk  #sbwml的target-modify_for_x86_64.patch代码
