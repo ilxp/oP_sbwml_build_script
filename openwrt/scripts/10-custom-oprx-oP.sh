@@ -818,15 +818,6 @@ git clone https://github.com/sbwml/package_new_natflow package/new/natflow
 #merge_package master https://github.com/QiuSimons/OpenWrt-Add.git package/new lede_pkg/fullconenat-nft
 
 #19、sbwml大神的优化
-# x86 - disable intel_pstate & mitigations
-sed -i 's/noinitrd/noinitrd intel_pstate=disable mitigations=off/g' target/linux/x86/image/grub-efi.cfg
-# openssl -Ofast
-sed -i "s/-O3/-Ofast/g" package/libs/openssl/Makefile
-# procps-ng - top
-sed -i 's/enable-skill/enable-skill --disable-modern-top/g' feeds/packages/utils/procps-ng/Makefile
-# opkg  无法使用
-#mkdir -p package/system/opkg/patches
-#cp -rf ./diydata/data/patches/900-opkg-download-disable-hsts.patch ./package/system/opkg/patches/
 
 # TTYD
 sed -i 's/services/system/g' feeds/luci/applications/luci-app-ttyd/root/usr/share/luci/menu.d/luci-app-ttyd.json
