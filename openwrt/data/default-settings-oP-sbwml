@@ -150,7 +150,8 @@ uci add_list system.ntp.server='ntp.ntsc.ac.cn'
 uci commit system
 
 #Dropbear指定lan口可以登陆ssh
-uci set dropbear.@dropbear[0].Interface='lan'
+#uci set dropbear.@dropbear[0].Interface='lan'
+uci set dropbear.@dropbear[0].Interface=''    #任何口都可以登陆
 uci commit dropbear
 
 #PASSWALL
