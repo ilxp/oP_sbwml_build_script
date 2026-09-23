@@ -391,13 +391,15 @@ merge_package v5 https://github.com/sbwml/openwrt_helloworld.git package/new sin
 #移动到VPN栏目
 sed -i 's/services/vpn/g' package/diy/luci-app-homeproxy/root/usr/share/luci/menu.d/luci-app-homeproxy.json
 
-#三）、应用商店
+#三）、istore应用商店
 rm -rf package/new/istore
-#git clone https://github.com/linkease/nas-packages.git  package/diy/nas-packages
-#git clone https://github.com/linkease/nas-packages-luci.git  package/diy/nas-packages-luci
 git clone https://github.com/linkease/istore.git  package/diy/istore
-git clone https://github.com/linkease/istore-ui.git  package/diy/istore-ui
-rm -rf package/diy/istore-ui/app-store-ui/src/dist/luci-static/istore/i18n/en.json
+git clone https://github.com/linkease/istore-ui.git package/diy/istore-ui
+cd package/diy/istore
+patch -p1 < ../../../diydata/data/patches/istore-lang.patch
+cd -
+
+#git clone https://github.com/ilxp/istore.git package/diy/istore   #修复了istore默认显示为中文
 
 #四）、sirpdboy大神的相关插件
 #中文netdata
