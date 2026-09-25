@@ -789,14 +789,15 @@ sed -i "s/TARGET_FLAG=Full/TARGET_FLAG=oP/g" package/diy/openwrt-autoupdate/auto
 #Short_Date=`TZ=UTC-8 date +%y.%-m.%-d`  #24年1月1日：24.1.1
 Short_Date=$(TZ=UTC-8 date +'%y.%-m.%-d') #24年1月1日：24.1.1
 Compile_Date=$(TZ=UTC-8 date +'%Y%m%d')
-OP_VERSION="R${Short_Date}-${Compile_Date}"
-sed -i "s/OP_VERSION=R24.1.1-20240101/OP_VERSION=$OP_VERSION/g" package/diy/openwrt-autoupdate/autoupdate/files/etc/autoupdate/default  #使用双引号
+#OP_VERSION="${Short_Date}-${Compile_Date}"
+OP_VERSION="${Short_Date}"    #oP使用类似：26.9.23
+sed -i "s/OP_VERSION=24.10.1/OP_VERSION=$OP_VERSION/g" package/diy/openwrt-autoupdate/autoupdate/files/etc/autoupdate/default  #使用双引号
 #3）源码作者
 #sed -i 's/OP_AUTHOR=openwrt/OP_AUTHOR=openwrt/g' package/diy/openwrt-autoupdate/autoupdate/files/etc/autoupdate/default
 #4）项目
 #sed -i 's/OP_REPO=openwrt/OP_REPO=openwrt/g' package/diy/openwrt-autoupdate/autoupdate/files/etc/autoupdate/default
 #5）分支
-sed -i 's/OP_BRANCH=main/OP_BRANCH=openwrt-24.10/g' package/diy/openwrt-autoupdate/autoupdate/files/etc/autoupdate/default
+sed -i 's/OP_BRANCH=24.10/OP_BRANCH=25.12/g' package/diy/openwrt-autoupdate/autoupdate/files/etc/autoupdate/default
 
 #17、更换 Nodejs 版本
 rm -rf feeds/packages/lang/node
