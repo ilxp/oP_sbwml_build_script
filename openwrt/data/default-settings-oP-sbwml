@@ -149,10 +149,10 @@ uci add_list system.ntp.server='cn.ntp.org.cn'
 uci add_list system.ntp.server='ntp.ntsc.ac.cn'
 uci commit system
 
-#Dropbear指定lan口可以登陆ssh
+#Dropbear指定lan口可以登陆ssh   导致无法登陆
 #uci set dropbear.@dropbear[0].Interface='lan'
-uci set dropbear.@dropbear[0].Interface=''    #任何口都可以登陆
-uci commit dropbear
+#uci set dropbear.@dropbear[0].Interface=''    #任何口都可以登陆
+#uci commit dropbear
 
 #PASSWALL
 [ -f '/usr/share/v2ray/geoip.dat' ] && uci set passwall.@global_rules[0].v2ray_location_asset='/usr/share/v2ray/'
@@ -600,7 +600,7 @@ fi
 uci delete ttyd.@ttyd[0].interface
 
 # 设置所有网口可连接 SSH
-uci set dropbear.@dropbear[0].Interface=''
+#uci set dropbear.@dropbear[0].Interface=''
 uci commit
 
 #----------网络端口配置结束-----
