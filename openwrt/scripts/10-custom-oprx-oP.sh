@@ -782,22 +782,28 @@ git clone -b main --single-branch https://github.com/ilxp/openwrt-soup.git  pack
 #EOF
 
 #修改内容
-#1）固件标签
+#修改 json地址
+sed -i "s#^API_Url=.*#API_Url=https://github.com/ilxp/oprx-release/releases/download/firmware/oP.json#" \
+    package/diy/openwrt-soup/soup/files/etc/soup/default
+#perl -i -pe 's{^API_Url=.*}{API_Url=https://github.com/ilxp/oprx-release/releases/download/firmware/eS.json}' \
+    #package/diy/openwrt-soup/soup/files/etc/soup/default
+#1）固件前缀和标签
 sed -i "s/TARGET_FLAG=oR/TARGET_FLAG=oP/g" package/diy/openwrt-soup/soup/files/etc/soup/default
+sed -i "s/FW_Prefix=soup/FW_Prefix=OprX/g" package/diy/openwrt-soup/soup/files/etc/soup/default	
 #2）版本号：需要固定成：R24.1.1-20240101
 #Build_DATE=$(date +%Y%m%d%H)  #日期+小时
 #Short_Date=`TZ=UTC-8 date +%y.%-m.%-d`  #24年1月1日：24.1.1
 Short_Date=$(TZ=UTC-8 date +'%y.%-m.%-d') #24年1月1日：24.1.1
 Compile_Date=$(TZ=UTC-8 date +'%Y%m%d%H')
-#OP_VERSION="${Short_Date}-${Compile_Date}"
-OP_VERSION="${Short_Date}"    #oP使用类似：26.9.23
-sed -i "s/OP_VERSION=25.12.5/OP_VERSION=$OP_VERSION/g" package/diy/openwrt-soup/soup/files/etc/soup/default  #使用双引号
+OP_VERSION="${Short_Date}-${Compile_Date}"
+#OP_VERSION="${Short_Date}"   #eS使用类似：26.9.23
+sed -i "s/OP_VERSION=25.12.5-2026100111/OP_VERSION=$OP_VERSION/g" package/diy/openwrt-soup/soup/files/etc/soup/default  #使用双引号
 #3）源码作者
 #sed -i 's/OP_AUTHOR=openwrt/OP_AUTHOR=openwrt/g' package/diy/openwrt-soup/soup/files/etc/soup/default
 #4）项目
 #sed -i 's/OP_REPO=openwrt/OP_REPO=openwrt/g' package/diy/openwrt-soup/soup/files/etc/soup/default
 #5）分支
-sed -i 's/OP_BRANCH=25.12/OP_BRANCH=25.12/g' package/diy/openwrt-soup/soup/files/etc/soup/default
+sed -i 's/OP_BRANCH=25.12/OP_BRANCH=master/g' package/diy/openwrt-soup/soup/files/etc/soup/default
 
 #17、更换 Nodejs 版本
 rm -rf feeds/packages/lang/node
