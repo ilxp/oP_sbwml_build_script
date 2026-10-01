@@ -476,211 +476,267 @@ else
     exit 1
 fi
 
+#####SOUP系统升级工具需要API相关函数（json格式）###########
+
+# ============================================================
+# soup JSON 辅助函数
+# ============================================================
+# ---- 转义字符串供 JSON 使用(含首尾引号) ----
+# 用法: JSON_ESC "字符串"
+JSON_ESC()  { printf '%s' "$1" | jq -Rs .; }
+
+# ---- 从 markdown 文件生成 JSON 字符串(带引号) ----
+# 用法: JSON_LOGS "logs.md"
+JSON_LOGS() { if [ -f "$1" ]; then jq -Rs . < "$1"; else printf '""'; fi; }
+
+# ============================================================
+# 变量定义
+# ============================================================
+Build_DATE=$(TZ=UTC-8 date +'%Y%m%d%H')
+
+if [ "$1" = "dev" ]; then
+    Short_Date=$(TZ=UTC-8 date +'%y.%-m.%-d')
+    OP_VERSION="${Short_Date}-${Build_DATE}"    # 如 26.10.1-2026100112
+
+elif [ "$1" = "rc2" ]; then
+    VERSION=$(sed 's/v//g' version.txt)
+    OP_VERSION="${VERSION}-${Build_DATE}"       # 如 25.12.5-2026100112
+fi
+
+Soup_TAG="oP"
+Soup_PREFIX="OprX"
+Soup_DATE="${Build_DATE}"
+Soup_URL="https://github.com/ilxp/oprx-release/releases/download/firmware"
+
+### 日志logs.md的存放目录 ########
+# ============================================================
+# 从 mirror 远端拉取 logs.md
+#   适用场景: build-oprx.sh 通过 bash <(curl ...) 执行,
+#             $0 = /dev/fd/63,无法推断本地路径。
+#   前提: 脚本仓库是 public,raw URL 可直接访问。
+#   logs.md 位置: eS_lede_build_script/logs.md (仓库根)
+# ============================================================
+LOGS_URL="${mirror}/logs.md"
+Soup_LOGS_JSON='""'
+if curl -fsSL "$LOGS_URL" -o /tmp/.soup_logs.md 2>/dev/null && [ -s /tmp/.soup_logs.md ]; then
+    Soup_LOGS_JSON=$(JSON_LOGS /tmp/.soup_logs.md)
+    echo "[soup] 已从远端加载日志: ($(wc -c < /tmp/.soup_logs.md) 字节)"
+    rm -f /tmp/.soup_logs.md
+else
+    echo "[soup] 警告: 无法加载日志: $LOGS_URL" >&2
+fi
+
+# ============================================================
+# 固件更名:mv + 打印提示
+#   _rename_fw <src> <dst>
+#   成功返回 0(并打印),失败返回 1(源文件不存在)
+# ============================================================
+_rename_fw() {
+    local src="$1" dst="$2"
+    [ -f "$src" ] || return 1
+    mv -f "$src" "$dst"
+    echo "[soup] 固件已更名为: $(basename "$dst")"
+    return 0
+}
+
+# ============================================================
+# JSON 条目累积器(跨平台共用)
+#   _add_json_item <profile> <file>   添加一条(文件不存在则静默跳过)
+#   _emit_json      <outfile>         输出所有 profile 的 JSON
+# ============================================================
+declare -a _JSON_KEYS=()
+declare -A _JSON_DATA=()
+
+_add_json_item() {
+    local profile="$1" file="$2"
+    [ -f "$file" ] || return 0
+
+    local size sha item
+    size=$(wc -c < "$file")
+    sha=$(sha256sum "$file" | awk '{print $1}')
+    item=$(printf '    {\n      "build_date": "%s",\n      "name": "%s",\n      "re_url": "%s",\n      "size": %s,\n      "sha256sum": "%s",\n      "logs": %s\n    }' \
+        "$Soup_DATE" "$(basename "$file")" "$Soup_URL" "$size" "$sha" "$Soup_LOGS_JSON")
+
+    if [ -z "${_JSON_DATA[$profile]+x}" ]; then
+        _JSON_KEYS+=("$profile")
+        _JSON_DATA[$profile]="$item"
+    else
+        _JSON_DATA[$profile]="${_JSON_DATA[$profile]},
+${item}"
+    fi
+}
+
+_emit_json() {
+    local outfile="$1"
+    if [ ${#_JSON_KEYS[@]} -eq 0 ]; then
+        echo "[soup] 警告: 无固件条目,跳过 $outfile" >&2
+        return 1
+    fi
+    mkdir -p "$(dirname "$outfile")"
+
+    {
+        echo "{"
+        local i key body
+        for i in "${!_JSON_KEYS[@]}"; do
+            key="${_JSON_KEYS[$i]}"
+            body="${_JSON_DATA[$key]}"
+            [ "$i" -gt 0 ] && echo ","
+            printf '  "%s": [\n%s\n  ]' "$key" "$body"
+        done
+        echo
+        echo "}"
+    } > "$outfile"
+
+    echo "[soup] JSON 文件已生成: $outfile"
+}
+
+#####################################################
+
+# ============================================================
+# x86_64
+# ============================================================
 if [ "$platform" = "x86_64" ]; then
     if [ "$NO_KMOD" != "y" ]; then
         cp -a bin/targets/x86/*/packages $kmodpkg_name
         rm -f $kmodpkg_name/Packages*
-        cp -a bin/packages/x86_64/base/rtl88*a-firmware*.apk $kmodpkg_name/ || true
-        [ "$OPENWRT_CORE" = "y" ] && {
-            cp -a bin/packages/x86_64/base/*3ginfo*.apk $kmodpkg_name/ || true
-            cp -a bin/packages/x86_64/base/*modemband*.apk $kmodpkg_name/ || true
-            cp -a bin/packages/x86_64/base/*sms-tool*.apk $kmodpkg_name/ || true
-            cp -a bin/packages/x86_64/base/*quectel*.apk $kmodpkg_name/ || true
-            cp -a bin/packages/aarch64_generic/base/natflow*.apk $kmodpkg_name/ || true
-            cp -a bin/packages/aarch64_generic/base/appfilter*.apk $kmodpkg_name/ || true
-            cp -a bin/packages/aarch64_generic/base/luci-app-oaf*.apk $kmodpkg_name/ || true
-            cp -a bin/packages/aarch64_generic/base/luci-i18n-oaf*.apk $kmodpkg_name/ || true
-        }
-        [ "$ENABLE_DPDK" = "y" ] && {
-            cp -a bin/packages/x86_64/base/*dpdk*.apk $kmodpkg_name/ || true
-            cp -a bin/packages/x86_64/base/*numa*.apk $kmodpkg_name/ || true
-        }
+        cp -a bin/packages/x86_64/base/*firmware*.ipk $kmodpkg_name/
         bash kmod-sign $kmodpkg_name
         tar zcf x86_64-$kmodpkg_name.tar.gz $kmodpkg_name
         rm -rf $kmodpkg_name
     fi
-    # OTA json
-        mkdir -p ota   #位置是openwrt下。即ota/vermd5
-      	#改用md5
-		md5=$(md5sum bin/targets/x86/64/*-generic-squashfs-combined-efi.img.gz | awk '{print $1}')
-        cat > ota/vermd5-oP.txt <<EOF
-$CURRENT_DATE2
-$md5 
-EOF
-       #进行ota目录压缩，并重命名，#位置是openwrt下
-	    #tar zcf oprx-ota.tar.gz ota
-	   
-	   #在github action的调用：  
-	   ##echo build_dir="/builder" >> "$GITHUB_ENV"
-	   ##${{ env.build_dir }}/openwrt/*-*.tar.gz
-	   #rm -rf ota
-	   
-	# oP重命名固件 格式：OprX-openwrt-oP26.9.23-x86_64-squashfs-combined-uefi-c020e.img.gz
-	#Build_DATE=$(date +%Y%m%d%H)  #日期+小时
-	#Build_DATE=$(date +%Y%m%d)  #日期	   
-	Build_DATE=$(TZ=UTC-8 date +'%Y%m%d')  #这个引用要带{}，即${ReV_Date} 
-    if [ "$1" = "dev" ]; then  #分支-Snapshots，采用短日期作为版本号
-        Short_Date=`TZ=UTC-8 date +%y.%-m.%-d`  #24年1月1日：24.1.1 
-	    #OP_VERSION="${Short_Date}-${Build_DATE}"   #这里不带R
-		OP_VERSION="${Short_Date}"   #这里不带R
-	    #OP_VERSION="R$Short_Date-$Build_DATE"
-    elif [ "$1" = "rc2" ]; then  #最新发布版号
-         VERSION=$(sed 's/v//g' version.txt)
-	     OP_VERSION="${VERSION}-${Build_DATE}"
-    fi
-	
-	#SHA256=$(sha256sum bin/targets/x86/64*/*-generic-squashfs-combined.img.gz | awk '{print $1}')
-	#sha5=$(egrep -o '[a-z0-9]+' <<< ${SHA256} | cut -c1-5)  #获取前5位
-	SHA256_efi=$(sha256sum bin/targets/x86/64*/*-generic-squashfs-combined-efi.img.gz | awk '{print $1}')
-	sha5_efi=$(egrep -o '[a-z0-9]+' <<< ${SHA256_efi} | cut -c1-5)  #获取前5位
-	#rename -v "s/openwrt-*-efi/OprX-openwrt-oP$OP_VERSION-x86_64-squashfs-combined-uefi-$sha5/" bin/targets/x86/64*/*.gz || true   #能成功
-	rename -v "s/openwrt-x86-64-generic-squashfs-combined-efi/OprX-openwrt-oP$OP_VERSION-x86_64-squashfs-combined-uefi-$sha5_efi/" bin/targets/x86/64*/*.gz || true  #能成功
-	#rename -v "s/openwrt-x86-64-generic-ext4-combined-efi/OprX-openwrt-oP$OP_VERSION-x86_64-ext4-combined-uefi-$sha5_efi/" bin/targets/x86/64*/*.gz || true  #能成功
-	#rename -v "s/openwrt-x86-64-generic-squashfs-combined/OprX-openwrt-oP$OP_VERSION-x86_64-squashfs--combined-bios-$sha5/" bin/targets/x86/64*/*.gz || true  #能成功，但一定要在efi后面。
-    
-	# Backup download cache
+
+    # ---- OTA JSON ----
+    X86_DIR=$(ls -d bin/targets/x86/64* 2>/dev/null | head -1)
+
+    EFI_NEW="$X86_DIR/$Soup_PREFIX-openwrt-${Soup_TAG}${OP_VERSION}-x86_64-squashfs-combined-uefi.img.gz"
+    BIOS_NEW="$X86_DIR/$Soup_PREFIX-openwrt-${Soup_TAG}${OP_VERSION}-x86_64-squashfs-combined-bios.img.gz"
+
+    EFI_SRC="$X86_DIR/openwrt-x86-64-generic-squashfs-combined-efi.img.gz"
+    BIOS_SRC="$X86_DIR/openwrt-x86-64-generic-squashfs-combined.img.gz"
+
+    # 重命名固件
+    _rename_fw "$EFI_SRC"  "$EFI_NEW"
+    _rename_fw "$BIOS_SRC" "$BIOS_NEW"
+
+    _add_json_item "x86_64" "$EFI_NEW"
+    _add_json_item "x86_64" "$BIOS_NEW"
+    _emit_json "soup/${Soup_TAG}.json"
+
+    # Backup download cache
     if [ "$isCN" = "CN" ] && [ "$1" = "rc2" ]; then
         rm -rf dl/geo* dl/go-mod-cache
         tar cf ../dl.gz dl
     fi
     exit 0
-elif [ "$platform" = "armv8" ]; then
+fi
+
+# ============================================================
+# armv8
+# ============================================================
+if [ "$platform" = "armv8" ]; then
     if [ "$NO_KMOD" != "y" ]; then
         cp -a bin/targets/armsr/armv8*/packages $kmodpkg_name
         rm -f $kmodpkg_name/Packages*
-        cp -a bin/packages/aarch64_generic/base/rtl88*a-firmware*.apk $kmodpkg_name/ || true
-        [ "$OPENWRT_CORE" = "y" ] && {
-            cp -a bin/packages/aarch64_generic/base/*3ginfo*.apk $kmodpkg_name/ || true
-            cp -a bin/packages/aarch64_generic/base/*modemband*.apk $kmodpkg_name/ || true
-            cp -a bin/packages/aarch64_generic/base/*sms-tool*.apk $kmodpkg_name/ || true
-            cp -a bin/packages/aarch64_generic/base/*quectel*.apk $kmodpkg_name/ || true
-            cp -a bin/packages/aarch64_generic/base/natflow*.apk $kmodpkg_name/ || true
-            cp -a bin/packages/aarch64_generic/base/appfilter*.apk $kmodpkg_name/ || true
-            cp -a bin/packages/aarch64_generic/base/luci-app-oaf*.apk $kmodpkg_name/ || true
-            cp -a bin/packages/aarch64_generic/base/luci-i18n-oaf*.apk $kmodpkg_name/ || true
-        }
-        [ "$ENABLE_DPDK" = "y" ] && {
-            cp -a bin/packages/aarch64_generic/base/*dpdk*.apk $kmodpkg_name/ || true
-            cp -a bin/packages/aarch64_generic/base/*numa*.apk $kmodpkg_name/ || true
-        }
+        cp -a bin/packages/aarch64_generic/base/*firmware*.ipk $kmodpkg_name/
+        cp -a bin/packages/aarch64_generic/base/*natflow*.ipk $kmodpkg_name/
         bash kmod-sign $kmodpkg_name
         tar zcf armv8-$kmodpkg_name.tar.gz $kmodpkg_name
         rm -rf $kmodpkg_name
     fi
-    # OTA json
+
+    # ---- OTA JSON ----
     if [ "$1" = "rc2" ]; then
-        mkdir -p ota
-        if [ "$MINIMAL_BUILD" = "y" ]; then
-            OTA_URL="https://dev.cooluc.com/minimal/armv8"
-        elif [ "$STD_BUILD" = "y" ]; then
-            OTA_URL="https://dev.cooluc.com/standard/armv8"
-        else
-            OTA_URL="https://dev.cooluc.com/release/armv8"
-        fi
-        VERSION=$(sed 's/v//g' version.txt)
-        SHA256=$(sha256sum bin/targets/armsr/armv8*/*-generic-squashfs-combined-efi.img.gz | awk '{print $1}')
-        cat > ota/fw.json <<EOF
-{
-  "armsr,armv8": [
-    {
-      "build_date": "$CURRENT_DATE",
-      "sha256sum": "$SHA256",
-      "url": "$OTA_URL/openwrt-$VERSION-armsr-armv8-generic-squashfs-combined-efi.img.gz"
-    }
-  ]
-}
-EOF
-    fi
-    exit 0
-else
-    if [ "$NO_KMOD" != "y" ] && [ "$platform" != "rk3399" ]; then
-        cp -a bin/targets/rockchip/armv8*/packages $kmodpkg_name
-        rm -f $kmodpkg_name/Packages*
-        cp -a bin/packages/aarch64_generic/base/rtl88*-firmware*.apk $kmodpkg_name/ || true
-        [ "$OPENWRT_CORE" = "y" ] && {
-            cp -a bin/packages/aarch64_generic/base/*3ginfo*.apk $kmodpkg_name/ || true
-            cp -a bin/packages/aarch64_generic/base/*modemband*.apk $kmodpkg_name/ || true
-            cp -a bin/packages/aarch64_generic/base/*sms-tool*.apk $kmodpkg_name/ || true
-            cp -a bin/packages/aarch64_generic/base/*quectel*.apk $kmodpkg_name/ || true
-            cp -a bin/packages/aarch64_generic/base/natflow*.apk $kmodpkg_name/ || true
-            cp -a bin/packages/aarch64_generic/base/appfilter*.apk $kmodpkg_name/ || true
-            cp -a bin/packages/aarch64_generic/base/luci-app-oaf*.apk $kmodpkg_name/ || true
-            cp -a bin/packages/aarch64_generic/base/luci-i18n-oaf*.apk $kmodpkg_name/ || true
-        }
-        [ "$ENABLE_DPDK" = "y" ] && {
-            cp -a bin/packages/aarch64_generic/base/*dpdk*.apk $kmodpkg_name/ || true
-            cp -a bin/packages/aarch64_generic/base/*numa*.apk $kmodpkg_name/ || true
-        }
-        bash kmod-sign $kmodpkg_name
-        tar zcf aarch64-$kmodpkg_name.tar.gz $kmodpkg_name
-        rm -rf $kmodpkg_name
-    fi
-    # OTA json
-    if [ "$1" = "rc2" ]; then
-        mkdir -p ota
-        if [ "$MINIMAL_BUILD" = "y" ]; then
-            OTA_URL="https://dev.cooluc.com/minimal/$model"
-        elif [ "$STD_BUILD" = "y" ]; then
-            OTA_URL="https://dev.cooluc.com/standard/$model"
-        else
-            OTA_URL="https://dev.cooluc.com/release/$model"
-        fi
-        VERSION=$(sed 's/v//g' version.txt)
-        if [ "$model" = "nanopi-r4s" ]; then
-            SHA256=$(sha256sum bin/targets/rockchip/armv8*/*-squashfs-sysupgrade.img.gz | awk '{print $1}')
-            cat > ota/fw.json <<EOF
-{
-  "friendlyarm,nanopi-r4s": [
-    {
-      "build_date": "$CURRENT_DATE",
-      "sha256sum": "$SHA256",
-      "url": "$OTA_URL/openwrt-$VERSION-rockchip-armv8-friendlyarm_nanopi-r4s-squashfs-sysupgrade.img.gz"
-    }
-  ]
-}
-EOF
-        elif [ "$model" = "nanopi-r5s" ]; then
-            SHA256_R5C=$(sha256sum bin/targets/rockchip/armv8*/*-r5c-squashfs-sysupgrade.img.gz | awk '{print $1}')
-            SHA256_R5S=$(sha256sum bin/targets/rockchip/armv8*/*-r5s-squashfs-sysupgrade.img.gz | awk '{print $1}')
-            cat > ota/fw.json <<EOF
-{
-  "friendlyarm,nanopi-r5c": [
-    {
-      "build_date": "$CURRENT_DATE",
-      "sha256sum": "$SHA256_R5C",
-      "url": "$OTA_URL/openwrt-$VERSION-rockchip-armv8-friendlyarm_nanopi-r5c-squashfs-sysupgrade.img.gz"
-    }
-  ],
-  "friendlyarm,nanopi-r5s": [
-    {
-      "build_date": "$CURRENT_DATE",
-      "sha256sum": "$SHA256_R5S",
-      "url": "$OTA_URL/openwrt-$VERSION-rockchip-armv8-friendlyarm_nanopi-r5s-squashfs-sysupgrade.img.gz"
-    }
-  ]
-}
-EOF
-        elif [ "$model" = "nanopi-r76s" ]; then
-            SHA256_R76S=$(sha256sum bin/targets/rockchip/armv8*/*-r76s-squashfs-sysupgrade.img.gz | awk '{print $1}')
-            cat > ota/fw.json <<EOF
-{
-  "friendlyarm,nanopi-r76s": [
-    {
-      "build_date": "$CURRENT_DATE",
-      "sha256sum": "$SHA256_R76S",
-      "url": "$OTA_URL/openwrt-$VERSION-rockchip-armv8-friendlyarm_nanopi-r76s-squashfs-sysupgrade.img.gz"
-    }
-  ]
-}
-EOF
-        fi
-    fi
-    # Backup download cache
-    if [ "$isCN" = "CN" ] && [ "$version" = "rc2" ]; then
-        rm -rf dl/geo* dl/go-mod-cache
-        tar -cf ../dl.gz dl
+        ARMV8_DIR=$(ls -d bin/targets/armsr/armv8* 2>/dev/null | head -1)
+        NEW="$ARMV8_DIR/$Soup_PREFIX-openwrt-${Soup_TAG}${OP_VERSION}-armsr-armv8-squashfs-combined-efi.img.gz"
+        SRC="$ARMV8_DIR/openwrt-armsr-armv8-generic-squashfs-combined-efi.img.gz"
+
+        _rename_fw "$SRC" "$NEW"
+
+        _add_json_item "armsr,armv8" "$NEW"
+        _emit_json "soup/${Soup_TAG}.json"
     fi
     exit 0
 fi
+
+# ============================================================
+# bcm53xx (netgear r8500)
+# ============================================================
+if [ "$platform" = "bcm53xx" ]; then
+    if [ "$NO_KMOD" != "y" ]; then
+        cp -fp bin/targets/bcm53xx/generic/packages $kmodpkg_name
+        rm -f $kmodpkg_name/Packages*
+        cp -fp bin/packages/arm_cortex-a9/base/*firmware*.ipk $kmodpkg_name/
+        cp -fp bin/packages/arm_cortex-a9/base/*natflow*.ipk $kmodpkg_name/
+        bash kmod-sign $kmodpkg_name
+        tar zcf bcm53xx-$kmodpkg_name.tar.gz $kmodpkg_name
+        rm -rf $kmodpkg_name
+    fi
+
+    # ---- OTA JSON ----
+    if [ "$1" = "dev" ]; then
+        CHK_SRC=$(ls bin/targets/bcm53xx/generic/*-bcm53xx-generic-netgear_r8500-squashfs.chk 2>/dev/null | head -1)
+        if [ -n "$CHK_SRC" ]; then
+            CHK_DIR=$(dirname "$CHK_SRC")
+            NEW="$CHK_DIR/$Soup_PREFIX-openwrt-${Soup_TAG}${OP_VERSION}-netgear_r8500-squashfs.chk"
+            _rename_fw "$CHK_SRC" "$NEW"
+
+            _add_json_item "netgear,r8500" "$NEW"
+            _emit_json "soup/${Soup_TAG}.json"
+        fi
+    fi
+    exit 0
+fi
+
+# ============================================================
+# rockchip (nanopi 系列)
+# ============================================================
+if [ "$NO_KMOD" != "y" ] && [ "$platform" != "rk3399" ]; then
+    cp -a bin/targets/rockchip/armv8*/packages $kmodpkg_name
+    rm -f $kmodpkg_name/Packages*
+    cp -a bin/packages/aarch64_generic/base/*firmware*.ipk $kmodpkg_name/
+    cp -a bin/packages/aarch64_generic/base/*natflow*.ipk $kmodpkg_name/
+    bash kmod-sign $kmodpkg_name
+    tar zcf aarch64-$kmodpkg_name.tar.gz $kmodpkg_name
+    rm -rf $kmodpkg_name
+fi
+
+# ---- OTA JSON ----
+if [ "$1" = "rc2" ]; then
+    R_DIR=$(ls -d bin/targets/rockchip/armv8* 2>/dev/null | head -1)
+
+    case "$model" in
+        nanopi-r4s)
+            NEW="$R_DIR/$Soup_PREFIX-openwrt-${Soup_TAG}${OP_VERSION}-nanopi-r4s-squashfs-sysupgrade.img.gz"
+            SRC="$R_DIR/openwrt-rockchip-armv8-friendlyarm_nanopi-r4s-squashfs-sysupgrade.img.gz"
+            _rename_fw "$SRC" "$NEW"
+            _add_json_item "friendlyarm,nanopi-r4s" "$NEW"
+        ;;
+        nanopi-r5s)
+            NEW_C="$R_DIR/$Soup_PREFIX-openwrt-${Soup_TAG}${OP_VERSION}-nanopi-r5c-squashfs-sysupgrade.img.gz"
+            NEW_S="$R_DIR/$Soup_PREFIX-openwrt-${Soup_TAG}${OP_VERSION}-nanopi-r5s-squashfs-sysupgrade.img.gz"
+            SRC_C="$R_DIR/openwrt-rockchip-armv8-friendlyarm_nanopi-r5c-squashfs-sysupgrade.img.gz"
+            SRC_S="$R_DIR/openwrt-rockchip-armv8-friendlyarm_nanopi-r5s-squashfs-sysupgrade.img.gz"
+            _rename_fw "$SRC_C" "$NEW_C"
+            _rename_fw "$SRC_S" "$NEW_S"
+            _add_json_item "friendlyarm,nanopi-r5c" "$NEW_C"
+            _add_json_item "friendlyarm,nanopi-r5s" "$NEW_S"
+        ;;
+        nanopi-r76s)
+            NEW="$R_DIR/$Soup_PREFIX-openwrt-${Soup_TAG}${OP_VERSION}-nanopi-r76s-squashfs-sysupgrade.img.gz"
+            SRC="$R_DIR/openwrt-rockchip-armv8-friendlyarm_nanopi-r76s-squashfs-sysupgrade.img.gz"
+            _rename_fw "$SRC" "$NEW"
+            _add_json_item "friendlyarm,nanopi-r76s" "$NEW"
+        ;;
+    esac
+
+    _emit_json "soup/${Soup_TAG}.json"
+fi
+
+# Backup download cache
+if [ "$isCN" = "CN" ] && [ "$1" = "rc2" ]; then
+    rm -rf dl/geo* dl/go-mod-cache
+    tar -cf ../dl.gz dl
+fi
+exit 0
 
 # 很少有人会告诉你为什么要这样做，而是会要求你必须要这样做。
