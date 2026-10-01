@@ -150,8 +150,8 @@ uci add_list system.ntp.server='ntp.ntsc.ac.cn'
 uci commit system
 
 #Dropbear指定lan口可以登陆ssh   导致无法登陆
-#uci set dropbear.@dropbear[0].Interface='lan'
-#uci set dropbear.@dropbear[0].Interface=''    #任何口都可以登陆
+#uci set dropbear.@dropbear[0].Interface='lan'  #导致无法登陆
+#uci set dropbear.@dropbear[0].Interface=''    #系统默认：任何口都可以登陆
 #uci commit dropbear
 
 #PASSWALL
@@ -422,8 +422,8 @@ uci commit wrtbwmon
 /etc/init.d/qemu-ga stop
 #/etc/init.d/dnsproxy disable 2>/dev/null
 #/etc/init.d/dnsproxy stop
-#/etc/init.d/dockerd disable 2>/dev/null
-#/etc/init.d/dockerd stop
+/etc/init.d/dockerd disable 2>/dev/null
+/etc/init.d/dockerd stop
 
 chmod 0755 /etc/init.d/*
 
