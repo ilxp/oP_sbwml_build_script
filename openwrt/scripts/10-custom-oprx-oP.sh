@@ -143,18 +143,27 @@ short_date="${short_date:-$(TZ=UTC-8 date +'%y.%-m.%-d')}"
 #latest_release="$(curl -s https://api.github.com/repos/openwrt/openwrt/tags | grep -Eo "v25.12.+[0-9\.]" | head -n 1 | sed 's/v//g')"
 #latest_release="$(curl -s https://github.com/openwrt/openwrt/tags | grep -Eo "v[0-9\.]+\-*r*c*[0-9]*.tar.gz" | sed -n '/[2-9][5-9]/p' | sed -n 1p | sed 's/v//g' | sed 's/.tar.gz//g')" 
 
-sed -i -e "/\(# \)\?REVISION:=/c\REVISION:=${short_date}" -e '/VERSION_CODE:=/c\VERSION_CODE:=$(REVISION)' include/version.mk  #修改 %c
-sed -i "s/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION='oP%c built by ilxp@${build_date}'/g" package/base-files/files/etc/openwrt_release   #原文是单引号
+#sed -i -e "/\(# \)\?REVISION:=/c\REVISION:=${short_date}" -e '/VERSION_CODE:=/c\VERSION_CODE:=$(REVISION)' include/version.mk   #修改%c，apk后，VERSION_CODE不能是26.10.1，只能26101
 
+# apk 不接受特殊字符了。
+# 从锁定的 build_date 截取后 6 位（yymmdd），不再调用 date
+REVISION_APK="${build_date:2:6}"    # 2026100105 → 261001
+sed -i -e "/\(# \)\?REVISION:=/c\REVISION:=${REVISION_APK}" \
+       -e '/VERSION_CODE:=/c\VERSION_CODE:=$(REVISION)' \
+       include/version.mk    #此时%c  显示261001，后续继续显示26.10.1 只能调用${short_date}
+	   
+#sed -i "s/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION='oP%c built by ilxp@${build_date}'/g" package/base-files/files/etc/openwrt_release   #原文是单引号，此时的%c显示的是 261001了
+
+sed -i "s/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION='oP${short_date} built by ilxp@${build_date}'/g" package/base-files/files/etc/openwrt_releas
 
 #sbmwl大佬现实的在usr/lib/os-release中的PRETTY_NAME="OpenWrt SNAPSHOT"
 #sed -i "/PRETTY_NAME/d" package/base-files/files/usr/lib/os-release
 #sed -i "/ID_LIKE/aPRETTY_NAME=\"OprX oP${short_date}\"" package/base-files/files/usr/lib/os-release
 
 sed -i "/OPENWRT_RELEASE/d" package/base-files/files/usr/lib/os-release
-sed -i "/OPENWRT_DEVICE_REVISION/aOPENWRT_RELEASE=\"oP%c built by ilxp@${build_date}\"" package/base-files/files/usr/lib/os-release
+sed -i "/OPENWRT_DEVICE_REVISION/aOPENWRT_RELEASE=\"oP${short_date} built by ilxp@${build_date}\"" package/base-files/files/usr/lib/os-release
 
-#sed -i "s#^OPENWRT_RELEASE=\".*\"#OPENWRT_RELEASE=\"oP%c built by ilxp@${build_date}\"#" package/base-files/files/usr/lib/os-release     #原文是双引号
+#sed -i "s#^OPENWRT_RELEASE=\".*\"#OPENWRT_RELEASE=\"oP${short_date} built by ilxp@${build_date}\"#" package/base-files/files/usr/lib/os-release     #原文是双引号
 	
 # 固件的命名格式：。
 #去掉版本号 openwrt-23.05.2-x86-64或者openwrt-23.05-snapshot-r0-60e49cf-x86-64改为openwrt-x86-64
