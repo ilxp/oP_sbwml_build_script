@@ -70,10 +70,14 @@ fi
 
 # Start time
 starttime=`date +'%Y-%m-%d %H:%M:%S'`
-CURRENT_DATE=$(date +%s)
-#CURRENT_DATE2=$(date +%Y%m%d)
-#CURRENT_DATE2=$(date +%m.%d.%Y)
-CURRENT_DATE2=$(TZ=UTC-8 date +'%m.%d.%Y')
+#CURRENT_DATE=$(date +%s)
+
+# 构建时间与版本号，一起作为soup判断固件是否更新
+export build_date=$(TZ=UTC-8 date +'%Y%m%d%H')  #2026100111 
+export short_date=$(TZ=UTC-8 date +'%y.%-m.%-d')  #26.10.1
+echo "[soup] 编译日期已锁定: ${build_date} (${short_date})"
+
+CURRENT_DATE="${build_date}"
 
 # Cpus
 cores=`expr $(nproc --all) + 1`
@@ -492,20 +496,18 @@ JSON_LOGS() { if [ -f "$1" ]; then jq -Rs . < "$1"; else printf '""'; fi; }
 # ============================================================
 # 变量定义
 # ============================================================
-Build_DATE=$(TZ=UTC-8 date +'%Y%m%d%H')
 
 if [ "$1" = "dev" ]; then
-    Short_Date=$(TZ=UTC-8 date +'%y.%-m.%-d')
-    OP_VERSION="${Short_Date}-${Build_DATE}"    # 如 26.10.1-2026100112
+    OP_VERSION="${short_date}-${build_date}"    # 如 26.10.1-2026100112
 
 elif [ "$1" = "rc2" ]; then
     VERSION=$(sed 's/v//g' version.txt)
-    OP_VERSION="${VERSION}-${Build_DATE}"       # 如 25.12.5-2026100112
+    OP_VERSION="${VERSION}-${build_date}"       # 如 25.12.5-2026100112
 fi
 
 Soup_TAG="oP"
 Soup_PREFIX="OprX"
-Soup_DATE="${Build_DATE}"
+Soup_DATE="${build_date}"
 Soup_URL="https://github.com/ilxp/oprx-release/releases/download/firmware"
 
 ### 日志logs.md的存放目录 ########
@@ -611,8 +613,12 @@ if [ "$platform" = "x86_64" ]; then
     EFI_NEW="$X86_DIR/$Soup_PREFIX-openwrt-${Soup_TAG}${OP_VERSION}-x86_64-squashfs-combined-uefi.img.gz"
     BIOS_NEW="$X86_DIR/$Soup_PREFIX-openwrt-${Soup_TAG}${OP_VERSION}-x86_64-squashfs-combined-bios.img.gz"
 
-    EFI_SRC="$X86_DIR/openwrt-x86-64-generic-squashfs-combined-efi.img.gz"
-    BIOS_SRC="$X86_DIR/openwrt-x86-64-generic-squashfs-combined.img.gz"
+	# 兼容官方/lede 不同版本号前缀：
+	#   openwrt-x86-64-generic-...          (snapshot)
+	#   openwrt-23.05.2-x86-64-generic-...  (release)
+	#   openwrt-24.10.0-rc1-x86-64-generic-...
+	EFI_SRC=$(ls "$X86_DIR"/openwrt-*x86-64-generic-squashfs-combined-efi.img.gz 2>/dev/null | head -1)
+	BIOS_SRC=$(ls "$X86_DIR"/openwrt-*x86-64-generic-squashfs-combined.img.gz 2>/dev/null | head -1)
 
     # 重命名固件
     _rename_fw "$EFI_SRC"  "$EFI_NEW"

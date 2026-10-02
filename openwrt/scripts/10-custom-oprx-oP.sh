@@ -131,26 +131,35 @@ merge_package master https://github.com/openwrt/packages.git feeds/packages/util
 #patch -p1 <./diydata/data/patches/kernel-hack.patch
 
 # 固件版本号(21.3.2 %y : 年份的最后两位数字)
-#date=`TZ=UTC-8 date +%m.%d.%Y`  #升级用，统一这样
-#R$(TZ=UTC-8 date +'%y.%-m.%-d')
-ReV_Date=`TZ=UTC-8 date +%y%-m%-d`  #24年1月1日：24.1.1  #以上引用不用带{}，即$ReV_Date
-#ReV_Date=$(TZ=UTC-8 date +'%y%-m%-d')  #这个引用要带{}，即${ReV_Date}  25.12不能用.了
-Build_DATE=$(TZ=UTC-8 date +'%Y%m%d%H')  #这个引用要带{}，即${Build_DATE} 
-sed -i -e "/\(# \)\?REVISION:=/c\REVISION:=$ReV_Date" -e '/VERSION_CODE:=/c\VERSION_CODE:=$(REVISION)' include/version.mk
-sed -i "s/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION='oP built by ilxp@%C'/g" package/base-files/files/etc/openwrt_release   #原文是单引号
+#build_date=$(TZ=UTC-8 date +'%Y%m%d%H')  #这个引用要带{}，即${build_date} 
+#short_date=$(TZ=UTC-8 date +'%y.%m.%d' | awk -F. '{print $1"."$2+0"."$3+0}') #24年1月1日：24.1.1
+#short_date=$(TZ=UTC-8 date +'%y.%-m.%-d') #24年1月1日：24.1.1
+
+# 引用主脚本 build-oprx.sh 万一主脚本不存在或者单独运行时兜底取当前时间
+build_date="${build_date:-$(TZ=UTC-8 date +'%Y%m%d%H')}"
+short_date="${short_date:-$(TZ=UTC-8 date +'%y.%-m.%-d')}"
+
+# oR系列需要获取官方版本号
+#latest_release="$(curl -s https://api.github.com/repos/openwrt/openwrt/tags | grep -Eo "v25.12.+[0-9\.]" | head -n 1 | sed 's/v//g')"
+#latest_release="$(curl -s https://github.com/openwrt/openwrt/tags | grep -Eo "v[0-9\.]+\-*r*c*[0-9]*.tar.gz" | sed -n '/[2-9][5-9]/p' | sed -n 1p | sed 's/v//g' | sed 's/.tar.gz//g')" 
+
+sed -i -e "/\(# \)\?REVISION:=/c\REVISION:=${short_date}" -e '/VERSION_CODE:=/c\VERSION_CODE:=$(REVISION)' include/version.mk  #修改 %c
+sed -i "s/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION='oP%c built by ilxp@${build_date}'/g" package/base-files/files/etc/openwrt_release   #原文是单引号
+
 
 #sbmwl大佬现实的在usr/lib/os-release中的PRETTY_NAME="OpenWrt SNAPSHOT"
 #sed -i "/PRETTY_NAME/d" package/base-files/files/usr/lib/os-release
-#sed -i "/ID_LIKE/aPRETTY_NAME=\"OprX oP$ReV_Date\"" package/base-files/files/usr/lib/os-release
+#sed -i "/ID_LIKE/aPRETTY_NAME=\"OprX oP${short_date}\"" package/base-files/files/usr/lib/os-release
 
 sed -i "/OPENWRT_RELEASE/d" package/base-files/files/usr/lib/os-release
-sed -i "/OPENWRT_DEVICE_REVISION/aOPENWRT_RELEASE=\"oP built by ilxp@%C\"" package/base-files/files/usr/lib/os-release
+sed -i "/OPENWRT_DEVICE_REVISION/aOPENWRT_RELEASE=\"oP%c built by ilxp@${build_date}\"" package/base-files/files/usr/lib/os-release
 
-#sed -i "s#^OPENWRT_RELEASE=\".*\"#OPENWRT_RELEASE=\"oP built by ilxp@%C\"#" package/base-files/files/usr/lib/os-release     #原文是双引号
+#sed -i "s#^OPENWRT_RELEASE=\".*\"#OPENWRT_RELEASE=\"oP%c built by ilxp@${build_date}\"#" package/base-files/files/usr/lib/os-release     #原文是双引号
 	
 # 固件的命名格式：。
 #去掉版本号 openwrt-23.05.2-x86-64或者openwrt-23.05-snapshot-r0-60e49cf-x86-64改为openwrt-x86-64
-sed -i 's/IMG_PREFIX:=$(VERSION_DIST_SANITIZED)-$(IMG_PREFIX_VERNUM)$(IMG_PREFIX_VERCODE)$(IMG_PREFIX_EXTRA)/IMG_PREFIX:=$(VERSION_DIST_SANITIZED)-/g' include/image.mk
+#sed -i 's/IMG_PREFIX:=\$(VERSION_DIST_SANITIZED)-\$(IMG_PREFIX_VERNUM)\$(IMG_PREFIX_VERCODE)\$(IMG_PREFIX_EXTRA)/IMG_PREFIX:=$(VERSION_DIST_SANITIZED)-/g' include/image.mk
+sed -i 's/\$(IMG_PREFIX_VERNUM)\$(IMG_PREFIX_VERCODE)\$(IMG_PREFIX_EXTRA)//g' include/image.mk
 
 #采用kiddin9大神的gpsysupgrade升级方式：https://github.com/ilxp/openwrt-gpsysupgrade-kiddin9：
 #格式：10.23.2024-oprx-oP-x86-64-generic-squashfs-combined-efi.img.gz   #oD是固件分类标签
@@ -790,13 +799,12 @@ sed -i 's#API_Url=.*#API_Url=https://github.com/ilxp/oprx-release/releases/downl
 sed -i 's/TARGET_FLAG=.*/TARGET_FLAG=oP/g' package/diy/openwrt-soup/soup/files/etc/soup/default
 sed -i 's/FW_Prefix=.*/FW_Prefix=OprX/g' package/diy/openwrt-soup/soup/files/etc/soup/default	
 #2）版本号：需要固定成：R24.1.1-20240101
-#Build_DATE=$(date +%Y%m%d%H)  #日期+小时
-#Short_Date=`TZ=UTC-8 date +%y.%-m.%-d`  #24年1月1日：24.1.1
-#Short_Date=$(TZ=UTC-8 date +'%y.%m.%d' | awk -F. '{print $1"."$2+0"."$3+0}') #24年1月1日：24.1.1
-Short_Date=$(TZ=UTC-8 date +'%y.%-m.%-d') #24年1月1日：24.1.1
-Compile_Date=$(TZ=UTC-8 date +'%Y%m%d%H')
-OP_VERSION="${Short_Date}-${Compile_Date}"
-#OP_VERSION="${Short_Date}"   #eS使用类似：26.9.23
+#build_date=$(date +%Y%m%d%H)  #日期+小时
+#short_date=$(TZ=UTC-8 date +'%y.%m.%d' | awk -F. '{print $1"."$2+0"."$3+0}') #24年1月1日：24.1.1
+short_date=$(TZ=UTC-8 date +'%y.%-m.%-d') #24年1月1日：24.1.1
+build_date=$(TZ=UTC-8 date +'%Y%m%d%H')
+OP_VERSION="${short_date}-${build_date}"
+#OP_VERSION="${short_date}"   #eS使用类似：26.9.23
 sed -i "s|OP_VERSION=.*|OP_VERSION=$OP_VERSION|g" package/diy/openwrt-soup/soup/files/etc/soup/default  #可用/#|,使用双引号
 #3）源码作者
 sed -i 's/OP_AUTHOR=.*/OP_AUTHOR=openwrt/g' package/diy/openwrt-soup/soup/files/etc/soup/default
